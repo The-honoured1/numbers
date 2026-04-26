@@ -17,6 +17,7 @@ class NumbersColors {
   static const Color countdown = Color(0xFFD9534F); // Soft Red
   static const Color crossword = Color(0xFF5DA9E9); // Bright Blue
   static const Color linkNumbers = Color(0xFFB4A8FF); // Connections Lavender
+  static const Color minesweeper = Color(0xFF5A5A5A); // Deep Grey
 
   // Crossword specific
   static const Color crossOperator = Color(0xFFF0F0F0);

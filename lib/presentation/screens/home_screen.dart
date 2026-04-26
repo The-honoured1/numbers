@@ -13,6 +13,7 @@ import 'package:numbers/games/sequence/sequence_screen.dart';
 import 'package:numbers/games/countdown/countdown_screen.dart';
 import 'package:numbers/games/crossword/crossword_screen.dart';
 import 'package:numbers/games/link_numbers/link_numbers_screen.dart';
+import 'package:numbers/games/minesweeper/minesweeper_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
