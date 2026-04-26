@@ -111,11 +111,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {

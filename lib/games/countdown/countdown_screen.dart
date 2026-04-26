@@ -138,11 +138,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
+
 
   @override
   Widget build(BuildContext context) {
