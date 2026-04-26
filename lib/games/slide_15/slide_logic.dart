@@ -1,48 +1,35 @@
 import 'dart:math';
 
 class SlideLogic {
+  /// Generate a solvable 15-puzzle by shuffling from the solved state.
+  /// This guarantees the puzzle is always solvable.
   List<int> generate() {
-    List<int> numbers = List.generate(16, (i) => i); // 0 is empty
-    numbers.shuffle();
+    // Start from solved state
+    List<int> grid = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0];
+    final rand = Random();
     
-    // Ensure solvable
-    while (!_isSolvable(numbers)) {
-      numbers.shuffle();
+    // Perform 200+ random valid moves from solved state
+    // This guarantees solvability since we only make legal moves
+    int emptyIdx = 15;
+    for (int i = 0; i < 300; i++) {
+      List<int> neighbors = _getNeighbors(emptyIdx);
+      int pick = neighbors[rand.nextInt(neighbors.length)];
+      grid[emptyIdx] = grid[pick];
+      grid[pick] = 0;
+      emptyIdx = pick;
     }
-    return numbers;
+    
+    return grid;
   }
 
-  bool _isSolvable(List<int> numbers) {
-    int inversions = 0;
-    int emptyRow = 0;
-    
-    for (int i = 0; i < 16; i++) {
-      if (numbers[i] == 0) {
-        emptyRow = 3 - (i ~/ 4);
-        continue;
-      }
-      for (int j = i + 1; j < 16; j++) {
-        if (numbers[j] != 0 && numbers[i] > numbers[j]) {
-          inversions++;
-        }
-      }
-    }
-    
-    // For 4x4:
-    // If empty is on even row from bottom, inversions must be odd.
-    // If empty is on odd row from bottom, inversions must be even.
-    if (emptyRow % 2 == 0) {
-      return inversions % 2 != 0;
-    } else {
-      return inversions % 2 == 0;
-    }
-  }
-
-  bool isAdjacent(int idx1, int idx2) {
-    final r1 = idx1 ~/ 4, c1 = idx1 % 4;
-    final r2 = idx2 ~/ 4, c2 = idx2 % 1; // Wait, c2 should be idx2 % 4
-    // Fix below
-    return false;
+  List<int> _getNeighbors(int idx) {
+    int r = idx ~/ 4, c = idx % 4;
+    List<int> result = [];
+    if (r > 0) result.add((r - 1) * 4 + c);
+    if (r < 3) result.add((r + 1) * 4 + c);
+    if (c > 0) result.add(r * 4 + (c - 1));
+    if (c < 3) result.add(r * 4 + (c + 1));
+    return result;
   }
 
   bool canMove(int index, List<int> grid) {

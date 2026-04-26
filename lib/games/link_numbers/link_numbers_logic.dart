@@ -28,62 +28,117 @@ class LinkNumbersData {
   });
 }
 
+/// Generates puzzles by first laying down random non-crossing paths,
+/// then placing endpoints. This guarantees every puzzle is solvable.
 class LinkNumbersLogic {
-  final List<LinkNumbersData> _levels = [
-    // Level 1: Beginner 5x5
-    LinkNumbersData(
-      gridSize: 5,
-      values: [1, 2, 3],
-      numbers: {
-        Point(0, 0): 1, Point(4, 4): 1,
-        Point(0, 4): 2, Point(4, 0): 2,
-        Point(2, 0): 3, Point(2, 4): 3,
-      },
-    ),
-    // Level 2: Interlocking 5x5
-    LinkNumbersData(
-      gridSize: 5,
-      values: [1, 2, 3, 4],
-      numbers: {
-        Point(0, 0): 1, Point(3, 3): 1,
-        Point(4, 0): 2, Point(1, 4): 2,
-        Point(0, 1): 3, Point(4, 4): 3,
-        Point(4, 1): 4, Point(0, 3): 4,
-      },
-    ),
-    // Level 3: 6x6 Snake
-    LinkNumbersData(
-      gridSize: 6,
-      values: [1, 2, 3, 4, 5],
-      numbers: {
-        Point(0, 0): 1, Point(3, 0): 1,
-        Point(0, 1): 2, Point(5, 5): 2,
-        Point(1, 1): 3, Point(4, 4): 3,
-        Point(0, 5): 4, Point(5, 0): 4,
-        Point(2, 2): 5, Point(3, 3): 5,
-      },
-    ),
-    // Level 4: 7x7 Complex
-    LinkNumbersData(
-      gridSize: 7,
-      values: [1, 2, 3, 4, 5, 6],
-      numbers: {
-        Point(0, 0): 1, Point(6, 6): 1,
-        Point(6, 0): 2, Point(0, 6): 2,
-        Point(3, 0): 3, Point(3, 6): 3,
-        Point(0, 3): 4, Point(6, 3): 4,
-        Point(1, 1): 5, Point(5, 5): 5,
-        Point(5, 1): 6, Point(1, 5): 6,
-      },
-    ),
+  final Random _rand = Random();
+
+  static const List<List<int>> _dirs = [
+    [0, 1], [0, -1], [1, 0], [-1, 0]
   ];
 
+  /// Generate a puzzle for a given level index.
+  /// Level determines grid size and number of pairs.
   LinkNumbersData generate(int levelIndex) {
-    if (levelIndex >= 0 && levelIndex < _levels.length) {
-      return _levels[levelIndex];
+    int gridSize;
+    int pairCount;
+
+    if (levelIndex < 3) {
+      gridSize = 5;
+      pairCount = 3 + levelIndex; // 3, 4, 5 pairs
+    } else if (levelIndex < 6) {
+      gridSize = 6;
+      pairCount = 4 + (levelIndex - 3); // 4, 5, 6 pairs
+    } else {
+      gridSize = 7;
+      pairCount = 5 + ((levelIndex - 6) % 4); // 5-8 pairs
     }
-    return _levels[Random().nextInt(_levels.length)];
+
+    // Keep trying until we get a valid puzzle
+    for (int attempt = 0; attempt < 100; attempt++) {
+      final result = _tryGenerate(gridSize, pairCount);
+      if (result != null) return result;
+    }
+
+    // Fallback: simple guaranteed puzzle
+    return _fallbackPuzzle(gridSize, pairCount);
   }
 
-  int get totalLevels => _levels.length;
+  LinkNumbersData? _tryGenerate(int gridSize, int pairCount) {
+    // occupied[y][x] = true if cell is used by a path
+    List<List<bool>> occupied = List.generate(
+      gridSize, (_) => List.filled(gridSize, false),
+    );
+
+    Map<Point, int> endpoints = {};
+    List<int> values = [];
+
+    for (int v = 1; v <= pairCount; v++) {
+      // Pick a random unoccupied start cell
+      Point? start = _findFreeCell(occupied, gridSize);
+      if (start == null) return null;
+
+      // Random walk from start to create a path
+      int pathLen = 2 + _rand.nextInt(gridSize); // path of 2-gridSize cells
+      List<Point> path = [start];
+      occupied[start.y][start.x] = true;
+
+      for (int step = 0; step < pathLen; step++) {
+        List<Point> candidates = [];
+        for (var d in _dirs) {
+          Point next = path.last.move(d[0], d[1]);
+          if (_inBounds(next, gridSize) && !occupied[next.y][next.x]) {
+            candidates.add(next);
+          }
+        }
+        if (candidates.isEmpty) break;
+        Point chosen = candidates[_rand.nextInt(candidates.length)];
+        path.add(chosen);
+        occupied[chosen.y][chosen.x] = true;
+      }
+
+      if (path.length < 2) return null;
+
+      endpoints[path.first] = v;
+      endpoints[path.last] = v;
+      values.add(v);
+    }
+
+    return LinkNumbersData(
+      gridSize: gridSize,
+      numbers: endpoints,
+      values: values,
+    );
+  }
+
+  Point? _findFreeCell(List<List<bool>> occupied, int gridSize) {
+    List<Point> free = [];
+    for (int y = 0; y < gridSize; y++) {
+      for (int x = 0; x < gridSize; x++) {
+        if (!occupied[y][x]) free.add(Point(x, y));
+      }
+    }
+    if (free.isEmpty) return null;
+    return free[_rand.nextInt(free.length)];
+  }
+
+  bool _inBounds(Point p, int gridSize) {
+    return p.x >= 0 && p.x < gridSize && p.y >= 0 && p.y < gridSize;
+  }
+
+  /// Simple fallback with guaranteed non-crossing horizontal paths
+  LinkNumbersData _fallbackPuzzle(int gridSize, int pairCount) {
+    Map<Point, int> numbers = {};
+    List<int> values = [];
+    int pairs = min(pairCount, gridSize); // max one pair per row
+    for (int i = 0; i < pairs; i++) {
+      int v = i + 1;
+      numbers[Point(0, i)] = v;
+      numbers[Point(gridSize - 1, i)] = v;
+      values.add(v);
+    }
+    return LinkNumbersData(gridSize: gridSize, numbers: numbers, values: values);
+  }
+
+  int get totalLevels => 500;
 }
