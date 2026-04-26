@@ -29,18 +29,18 @@ class GameResultDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 40),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       child: Container(
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(32),
           border: Border.all(color: NumbersColors.border, width: 2),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 30,
-              offset: const Offset(0, 10),
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 40,
+              offset: const Offset(0, 20),
             )
           ],
         ),
@@ -48,54 +48,70 @@ class GameResultDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                gradient: LinearGradient(
+                  colors: [color, color.withOpacity(0.7)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withOpacity(0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  )
+                ],
               ),
-              child: Icon(icon, color: color, size: 48),
-            ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
-            const SizedBox(height: 24),
+              child: Icon(icon, color: Colors.white, size: 48),
+            ).animate().scale(duration: 800.ms, curve: Curves.elasticOut),
+            const SizedBox(height: 32),
             Text(
               title,
-              style: GoogleFonts.lora(
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.outfit(
+                fontSize: 32,
+                fontWeight: FontWeight.w900,
                 color: NumbersColors.textBody,
+                letterSpacing: -1,
+                height: 1.1,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                fontSize: 14,
+              style: GoogleFonts.outfit(
+                fontSize: 15,
                 color: NumbersColors.textFaint,
+                fontWeight: FontWeight.w500,
                 height: 1.5,
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 40),
             if (onRevive != null) ...[
               SizedBox(
                 width: double.infinity,
-                child: OutlinedButton.icon(
+                child: ElevatedButton.icon(
                   onPressed: onRevive,
-                  icon: const Icon(Icons.play_circle_fill, size: 20),
+                  icon: const Icon(Icons.play_circle_fill, size: 24),
                   label: Text(
-                    reviveButtonText,
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.2,
+                    reviveButtonText.toUpperCase(),
+                    style: GoogleFonts.outfit(
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.5,
                       fontSize: 13,
                     ),
                   ),
-                  style: OutlinedButton.styleFrom(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: NumbersColors.yellow,
                     foregroundColor: NumbersColors.textBody,
-                    side: const BorderSide(color: NumbersColors.border, width: 2),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 20),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(16),
                     ),
+                    elevation: 0,
                   ),
                 ),
               ),
@@ -103,23 +119,22 @@ class GameResultDialog extends StatelessWidget {
             ],
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: OutlinedButton(
                 onPressed: onButtonPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: NumbersColors.textBody,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: NumbersColors.border, width: 2),
+                  padding: const EdgeInsets.symmetric(vertical: 20),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  elevation: 0,
                 ),
                 child: Text(
-                  buttonText,
-                  style: GoogleFonts.inter(
+                  buttonText.toUpperCase(),
+                  style: GoogleFonts.outfit(
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 1.2,
+                    letterSpacing: 1.5,
                     fontSize: 13,
+                    color: NumbersColors.textBody,
                   ),
                 ),
               ),
@@ -127,6 +142,6 @@ class GameResultDialog extends StatelessWidget {
           ],
         ),
       ),
-    ).animate().fadeIn(duration: 200.ms).scale(begin: const Offset(0.9, 0.9), curve: Curves.easeOutQuad);
+    ).animate().fadeIn(duration: 400.ms).scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack);
   }
 }

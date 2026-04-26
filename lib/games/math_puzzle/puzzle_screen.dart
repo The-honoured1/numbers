@@ -80,7 +80,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         title: 'Game Over',
         message: 'Final Score: $_score\nLevel Reached: $_level',
         buttonText: 'RESTART GAME',
-        color: NumbersColors.countdown,
+        color: NumbersColors.green,
         icon: Icons.error_outline,
         onRevive: () {
           AdService().showRewardedAd(() {
@@ -110,50 +110,72 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Math Puzzle'),
+        title: Text('MATH PUZZLE', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           children: [
             const SizedBox(height: 20),
-            LinearProgressIndicator(
-              value: _timeLeft / 10,
-              backgroundColor: Colors.grey.shade200,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                _timeLeft < 4 ? Colors.red : NumbersColors.mathPuzzle),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: LinearProgressIndicator(
+                minHeight: 12,
+                value: _timeLeft / 10,
+                backgroundColor: NumbersColors.border,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  _timeLeft < 4 ? NumbersColors.coral : NumbersColors.green),
+              ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 48),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('LEVEL $_level', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
-                Text('SCORE $_score', style: const TextStyle(fontWeight: FontWeight.bold, color: NumbersColors.mathPuzzle)),
+                _StatDisplay(label: 'LEVEL', value: '$_level', color: NumbersColors.textFaint),
+                _StatDisplay(label: 'SCORE', value: '$_score', color: NumbersColors.green),
               ],
             ),
             const Spacer(),
-            Text(
-              _currentQuestion.text,
-              style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-            ).animate(key: ValueKey(_currentQuestion.text)).fadeIn().scale(),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 40),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: NumbersColors.backgroundOffWhite,
+                borderRadius: BorderRadius.circular(32),
+                border: Border.all(color: NumbersColors.border, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: NumbersColors.cardShadow.withOpacity(0.05),
+                    blurRadius: 30,
+                    offset: const Offset(0, 15),
+                  )
+                ],
+              ),
+              child: Center(
+                child: Text(
+                  _currentQuestion.text,
+                  style: GoogleFonts.outfit(fontSize: 56, fontWeight: FontWeight.w900, color: NumbersColors.textBody),
+                ).animate(key: ValueKey(_currentQuestion.text)).fadeIn().scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack),
+              ),
+            ),
             const Spacer(),
             GridView.count(
               shrinkWrap: true,
               crossAxisCount: 2,
               mainAxisSpacing: 16,
               crossAxisSpacing: 16,
-              childAspectRatio: 2,
+              childAspectRatio: 2.2,
               children: _currentQuestion.options.map((opt) {
                 return ElevatedButton(
                   onPressed: () => _checkAnswer(opt),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: NumbersColors.textBody,
-                    side: const BorderSide(color: Color(0xFFEEEEEE)),
+                    side: const BorderSide(color: NumbersColors.border, width: 1.5),
                     elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   ),
-                  child: Text('$opt', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  child: Text('$opt', style: GoogleFonts.outfit(fontSize: 26, fontWeight: FontWeight.w800)),
                 );
               }).toList(),
             ),
@@ -161,6 +183,24 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _StatDisplay extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+  const _StatDisplay({required this.label, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w800, color: NumbersColors.textFaint, letterSpacing: 1.5)),
+        Text(value, style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w900, color: color)),
+      ],
     );
   }
 }

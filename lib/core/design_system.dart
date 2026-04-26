@@ -2,29 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class NumbersColors {
-  static const Color background = Color(0xFFFFFFFF);
-  static const Color backgroundOffWhite = Color(0xFFF8F8F8);
-  static const Color textBody = Color(0xFF121212);
-  static const Color textFaint = Color(0xFF666666);
-  static const Color border = Color(0xFFE2E2E2);
-  static const Color cardShadow = Color(0x0D000000);
+  // Vibrant Base Palette
+  static const Color background = Color(0xFFF9FAFB);
+  static const Color backgroundOffWhite = Color(0xFFFFFFFF);
+  static const Color textBody = Color(0xFF1F2937); // Deep Slate
+  static const Color textFaint = Color(0xFF6B7280); // Slate 500
+  static const Color border = Color(0xFFE5E7EB);
+  static const Color cardShadow = Color(0x1A000000);
 
-  // NYT Games specific accent colors (more muted/sophisticated)
-  static const Color sudoku = Color(0xFFFFA500); // Orange
-  static const Color game2048 = Color(0xFF7EBDC2); // Muted Teal
-  static const Color mathPuzzle = Color(0xFF4A6FA5); // Steel Blue
-  static const Color sequence = Color(0xFF6C63FF); // Link Purple
-  static const Color countdown = Color(0xFFD9534F); // Soft Red
-  static const Color crossword = Color(0xFF5DA9E9); // Bright Blue
-  static const Color linkNumbers = Color(0xFFB4A8FF); // Connections Lavender
-  static const Color minesweeper = Color(0xFF5A5A5A); // Deep Grey
+  // Vibrant Component Colors (Requested Yellow & Green focus)
+  static const Color yellow = Color(0xFFFFD93D);
+  static const Color green = Color(0xFF6BCB77);
+  static const Color blue = Color(0xFF4D96FF);
+  static const Color coral = Color(0xFFFF6B6B);
+  static const Color purple = Color(0xFF916AFF);
 
-  // Crossword specific
-  static const Color crossOperator = Color(0xFFF0F0F0);
-  static const Color crossEquals = Color(0xFFF8F8F8);
-  static const Color crossCorrect = Color(0xFF6AAA64); // Wordle Green
-  static const Color crossIncorrect = Color(0xFFD7191C);
-  static const Color selection = Color(0xFFFFD166);
+  // Game specific (Vibrant versions)
+  static const Color sudoku = yellow;
+  static const Color game2048 = blue;
+  static const Color mathPuzzle = coral;
+  static const Color sequence = purple;
+  static const Color countdown = Color(0xFFFF8E3C); // Energetic Orange
+  static const Color crossword = Color(0xFF4ECDC4); // Vibrant Teal
+  static const Color linkNumbers = Color(0xFFFF6AC1); // Punchy Pink
+  static const Color minesweeper = Color(0xFF393E46); // Modern Dark Slate
+
+  // Status
+  static const Color crossCorrect = green;
+  static const Color crossIncorrect = coral;
+  static const Color selection = yellow;
 }
 
 class NumbersTheme {
@@ -33,46 +39,48 @@ class NumbersTheme {
       useMaterial3: true,
       scaffoldBackgroundColor: NumbersColors.background,
       appBarTheme: AppBarTheme(
-        backgroundColor: Colors.white,
+        backgroundColor: NumbersColors.background,
         elevation: 0,
         centerTitle: true,
         surfaceTintColor: Colors.transparent,
         iconTheme: const IconThemeData(color: NumbersColors.textBody),
-        titleTextStyle: GoogleFonts.lora(
+        titleTextStyle: GoogleFonts.outfit(
           color: NumbersColors.textBody,
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
+          fontSize: 26,
+          fontWeight: FontWeight.w800,
+          letterSpacing: -0.5,
         ),
       ),
       colorScheme: ColorScheme.fromSeed(
-        seedColor: NumbersColors.sudoku,
-        surface: NumbersColors.background,
+        seedColor: NumbersColors.purple,
+        surface: NumbersColors.backgroundOffWhite,
+        primary: NumbersColors.purple,
       ),
-      textTheme: GoogleFonts.interTextTheme().copyWith(
-        displayLarge: GoogleFonts.lora(
+      textTheme: GoogleFonts.outfitTextTheme().copyWith(
+        displayLarge: GoogleFonts.outfit(
           fontSize: 48,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w900,
+          color: NumbersColors.textBody,
+          letterSpacing: -1.5,
+        ),
+        headlineMedium: GoogleFonts.outfit(
+          fontSize: 34,
+          fontWeight: FontWeight.w800,
           color: NumbersColors.textBody,
           letterSpacing: -1,
         ),
-        headlineMedium: GoogleFonts.lora(
-          fontSize: 32,
-          fontWeight: FontWeight.w700,
-          color: NumbersColors.textBody,
-          letterSpacing: -0.5,
-        ),
-        titleLarge: GoogleFonts.inter(
-          fontSize: 20,
+        titleLarge: GoogleFonts.outfit(
+          fontSize: 22,
           fontWeight: FontWeight.w700,
           color: NumbersColors.textBody,
         ),
-        titleMedium: GoogleFonts.inter(
-          fontSize: 16,
+        titleMedium: GoogleFonts.outfit(
+          fontSize: 18,
           fontWeight: FontWeight.w600,
           color: NumbersColors.textBody,
         ),
-        bodyMedium: GoogleFonts.inter(
-          fontSize: 14,
+        bodyMedium: GoogleFonts.outfit(
+          fontSize: 15,
           fontWeight: FontWeight.w400,
           color: NumbersColors.textFaint,
         ),
@@ -80,10 +88,18 @@ class NumbersTheme {
       cardTheme: CardThemeData(
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4), // Sharper corners for NYT look
-          side: const BorderSide(color: NumbersColors.border, width: 1),
+          borderRadius: BorderRadius.circular(24), // Modern rounded corners
+          side: const BorderSide(color: NumbersColors.border, width: 1.5),
         ),
-        color: Colors.white,
+        color: NumbersColors.backgroundOffWhite,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          textStyle: GoogleFonts.outfit(fontWeight: FontWeight.w800, fontSize: 16),
+        ),
       ),
     );
   }
