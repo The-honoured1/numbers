@@ -386,6 +386,15 @@ class _StatsView extends StatelessWidget {
             
             Align(
               alignment: Alignment.centerLeft,
+              child: Text('HIGHEST SCORES', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: NumbersColors.textFaint)),
+            ),
+            const SizedBox(height: 16),
+            _buildHighScoreList(),
+            
+            const SizedBox(height: 40),
+            
+            Align(
+              alignment: Alignment.centerLeft,
               child: Text('KEY METRICS', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: NumbersColors.textFaint)),
             ),
             const SizedBox(height: 16),
@@ -393,6 +402,43 @@ class _StatsView extends StatelessWidget {
             const SizedBox(height: 60),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildHighScoreList() {
+    final games = [
+      {'id': 'sudoku', 'name': 'Sudoku', 'color': NumbersColors.yellow},
+      {'id': '2048', 'name': '2048', 'color': NumbersColors.blue},
+      {'id': 'math_puzzle', 'name': 'Math', 'color': NumbersColors.green},
+      {'id': 'sequence', 'name': 'Sequence', 'color': NumbersColors.purple},
+      {'id': 'countdown', 'name': 'Count', 'color': NumbersColors.countdown},
+      {'id': 'crossword', 'name': 'Cross', 'color': NumbersColors.crossword},
+    ];
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const BouncingScrollPhysics(),
+      child: Row(
+        children: games.map((game) {
+          final score = storage.getHighScore(game['id'] as String);
+          return Container(
+            margin: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: NumbersColors.border, width: 1.5),
+            ),
+            child: Column(
+              children: [
+                Text(game['name'] as String, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.textFaint)),
+                const SizedBox(height: 4),
+                Text('$score', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: game['color'] as Color)),
+              ],
+            ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -432,6 +478,11 @@ class _StatsView extends StatelessWidget {
   }
 
   Widget _buildMetricsTable() {
+    final totalWins = storage.getTotalWins();
+    final totalPlays = storage.gamesPlayed;
+    final accuracy = totalPlays > 0 ? (totalWins / totalPlays * 100).toStringAsFixed(0) : "0";
+    final favorite = storage.getFavoriteGame();
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -441,11 +492,11 @@ class _StatsView extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _metricRow("DAILY ACCURACY", "94%", NumbersColors.green),
+          _metricRow("GAME ACCURACY", "$accuracy%", NumbersColors.green),
           const Divider(height: 32, color: NumbersColors.border),
-          _metricRow("FAVORITE GAME", "SUDOKU", NumbersColors.blue),
+          _metricRow("FAVORITE GAME", favorite, NumbersColors.blue),
           const Divider(height: 32, color: NumbersColors.border),
-          _metricRow("AVG. SOLVE TIME", "3:45", NumbersColors.coral),
+          _metricRow("TOTAL WINS", "$totalWins", NumbersColors.coral),
         ],
       ),
     );

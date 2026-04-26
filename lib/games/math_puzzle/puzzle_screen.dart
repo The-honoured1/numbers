@@ -26,6 +26,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   @override
   void initState() {
     super.initState();
+    StorageService().incrementPlayCount('math_puzzle');
     _nextQuestion();
   }
 

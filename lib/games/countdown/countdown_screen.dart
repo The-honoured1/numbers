@@ -33,6 +33,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
   }
 
   void _startNewRound() {
+    _storage.incrementPlayCount('countdown');
     _game = _logic.generate();
     _availableNumbers = List.from(_game.numbers);
     _currentValue = 0;

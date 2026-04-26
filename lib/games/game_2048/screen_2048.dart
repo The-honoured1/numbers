@@ -18,6 +18,7 @@ class _Screen2048State extends State<Screen2048> {
   @override
   void initState() {
     super.initState();
+    StorageService().incrementPlayCount('2048');
     _logic.reset();
   }
 

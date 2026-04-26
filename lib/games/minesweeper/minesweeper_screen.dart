@@ -28,6 +28,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
   }
 
   void _startNewGame() {
+    StorageService().incrementPlayCount('minesweeper');
     setState(() {
       _game = MinesweeperGame(rows: _rows, cols: _cols, mineCount: _mines);
     });

@@ -23,6 +23,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   @override
   void initState() {
     super.initState();
+    _storage.incrementPlayCount('crossword');
     _data = _logic.generate(3);
   }
 

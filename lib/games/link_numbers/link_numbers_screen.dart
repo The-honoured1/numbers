@@ -39,6 +39,7 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
   }
 
   void _loadLevel(int index) {
+    _storage.incrementPlayCount('link');
     setState(() {
       _currentLevel = index;
       _data = _logic.generate(index);

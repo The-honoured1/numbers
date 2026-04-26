@@ -29,6 +29,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   }
 
   void _startNewGame() {
+    StorageService().incrementPlayCount('sudoku');
     _initialGrid = _logic.generatePuzzle(widget.difficulty);
     _currentGrid = List.generate(9, (i) => List.from(_initialGrid[i]));
     _selectedRow = null;

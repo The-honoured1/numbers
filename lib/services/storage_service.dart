@@ -76,10 +76,43 @@ class StorageService {
     return games.any((id) => _prefs.getBool('daily_${dateStr}_$id') ?? false);
   }
 
+  // --- Game Usage Tracking ---
+  int getPlayCount(String gameId) => _prefs.getInt('plays_$gameId') ?? 0;
+  int getWins(String gameId) => _prefs.getInt('wins_$gameId') ?? 0;
+
+  Future<void> incrementPlayCount(String gameId) async {
+    await _prefs.setInt('plays_$gameId', getPlayCount(gameId) + 1);
+    await incrementGamesPlayed();
+  }
+
+  Future<void> incrementWins(String gameId) async {
+    await _prefs.setInt('wins_$gameId', getWins(gameId) + 1);
+  }
+
+  String getFavoriteGame() {
+    final games = ['sudoku','2048','math_puzzle','sequence','countdown','crossword','link','minesweeper'];
+    String favorite = 'sudoku';
+    int maxPlays = -1;
+
+    for (final id in games) {
+      final plays = getPlayCount(id);
+      if (plays > maxPlays) {
+        maxPlays = plays;
+        favorite = id;
+      }
+    }
+    return favorite.toUpperCase();
+  }
+
+  int getTotalWins() {
+    final games = ['sudoku','2048','math_puzzle','sequence','countdown','crossword','link','minesweeper'];
+    return games.fold(0, (sum, id) => sum + getWins(id));
+  }
+
   Future<void> markDailyCompleted(String gameId) async {
     final todayStr = "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
     await _prefs.setBool('daily_${todayStr}_$gameId', true);
     await updateStreak();
-    await incrementGamesPlayed();
+    await incrementWins(gameId);
   }
 }
