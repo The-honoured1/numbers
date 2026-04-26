@@ -27,28 +27,41 @@ class NumbersTheme {
     return ThemeData(
       useMaterial3: true,
       scaffoldBackgroundColor: NumbersColors.background,
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        surfaceTintColor: Colors.transparent,
+      ),
       colorScheme: ColorScheme.fromSeed(
         seedColor: NumbersColors.sudoku,
-        background: NumbersColors.background,
+        surface: NumbersColors.background,
       ),
       textTheme: GoogleFonts.interTextTheme().copyWith(
         displayLarge: GoogleFonts.lora(
-          fontSize: 32,
-          fontWeight: FontWeight.bold,
+          fontSize: 40,
+          fontWeight: FontWeight.w900,
           color: NumbersColors.textBody,
+          letterSpacing: -1.5,
         ),
         headlineMedium: GoogleFonts.lora(
-          fontSize: 24,
-          fontWeight: FontWeight.w600,
+          fontSize: 28,
+          fontWeight: FontWeight.w800,
+          color: NumbersColors.textBody,
+        ),
+        titleLarge: GoogleFonts.inter(
+          fontSize: 22,
+          fontWeight: FontWeight.w900,
           color: NumbersColors.textBody,
         ),
         titleMedium: GoogleFonts.inter(
           fontSize: 18,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w800,
           color: NumbersColors.textBody,
         ),
         bodyMedium: GoogleFonts.inter(
           fontSize: 14,
+          fontWeight: FontWeight.w500,
           color: NumbersColors.textFaint,
         ),
       ),

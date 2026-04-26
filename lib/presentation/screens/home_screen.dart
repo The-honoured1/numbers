@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/design_system.dart';
 import '../../core/game_model.dart';
 import '../../services/storage_service.dart';
 import '../widgets/game_card.dart';
+import '../widgets/decorations.dart';
 import '../../games/sudoku/sudoku_screen.dart';
 import '../../games/game_2048/screen_2048.dart';
 import '../../games/math_puzzle/puzzle_screen.dart';
@@ -81,87 +83,120 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Stack(
+        children: [
+          // Background Decorations
+          Positioned.fill(
+            child: CustomPaint(
+              painter: DottedPathPainter(),
+            ),
+          ),
+          const FloatingShape(color: NumbersColors.sudoku, size: 40, top: 100, left: -20, rotation: 0.5),
+          const FloatingShape(color: NumbersColors.crossword, size: 30, top: 400, left: 350, rotation: -0.2),
+          const FloatingShape(color: NumbersColors.game2048, size: 20, top: 600, left: 50, rotation: 0.8),
+          
+          SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           'numbers',
-                          style: Theme.of(context).textTheme.displayLarge,
+                          style: GoogleFonts.lora(
+                            fontSize: 48,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -2,
+                            color: NumbersColors.textBody,
+                          ),
                         ),
+                        const SizedBox(height: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          height: 3,
+                          width: 40,
                           decoration: BoxDecoration(
-                            color: Colors.orange.shade50,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.orange.shade200),
+                            color: NumbersColors.textBody,
+                            borderRadius: BorderRadius.circular(2),
                           ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.bolt, color: Colors.orange, size: 18),
-                              const SizedBox(width: 4),
-                              Text(
-                                '${_storage.getStreak()} Day Streak',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.orange,
-                                  fontSize: 12,
-                                ),
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30),
+                                border: Border.all(color: Colors.grey.shade200),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  )
+                                ],
                               ),
-                            ],
-                          ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.bolt, color: Colors.orange, size: 20),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '${_storage.getStreak()} DAY STREAK',
+                                    style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.orange.shade800,
+                                      fontSize: 12,
+                                      letterSpacing: 1.2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ).animate().scale(delay: 500.ms),
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Sharpen your mind daily.',
-                      style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  sliver: SliverGrid(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 20,
+                      crossAxisSpacing: 20,
+                      childAspectRatio: 0.8,
                     ),
-                  ],
-                ),
-              ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              sliver: SliverGrid(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 0.85,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final game = _games[index];
-                    return GameCard(
-                      game: game,
-                      isDailyDone: _storage.isDailyDone(game.id),
-                      onTap: () {
-                        if (game.screen != null) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => game.screen!),
-                          ).then((_) => setState(() {}));
-                        }
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final game = _games[index];
+                        return GameCard(
+                          game: game,
+                          isDailyDone: _storage.isDailyDone(game.id),
+                          onTap: () {
+                            if (game.screen != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => game.screen!),
+                              ).then((_) => setState(() {}));
+                            }
+                          },
+                        );
                       },
-                    );
-                  },
-                  childCount: _games.length,
+                      childCount: _games.length,
+                    ),
+                  ),
                 ),
-              ),
+                const SliverToBoxAdapter(child: SizedBox(height: 60)),
+              ],
             ),
-            const SliverToBoxAdapter(child: SizedBox(height: 40)),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
