@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 
-class GameResultDialog extends StatelessWidget {
+class GameResultDialog extends StatefulWidget {
   final String title;
   final String message;
   final String buttonText;
@@ -26,7 +27,43 @@ class GameResultDialog extends StatelessWidget {
   });
 
   @override
+  State<GameResultDialog> createState() => _GameResultDialogState();
+}
+
+class _GameResultDialogState extends State<GameResultDialog> {
+  int _secondsRemaining = 5;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.onRevive != null) {
+      _startTimer();
+    }
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_secondsRemaining > 0) {
+          _secondsRemaining--;
+        } else {
+          _timer?.cancel();
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    bool showRevive = widget.onRevive != null && _secondsRemaining > 0;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
@@ -51,24 +88,24 @@ class GameResultDialog extends StatelessWidget {
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [color, color.withOpacity(0.7)],
+                  colors: [widget.color, widget.color.withOpacity(0.7)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: color.withOpacity(0.3),
+                    color: widget.color.withOpacity(0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   )
                 ],
               ),
-              child: Icon(icon, color: Colors.white, size: 48),
+              child: Icon(widget.icon, color: Colors.white, size: 48),
             ).animate().scale(duration: 800.ms, curve: Curves.elasticOut),
             const SizedBox(height: 32),
             Text(
-              title,
+              widget.title,
               textAlign: TextAlign.center,
               style: GoogleFonts.outfit(
                 fontSize: 32,
@@ -80,7 +117,7 @@ class GameResultDialog extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              message,
+              widget.message,
               textAlign: TextAlign.center,
               style: GoogleFonts.outfit(
                 fontSize: 15,
@@ -90,14 +127,31 @@ class GameResultDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 40),
-            if (onRevive != null) ...[
+            if (showRevive) ...[
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: onRevive,
-                  icon: const Icon(Icons.play_circle_fill, size: 24),
+                  onPressed: () {
+                    _timer?.cancel();
+                    widget.onRevive!();
+                  },
+                  icon: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: CircularProgressIndicator(
+                          value: _secondsRemaining / 5,
+                          strokeWidth: 3,
+                          color: NumbersColors.textBody.withOpacity(0.3),
+                        ),
+                      ),
+                      Text('$_secondsRemaining', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w900, color: NumbersColors.textBody)),
+                    ],
+                  ),
                   label: Text(
-                    reviveButtonText.toUpperCase(),
+                    widget.reviveButtonText.toUpperCase(),
                     style: GoogleFonts.outfit(
                       fontWeight: FontWeight.w900,
                       letterSpacing: 1.5,
@@ -120,7 +174,7 @@ class GameResultDialog extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
-                onPressed: onButtonPressed,
+                onPressed: widget.onButtonPressed,
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: NumbersColors.border, width: 2),
                   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -129,7 +183,7 @@ class GameResultDialog extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  buttonText.toUpperCase(),
+                  widget.buttonText.toUpperCase(),
                   style: GoogleFonts.outfit(
                     fontWeight: FontWeight.w800,
                     letterSpacing: 1.5,

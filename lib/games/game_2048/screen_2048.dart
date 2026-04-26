@@ -108,16 +108,17 @@ class _Screen2048State extends State<Screen2048> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('SCORE', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
-                    Text('${_logic.score}', style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                    Text('SCORE', style: GoogleFonts.outfit(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12, letterSpacing: 1.5)),
+                    Text('${_logic.score}', style: GoogleFonts.outfit(fontSize: 32, fontWeight: FontWeight.w900)),
                   ],
                 ),
-                if (_logic.won)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(8)),
-                    child: const Text('YOU WIN!', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text('BEST', style: GoogleFonts.outfit(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12, letterSpacing: 1.5)),
+                    Text('${StorageService().getHighScore('2048')}', style: GoogleFonts.outfit(fontSize: 32, fontWeight: FontWeight.w900, color: NumbersColors.blue)),
+                  ],
+                ),
               ],
             ),
           ),

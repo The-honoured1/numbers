@@ -19,19 +19,28 @@ class _SudokuScreenState extends State<SudokuScreen> {
   final SudokuLogic _logic = SudokuLogic();
   late List<List<int>> _initialGrid;
   late List<List<int>> _currentGrid;
+  final List<List<Set<int>>> _notes = List.generate(9, (_) => List.generate(9, (_) => {}));
+  String _difficulty = 'Medium';
   int? _selectedRow;
   int? _selectedCol;
+  bool _notesMode = false;
 
   @override
   void initState() {
     super.initState();
+    _difficulty = widget.difficulty;
     _startNewGame();
   }
 
   void _startNewGame() {
     StorageService().incrementPlayCount('sudoku');
-    _initialGrid = _logic.generatePuzzle(widget.difficulty);
+    _initialGrid = _logic.generatePuzzle(_difficulty);
     _currentGrid = List.generate(9, (i) => List.from(_initialGrid[i]));
+    for (var r in _notes) {
+      for (var cell in r) {
+        cell.clear();
+      }
+    }
     _selectedRow = null;
     _selectedCol = null;
   }
@@ -48,9 +57,22 @@ class _SudokuScreenState extends State<SudokuScreen> {
   void _onNumberTap(int num) {
     if (_selectedRow != null && _selectedCol != null) {
       setState(() {
-        _currentGrid[_selectedRow!][_selectedCol!] = num;
+        if (_notesMode) {
+          if (_notes[_selectedRow!][_selectedCol!].contains(num)) {
+            _notes[_selectedRow!][_selectedCol!].remove(num);
+          } else {
+            _notes[_selectedRow!][_selectedCol!].add(num);
+          }
+          _currentGrid[_selectedRow!][_selectedCol!] = 0;
+        } else {
+          if (_currentGrid[_selectedRow!][_selectedCol!] == num) {
+            _currentGrid[_selectedRow!][_selectedCol!] = 0;
+          } else {
+            _currentGrid[_selectedRow!][_selectedCol!] = num;
+          }
+        }
       });
-      if (_logic.isComplete(_currentGrid)) {
+      if (!_notesMode && _logic.isComplete(_currentGrid)) {
         StorageService().markDailyCompleted('sudoku');
         _showWinDialog();
       }
@@ -78,40 +100,42 @@ class _SudokuScreenState extends State<SudokuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final hiScore = StorageService().getHighScore('sudoku');
+
     return Scaffold(
       appBar: AppBar(
         title: Text('SUDOKU', 
           style: GoogleFonts.outfit(letterSpacing: 4, fontSize: 18, fontWeight: FontWeight.w900)),
         centerTitle: true,
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.settings_outlined),
+            onSelected: (val) {
+              setState(() {
+                _difficulty = val;
+                _startNewGame();
+              });
+            },
+            itemBuilder: (context) => [
+              'Easy', 'Medium', 'Hard', 'Expert'
+            ].map((d) => PopupMenuItem(value: d, child: Text(d))).toList(),
+          )
+        ],
       ),
       body: Column(
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: NumbersColors.yellow.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    widget.difficulty.toUpperCase(),
-                    style: GoogleFonts.outfit(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: NumbersColors.yellow,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                ),
+                _StatItem(label: 'DIFFICULTY', value: _difficulty.toUpperCase(), color: NumbersColors.yellow),
+                _StatItem(label: 'HIGH SCORE', value: '$hiScore', color: NumbersColors.textFaint),
               ],
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: AspectRatio(
@@ -133,7 +157,14 @@ class _SudokuScreenState extends State<SudokuScreen> {
                     int c = index % 9;
                     bool isInitial = _initialGrid[r][c] != 0;
                     bool isSelected = _selectedRow == r && _selectedCol == c;
+                    final val = _currentGrid[r][c];
                     
+                    // Error highlighting: if row/col/box has same number
+                    bool isError = false;
+                    if (val != 0 && !isInitial) {
+                      isError = !_logic.isValid(_currentGrid, r, c, val);
+                    }
+
                     return GestureDetector(
                       onTap: () => _onCellTap(r, c),
                       child: Container(
@@ -151,14 +182,16 @@ class _SudokuScreenState extends State<SudokuScreen> {
                           color: isSelected ? NumbersColors.yellow.withOpacity(0.2) : Colors.white,
                         ),
                         alignment: Alignment.center,
-                        child: Text(
-                          _currentGrid[r][c] == 0 ? '' : _currentGrid[r][c].toString(),
-                          style: GoogleFonts.outfit(
-                            fontSize: 22,
-                            fontWeight: isInitial ? FontWeight.w900 : FontWeight.w600,
-                            color: isInitial ? NumbersColors.textBody : NumbersColors.yellow,
-                          ),
-                        ),
+                        child: val != 0 
+                          ? Text(
+                              val.toString(),
+                              style: GoogleFonts.outfit(
+                                fontSize: 22,
+                                fontWeight: isInitial ? FontWeight.w900 : FontWeight.w600,
+                                color: isInitial ? NumbersColors.textBody : (isError ? NumbersColors.coral : NumbersColors.yellow),
+                              ),
+                            )
+                          : _buildNotes(r, c),
                       ),
                     );
                   },
@@ -167,35 +200,36 @@ class _SudokuScreenState extends State<SudokuScreen> {
             ),
           ),
           const Spacer(),
+          _buildControls(),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(9, (index) {
                 int num = index + 1;
                 return Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 2.5),
                     child: InkWell(
                       onTap: () => _onNumberTap(num),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(10),
                       child: Container(
-                        height: 54,
+                        height: 50,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           border: Border.all(color: NumbersColors.border, width: 1.5),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color: NumbersColors.cardShadow.withOpacity(0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+                              color: NumbersColors.cardShadow.withOpacity(0.04),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
                             )
                           ],
                         ),
                         alignment: Alignment.center,
                         child: Text(num.toString(), 
-                          style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.w800, color: NumbersColors.textBody)),
+                          style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w800, color: NumbersColors.textBody)),
                       ),
                     ),
                   ),
@@ -204,6 +238,110 @@ class _SudokuScreenState extends State<SudokuScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildNotes(int r, int c) {
+    if (_notes[r][c].isEmpty) return const SizedBox.shrink();
+    return GridView.count(
+      crossAxisCount: 3,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(2),
+      children: List.generate(9, (i) {
+        final n = i + 1;
+        return Center(
+          child: Text(
+            _notes[r][c].contains(n) ? '$n' : '',
+            style: GoogleFonts.outfit(fontSize: 8, fontWeight: FontWeight.w800, color: NumbersColors.textFaint),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildControls() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _ControlBtn(
+            icon: Icons.undo_rounded, 
+            label: 'UNDO', 
+            onTap: () {
+               // Simple reset to initial for now or implement stack
+               setState(() => _currentGrid[_selectedRow!][_selectedCol!] = 0);
+            },
+            isActive: _selectedRow != null,
+          ),
+          _ControlBtn(
+            icon: _notesMode ? Icons.edit_rounded : Icons.edit_outlined, 
+            label: 'PEN', 
+            onTap: () => setState(() => _notesMode = !_notesMode),
+            isActive: _notesMode,
+            isToggle: true,
+          ),
+          _ControlBtn(
+            icon: Icons.delete_outline_rounded, 
+            label: 'CLEAR', 
+            onTap: () {
+               if (_selectedRow != null) {
+                 setState(() {
+                   _currentGrid[_selectedRow!][_selectedCol!] = 0;
+                   _notes[_selectedRow!][_selectedCol!].clear();
+                 });
+               }
+            },
+            isActive: _selectedRow != null,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+  const _StatItem({required this.label, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.textFaint, letterSpacing: 1.5)),
+        Text(value, style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.w900, color: color)),
+      ],
+    );
+  }
+}
+
+class _ControlBtn extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool isActive;
+  final bool isToggle;
+
+  const _ControlBtn({required this.icon, required this.label, required this.onTap, this.isActive = false, this.isToggle = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Column(
+          children: [
+            Icon(icon, color: isActive ? NumbersColors.yellow : NumbersColors.textFaint, size: 28),
+            const SizedBox(height: 4),
+            Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: isActive ? NumbersColors.yellow : NumbersColors.textFaint, letterSpacing: 1)),
+          ],
+        ),
       ),
     );
   }

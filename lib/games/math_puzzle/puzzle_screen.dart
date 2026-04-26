@@ -133,6 +133,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _StatDisplay(label: 'LEVEL', value: '$_level', color: NumbersColors.textFaint),
+                _StatDisplay(label: 'BEST', value: '${StorageService().getHighScore('math_puzzle')}', color: NumbersColors.blue),
                 _StatDisplay(label: 'SCORE', value: '$_score', color: NumbersColors.green),
               ],
             ),

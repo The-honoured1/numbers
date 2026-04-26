@@ -36,7 +36,7 @@ class SudokuLogic {
         if (grid[row][col] == 0) {
           List<int> nums = List.generate(size, (i) => i + 1)..shuffle();
           for (int num in nums) {
-            if (_isValid(grid, row, col, num)) {
+            if (isValid(grid, row, col, num)) {
               grid[row][col] = num;
               if (_fillGrid(grid)) return true;
               grid[row][col] = 0;
@@ -49,7 +49,7 @@ class SudokuLogic {
     return true;
   }
 
-  bool _isValid(List<List<int>> grid, int row, int col, int num) {
+  bool isValid(List<List<int>> grid, int row, int col, int num) {
     for (int i = 0; i < size; i++) {
       if (grid[row][i] == num) return false;
       if (grid[i][col] == num) return false;
@@ -70,7 +70,7 @@ class SudokuLogic {
         if (grid[r][c] == 0) return false;
         int val = grid[r][c];
         grid[r][c] = 0;
-        if (!_isValid(grid, r, c, val)) {
+        if (!isValid(grid, r, c, val)) {
           grid[r][c] = val;
           return false;
         }

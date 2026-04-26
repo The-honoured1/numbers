@@ -457,19 +457,22 @@ class _StatsView extends StatelessWidget {
         
         return Column(
           children: [
-            Text(labels[date.weekday % 7], style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, color: Colors.white)),
-            const SizedBox(height: 10),
+            Text(labels[date.weekday % 7], style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: Colors.white.withOpacity(0.8))),
+            const SizedBox(height: 12),
             Container(
-              width: 36,
-              height: 36,
+              width: 32,
+              height: 42,
               decoration: BoxDecoration(
-                color: isCompleted ? Colors.white : Colors.white.withOpacity(0.2),
-                shape: BoxShape.circle,
+                color: isCompleted ? Colors.white : Colors.white.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: isToday ? Colors.white : Colors.transparent, width: 2),
+                boxShadow: isCompleted ? [
+                  BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))
+                ] : [],
               ),
               child: isCompleted 
                 ? Icon(Icons.check_rounded, color: NumbersColors.yellow, size: 20) 
-                : null,
+                : Center(child: Text('${date.day}', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.white.withOpacity(0.4)))),
             ),
           ],
         );
@@ -506,13 +509,22 @@ class _StatsView extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-            const SizedBox(width: 12),
-            Text(label, style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 1, color: NumbersColors.textFaint)),
-          ],
+        Flexible(
+          child: Row(
+            children: [
+              Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+              const SizedBox(width: 12),
+              Flexible(
+                child: Text(
+                  label, 
+                  style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 1, color: NumbersColors.textFaint),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
         ),
+        const SizedBox(width: 16),
         Text(value, style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, color: NumbersColors.textBody)),
       ],
     );
@@ -544,8 +556,17 @@ class _InfoCard extends StatelessWidget {
             child: Icon(icon, color: color, size: 24),
           ),
           const SizedBox(height: 16),
-          Text(value, style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.w900, color: NumbersColors.textBody)),
-          Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: NumbersColors.textFaint)),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(value, style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.w900, color: NumbersColors.textBody)),
+          ),
+          Text(
+            label, 
+            style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: NumbersColors.textFaint),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );
