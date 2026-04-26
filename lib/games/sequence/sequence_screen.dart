@@ -69,7 +69,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
               Navigator.pop(context);
               setState(() {
                 // Keep the streak and current score, just generate a new question
-                _question = _logic.generate();
+                _question = _logic.generate(_streak);
                 _controller.clear();
               });
             });
@@ -78,7 +78,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
             Navigator.pop(context);
             setState(() {
               _streak = 0;
-              _question = _logic.generate();
+              _question = _logic.generate(_streak);
               _controller.clear();
             });
           },

@@ -22,6 +22,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
   double _currentValue = 0;
   String _expression = "";
   int _timeLeft = 60;
+  int _level = 1;
   Timer? _timer;
   final Stopwatch _sessionTimer = Stopwatch();
   
@@ -49,7 +50,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
     _currentValue = 0;
     _expression = "";
     _pendingOp = null;
-    _timeLeft = 60;
+    _timeLeft = (60 - (_level * 2)).clamp(20, 60);
     _startTimer();
   }
 
@@ -85,6 +86,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
 
     if (_currentValue == _game.target) {
       _timer?.cancel();
+      _level++;
       _storage.markDailyCompleted('countdown');
       _showWin();
     }
