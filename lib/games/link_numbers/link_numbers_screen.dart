@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
+import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'link_numbers_logic.dart';
 
 class LinkNumbersScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class LinkNumbersScreen extends StatefulWidget {
 class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
   final LinkNumbersLogic _logic = LinkNumbersLogic();
   late LinkNumbersData _data;
+  int _currentLevel = 0;
   
   // Maps number value to the list of points in its path
   Map<int, List<Point>> _paths = {};
@@ -31,9 +33,26 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
   @override
   void initState() {
     super.initState();
-    _data = _logic.generate(5);
-    for (var val in _data.values) {
-      _paths[val] = [];
+    _loadLevel(0);
+  }
+
+  void _loadLevel(int index) {
+    setState(() {
+      _currentLevel = index;
+      _data = _logic.generate(index);
+      _paths = {};
+      for (var val in _data.values) {
+        _paths[val] = [];
+      }
+      _activeValue = null;
+    });
+  }
+
+  void _nextLevel() {
+    if (_currentLevel < _logic.totalLevels - 1) {
+      _loadLevel(_currentLevel + 1);
+    } else {
+        _loadLevel(0); // Loop back or show finished
     }
   }
 
@@ -76,7 +95,7 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     });
     if (occupied) return;
 
-    // Cannot cross self (unless it's the second to last point, to "undo")
+    // Cannot cross self
     if (path.contains(point)) {
       if (path.length > 1 && point == path[path.length - 2]) {
         setState(() {
@@ -89,7 +108,6 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     // Checking if we reached the other endpoint
     final endpointVal = _data.numbers[point];
     if (endpointVal != null && endpointVal != _activeValue) {
-        // Cannot end on a different number
         return;
     }
 
@@ -98,7 +116,6 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     });
 
     if (endpointVal == _activeValue) {
-      // Finished this path
       _activeValue = null;
       _checkWin();
     }
@@ -107,8 +124,6 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
   void _handlePanEnd(DragEndDetails details) {
     if (_activeValue != null) {
         final path = _paths[_activeValue]!;
-        // If not finished (length 1 or hasn't reached both endpoints), clear it
-        bool reachesBoth = false;
         int count = 0;
         for (var p in path) {
             if (_data.numbers[p] == _activeValue) count++;
@@ -151,16 +166,19 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
         context: context,
         barrierDismissible: false,
         builder: (context) => AlertDialog(
-          title: const Text('All Linked!'),
-          content: const Text('You successfully connected all numbers without crossing.'),
+          title: const Text('Level Complete!'),
+          content: Text('You finished Level ${_currentLevel + 1}.'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('GREAT'),
+              onPressed: () {
+                Navigator.pop(context);
+                _nextLevel();
+              },
+              child: const Text('NEXT LEVEL'),
             ),
           ],
         ),
-      ).then((_) => Navigator.pop(context));
+      );
     }
   }
 
@@ -169,16 +187,16 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('NUMBER LINK'),
+        title: Text('LEVEL ${_currentLevel + 1}'),
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(24.0),
+          Padding(
+            padding: const EdgeInsets.all(24.0),
             child: Text(
               'Connect identical numbers by drawing a path. Paths cannot cross.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: NumbersColors.textFaint),
+              style: GoogleFonts.inter(color: NumbersColors.textFaint, fontSize: 13),
             ),
           ),
           Expanded(
@@ -186,7 +204,7 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
               child: AspectRatio(
                 aspectRatio: 1,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(24.0),
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return GestureDetector(
@@ -211,15 +229,19 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 60),
-            child: TextButton(
-              onPressed: () {
-                setState(() {
-                  for (var val in _data.values) {
-                    _paths[val] = [];
-                  }
-                });
-              },
-              child: const Text('RESET GRID'),
+            child: Row(
+               mainAxisAlignment: MainAxisAlignment.center,
+               children: [
+                 TextButton(
+                    onPressed: () => _loadLevel(_currentLevel),
+                    child: const Text('RESET'),
+                  ),
+                  const SizedBox(width: 20),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('EXIT'),
+                  ),
+               ],
             ),
           ),
         ],

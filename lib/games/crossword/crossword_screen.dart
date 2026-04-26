@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:numbers/core/design_system.dart';
+import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'crossword_logic.dart';
 
 class CrosswordScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class CrosswordScreen extends StatefulWidget {
 class _CrosswordScreenState extends State<CrosswordScreen> {
   final CrosswordLogic _logic = CrosswordLogic();
   late CrosswordData _data;
-  List<int?> _playerValues = [null, null, null, null];
+  List<int?> _playerValues = List.generate(9, (_) => null);
   int? _selectedIndex;
   
   @override
@@ -27,8 +28,8 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
     return GestureDetector(
       onTap: isInput ? () => setState(() => _selectedIndex = index) : null,
       child: Container(
-        width: 60,
-        height: 60,
+        width: 48,
+        height: 48,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: isSelected ? NumbersColors.selection.withOpacity(0.3) : (color ?? Colors.white),
@@ -41,7 +42,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
         child: Text(
           content,
           style: GoogleFonts.inter(
-            fontSize: 20,
+            fontSize: 16,
             fontWeight: isInput ? FontWeight.w800 : FontWeight.w500,
             color: isInput ? NumbersColors.textBody : NumbersColors.textFaint,
           ),
@@ -62,22 +63,18 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   void _checkWin() {
     if (_playerValues.every((v) => v != null)) {
       bool win = true;
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < 9; i++) {
         if (_playerValues[i] != _data.values[i]) win = false;
       }
       if (win) {
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => AlertDialog(
-            title: const Text('Puzzle Solved!'),
-            content: const Text('You filled the grid correctly.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('AWESOME'),
-              ),
-            ],
+          builder: (context) => GameResultDialog(
+            title: 'Well Done!',
+            message: 'You successfully completed the 3x3 Math Cross grid.',
+            buttonText: 'COLLECT STARS',
+            onButtonPressed: () => Navigator.pop(context),
           ),
         ).then((_) => Navigator.pop(context));
       }
@@ -96,59 +93,101 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
           Expanded(
             child: Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(32.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // ROW 1
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _buildCell(_playerValues[0]?.toString() ?? '', isInput: true, index: 0),
                         _buildCell(_data.ops[0], color: NumbersColors.backgroundOffWhite),
                         _buildCell(_playerValues[1]?.toString() ?? '', isInput: true, index: 1),
+                        _buildCell(_data.ops[1], color: NumbersColors.backgroundOffWhite),
+                        _buildCell(_playerValues[2]?.toString() ?? '', isInput: true, index: 2),
                         _buildCell('=', color: NumbersColors.backgroundOffWhite),
                         _buildCell('${_data.results[0]}', color: NumbersColors.crossCorrect.withOpacity(0.1)),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
+                    // OPS ROW 1
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildCell(_data.ops[1], color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: 60 + 8), 
                         _buildCell(_data.ops[2], color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: (60 + 8) * 2),
+                        const SizedBox(width: 48 + 6), 
+                        _buildCell(_data.ops[3], color: NumbersColors.backgroundOffWhite),
+                        const SizedBox(width: 48 + 6),
+                        _buildCell(_data.ops[4], color: NumbersColors.backgroundOffWhite),
+                        const SizedBox(width: (48 + 6) * 2),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
+                    // ROW 2
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildCell(_playerValues[2]?.toString() ?? '', isInput: true, index: 2),
-                        _buildCell(_data.ops[3], color: NumbersColors.backgroundOffWhite),
                         _buildCell(_playerValues[3]?.toString() ?? '', isInput: true, index: 3),
+                        _buildCell(_data.ops[5], color: NumbersColors.backgroundOffWhite),
+                        _buildCell(_playerValues[4]?.toString() ?? '', isInput: true, index: 4),
+                        _buildCell(_data.ops[6], color: NumbersColors.backgroundOffWhite),
+                        _buildCell(_playerValues[5]?.toString() ?? '', isInput: true, index: 5),
                         _buildCell('=', color: NumbersColors.backgroundOffWhite),
                         _buildCell('${_data.results[1]}', color: NumbersColors.crossCorrect.withOpacity(0.1)),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
+                    // OPS ROW 2
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildCell('=', color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: 60 + 8),
-                        _buildCell('=', color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: (60 + 8) * 2),
+                        _buildCell(_data.ops[7], color: NumbersColors.backgroundOffWhite),
+                        const SizedBox(width: 48 + 6),
+                        _buildCell(_data.ops[8], color: NumbersColors.backgroundOffWhite),
+                        const SizedBox(width: 48 + 6),
+                        _buildCell(_data.ops[9], color: NumbersColors.backgroundOffWhite),
+                        const SizedBox(width: (48 + 6) * 2),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
+                    // ROW 3
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        _buildCell(_playerValues[6]?.toString() ?? '', isInput: true, index: 6),
+                        _buildCell(_data.ops[10], color: NumbersColors.backgroundOffWhite),
+                        _buildCell(_playerValues[7]?.toString() ?? '', isInput: true, index: 7),
+                        _buildCell(_data.ops[11], color: NumbersColors.backgroundOffWhite),
+                        _buildCell(_playerValues[8]?.toString() ?? '', isInput: true, index: 8),
+                        _buildCell('=', color: NumbersColors.backgroundOffWhite),
                         _buildCell('${_data.results[2]}', color: NumbersColors.crossCorrect.withOpacity(0.1)),
-                        const SizedBox(width: 60 + 8),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    // EQUALS ROW
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildCell('=', color: NumbersColors.backgroundOffWhite),
+                        const SizedBox(width: 48 + 6),
+                        _buildCell('=', color: NumbersColors.backgroundOffWhite),
+                        const SizedBox(width: 48 + 6),
+                        _buildCell('=', color: NumbersColors.backgroundOffWhite),
+                        const SizedBox(width: (48 + 6) * 2),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    // RESULTS ROW
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         _buildCell('${_data.results[3]}', color: NumbersColors.crossCorrect.withOpacity(0.1)),
-                        const SizedBox(width: (60 + 8) * 2),
+                        const SizedBox(width: 48 + 6),
+                        _buildCell('${_data.results[4]}', color: NumbersColors.crossCorrect.withOpacity(0.1)),
+                        const SizedBox(width: 48 + 6),
+                        _buildCell('${_data.results[5]}', color: NumbersColors.crossCorrect.withOpacity(0.1)),
+                        const SizedBox(width: (48 + 6) * 2),
                       ],
                     ),
                   ],
@@ -168,7 +207,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
                 return GestureDetector(
                   onTap: () => _onKeyPress(val),
                   child: Container(
-                    width: 60,
+                    width: 50,
                     height: 50,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
