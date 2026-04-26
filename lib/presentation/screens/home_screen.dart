@@ -14,6 +14,10 @@ import 'package:numbers/games/crossword/crossword_screen.dart';
 import 'package:numbers/games/link_numbers/link_numbers_screen.dart';
 import 'package:numbers/games/minesweeper/minesweeper_screen.dart';
 
+import 'package:numbers/games/zen_match/match_screen.dart';
+import 'package:numbers/games/slide_15/slide_screen.dart';
+import 'package:numbers/games/ascend/ascend_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -41,6 +45,9 @@ class _HomeScreenState extends State<HomeScreen> {
       GameModel(id: 'math_puzzle', title: 'Math Puzzle', description: 'Quick Mental Math', icon: Icons.calculate_rounded, accentColor: NumbersColors.green, screen: const PuzzleScreen()),
       GameModel(id: 'sequence', title: 'Sequence', description: 'Find Missing Patterns', icon: Icons.trending_up_rounded, accentColor: NumbersColors.purple, screen: const SequenceScreen()),
       GameModel(id: 'countdown', title: 'Countdown', description: 'Reach the Target Number', icon: Icons.timer_rounded, accentColor: NumbersColors.countdown, screen: const CountdownScreen()),
+      GameModel(id: 'zen_match', title: 'Zen Match', description: 'Classic Number Pairing', icon: Icons.extension_rounded, accentColor: NumbersColors.blue, screen: const ZenMatchScreen()),
+      GameModel(id: 'slide_15', title: 'Slide 15', description: 'Classic 15 Puzzle', icon: Icons.filter_4_rounded, accentColor: NumbersColors.purple, screen: const SlideScreen()),
+      GameModel(id: 'zen_ascend', title: 'Zen Ascend', description: 'Speed Ascending Tap', icon: Icons.keyboard_double_arrow_up_rounded, accentColor: NumbersColors.green, screen: const AscendScreen()),
       GameModel(id: 'crossword', title: 'Math Cross', description: 'Cross-Equation Solver', icon: Icons.grid_goldenratio_rounded, accentColor: NumbersColors.crossword, screen: const CrosswordScreen()),
       GameModel(id: 'link', title: 'Number Link', description: 'Connect Matching Dots', icon: Icons.link_rounded, accentColor: NumbersColors.linkNumbers, screen: const LinkNumbersScreen()),
       GameModel(id: 'minesweeper', title: 'Minesweeper', description: 'Navigate the Minefield', icon: Icons.brightness_7_rounded, accentColor: NumbersColors.minesweeper, screen: const MinesweeperScreen()),
