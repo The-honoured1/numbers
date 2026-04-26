@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
+import 'package:numbers/services/storage_service.dart';
 import 'link_numbers_logic.dart';
 
 class LinkNumbersScreen extends StatefulWidget {
@@ -13,10 +14,10 @@ class LinkNumbersScreen extends StatefulWidget {
 
 class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
   final LinkNumbersLogic _logic = LinkNumbersLogic();
+  final StorageService _storage = StorageService();
   late LinkNumbersData _data;
   int _currentLevel = 0;
   
-  // Maps number value to the list of points in its path
   Map<int, List<Point>> _paths = {};
   int? _activeValue;
   
@@ -52,7 +53,7 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     if (_currentLevel < _logic.totalLevels - 1) {
       _loadLevel(_currentLevel + 1);
     } else {
-        _loadLevel(0); // Loop back or show finished
+        _loadLevel(0); 
     }
   }
 
@@ -81,12 +82,10 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     final lastPoint = path.last;
     if (point == lastPoint) return;
 
-    // Must be adjacent (not diagonal)
     final dx = (point.x - lastPoint.x).abs();
     final dy = (point.y - lastPoint.y).abs();
     if (dx + dy != 1) return;
 
-    // Cannot cross other paths
     bool occupied = false;
     _paths.forEach((val, p) {
       if (val != _activeValue && p.contains(point)) {
@@ -95,7 +94,6 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     });
     if (occupied) return;
 
-    // Cannot cross self
     if (path.contains(point)) {
       if (path.length > 1 && point == path[path.length - 2]) {
         setState(() {
@@ -105,7 +103,6 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
       return;
     }
 
-    // Checking if we reached the other endpoint
     final endpointVal = _data.numbers[point];
     if (endpointVal != null && endpointVal != _activeValue) {
         return;
@@ -162,6 +159,7 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     }
 
     if (allValuesLinked) {
+      _storage.markDailyCompleted('link');
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -264,23 +262,13 @@ class LinkPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final cellSize = size.width / gridSize;
-    final dotPaint = Paint()..color = NumbersColors.border..style = PaintingStyle.fill;
     
-    // Draw Grid Dots
-    for (int i = 0; i <= gridSize; i++) {
-      for (int j = 0; j <= gridSize; j++) {
-         // canvas.drawCircle(Offset(i * cellSize, j * cellSize), 1, dotPaint);
-      }
-    }
-
-    // Draw Grid Lines (Subtle)
     final linePaint = Paint()..color = NumbersColors.border.withOpacity(0.5)..strokeWidth = 1;
     for (int i = 0; i <= gridSize; i++) {
       canvas.drawLine(Offset(i * cellSize, 0), Offset(i * cellSize, size.height), linePaint);
       canvas.drawLine(Offset(0, i * cellSize), Offset(size.width, i * cellSize), linePaint);
     }
 
-    // Draw Paths
     paths.forEach((val, path) {
       if (path.isEmpty) return;
       
@@ -305,7 +293,6 @@ class LinkPainter extends CustomPainter {
       }
       canvas.drawPath(p, pathPaint);
 
-      // Draw active head
       final headPaint = Paint()..color = color..style = PaintingStyle.fill;
       canvas.drawCircle(
         Offset(path.last.x * cellSize + cellSize / 2, path.last.y * cellSize + cellSize / 2),
@@ -314,20 +301,17 @@ class LinkPainter extends CustomPainter {
       );
     });
 
-    // Draw Numbers
     numbers.forEach((point, val) {
       final color = valueColors[val % valueColors.length];
       final paint = Paint()..color = color..style = PaintingStyle.fill;
       
-      // Draw a circle background for the number
       canvas.drawCircle(
         Offset(point.x * cellSize + cellSize / 2, point.y * cellSize + cellSize / 2),
         cellSize * 0.35,
         paint,
       );
 
-      // Draw number text
-      TextPainter(
+      final tp = TextPainter(
         text: TextSpan(
           text: '$val',
           style: GoogleFonts.inter(
@@ -337,11 +321,13 @@ class LinkPainter extends CustomPainter {
           ),
         ),
         textDirection: TextDirection.ltr,
-      )..layout()..paint(
+      )..layout();
+
+      tp.paint(
         canvas,
         Offset(
-          point.x * cellSize + cellSize / 2 - (cellSize * 0.15),
-          point.y * cellSize + cellSize / 2 - (cellSize * 0.25),
+          point.x * cellSize + cellSize / 2 - tp.width / 2,
+          point.y * cellSize + cellSize / 2 - tp.height / 2,
         ),
       );
     });

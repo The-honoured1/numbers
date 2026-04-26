@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
+import 'package:numbers/services/storage_service.dart';
 import 'puzzle_logic.dart';
 
 class PuzzleScreen extends StatefulWidget {
@@ -56,8 +57,10 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         _score += 10 + _timeLeft;
         _level++;
       });
+      StorageService().saveHighScore('math_puzzle', _score);
       _nextQuestion();
     } else {
+      StorageService().markDailyCompleted('math_puzzle');
       _timer?.cancel();
       _showGameOver();
     }

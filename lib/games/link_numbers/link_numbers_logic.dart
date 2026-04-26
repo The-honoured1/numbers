@@ -30,37 +30,38 @@ class LinkNumbersData {
 
 class LinkNumbersLogic {
   final List<LinkNumbersData> _levels = [
-    LinkNumbersData(
-      gridSize: 5,
-      values: [1, 2, 3, 4],
-      numbers: {
-        Point(0, 0): 1, Point(4, 0): 1,
-        Point(0, 4): 2, Point(4, 4): 2,
-        Point(1, 1): 3, Point(3, 3): 3,
-        Point(0, 2): 4, Point(2, 4): 4,
-      },
-    ),
+    // Level 1: Standard 5x5
     LinkNumbersData(
       gridSize: 5,
       values: [1, 2, 3, 4, 5],
       numbers: {
-        Point(0, 0): 1, Point(0, 2): 1,
-        Point(4, 0): 2, Point(2, 2): 2,
-        Point(4, 4): 3, Point(2, 4): 3,
-        Point(0, 4): 4, Point(2, 0): 4,
-        Point(4, 2): 5, Point(1, 1): 5,
+        Point(0, 0): 1, Point(2, 0): 2, Point(4, 0): 3,
+        Point(0, 4): 1, Point(2, 2): 2, Point(4, 4): 3,
+        Point(0, 1): 4, Point(1, 0): 4,
+        Point(3, 4): 5, Point(4, 3): 5,
       },
     ),
+    // Level 2: Interlocking 5x5
+    LinkNumbersData(
+      gridSize: 5,
+      values: [1, 2, 3, 4],
+      numbers: {
+        Point(0, 0): 1, Point(4, 4): 1,
+        Point(0, 1): 2, Point(4, 3): 2,
+        Point(0, 2): 3, Point(4, 2): 3,
+        Point(0, 3): 4, Point(4, 1): 4,
+      },
+    ),
+    // Level 3: 6x6 Snake
     LinkNumbersData(
       gridSize: 6,
-      values: [1, 2, 3, 4, 5, 6],
+      values: [1, 2, 3, 4, 5],
       numbers: {
-        Point(0, 0): 1, Point(5, 5): 1,
-        Point(0, 5): 2, Point(5, 0): 2,
-        Point(1, 1): 3, Point(4, 4): 3,
-        Point(1, 4): 4, Point(4, 1): 4,
+        Point(0, 0): 1, Point(5, 0): 1,
+        Point(0, 5): 2, Point(5, 5): 2,
+        Point(1, 1): 3, Point(4, 1): 3,
+        Point(1, 4): 4, Point(4, 4): 4,
         Point(2, 2): 5, Point(3, 3): 5,
-        Point(2, 3): 6, Point(3, 2): 6,
       },
     ),
   ];
