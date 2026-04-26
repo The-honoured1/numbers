@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../core/design_system.dart';
-import '../widgets/win_dialog.dart';
+import 'package:numbers/core/design_system.dart';
+import 'package:numbers/presentation/widgets/win_dialog.dart';
 import 'logic_2048.dart';
 
 class Screen2048 extends StatefulWidget {

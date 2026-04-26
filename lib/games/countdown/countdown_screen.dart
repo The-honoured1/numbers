@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../../core/design_system.dart';
+import 'package:numbers/core/design_system.dart';
 import 'countdown_logic.dart';
 
 class CountdownScreen extends StatefulWidget {

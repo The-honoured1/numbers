@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../core/design_system.dart';
-import '../core/game_model.dart';
+import 'package:numbers/core/design_system.dart';
+import 'package:numbers/core/game_model.dart';
 
 class GameCard extends StatelessWidget {
   final GameModel game;

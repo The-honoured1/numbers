@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../core/design_system.dart';
-import '../../core/game_model.dart';
-import '../../services/storage_service.dart';
-import '../widgets/game_card.dart';
-import '../widgets/decorations.dart';
-import '../../games/sudoku/sudoku_screen.dart';
-import '../../games/game_2048/screen_2048.dart';
-import '../../games/math_puzzle/puzzle_screen.dart';
-import '../../games/sequence/sequence_screen.dart';
-import '../../games/countdown/countdown_screen.dart';
-import '../../games/crossword/crossword_screen.dart';
+import 'package:numbers/core/design_system.dart';
+import 'package:numbers/core/game_model.dart';
+import 'package:numbers/services/storage_service.dart';
+import 'package:numbers/presentation/widgets/game_card.dart';
+import 'package:numbers/presentation/widgets/decorations.dart';
+import 'package:numbers/games/sudoku/sudoku_screen.dart';
+import 'package:numbers/games/game_2048/screen_2048.dart';
+import 'package:numbers/games/math_puzzle/puzzle_screen.dart';
+import 'package:numbers/games/sequence/sequence_screen.dart';
+import 'package:numbers/games/countdown/countdown_screen.dart';
+import 'package:numbers/games/crossword/crossword_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ],
                               ),
-                            ).animate().scale(delay: 600.ms, curve: Curves.backOut),
+                            ).animate().scale(delay: 600.ms, curve: Curves.easeOutBack),
                           ],
                         ),
                       ],

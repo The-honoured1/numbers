@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../core/design_system.dart';
-import '../widgets/win_dialog.dart';
+import 'package:numbers/core/design_system.dart';
+import 'package:numbers/presentation/widgets/win_dialog.dart';
 import 'sudoku_logic.dart';
 
 class SudokuScreen extends StatefulWidget {

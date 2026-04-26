@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/design_system.dart';
+import 'package:numbers/core/design_system.dart';
 import 'crossword_logic.dart';
 
 class CrosswordScreen extends StatefulWidget {

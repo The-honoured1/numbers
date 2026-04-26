@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../core/design_system.dart';
+import 'package:numbers/core/design_system.dart';
 import 'puzzle_logic.dart';
 
 class PuzzleScreen extends StatefulWidget {
