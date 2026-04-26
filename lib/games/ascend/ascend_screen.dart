@@ -67,6 +67,7 @@ class _AscendScreenState extends State<AscendScreen> {
         _score += 10;
         _timeLeft += 1; // Bonus time
       });
+      StorageService().saveHighScore('ascend', _score);
       if (_nextIdx == _sorted.length) {
         _timer?.cancel();
         _startNewRound();

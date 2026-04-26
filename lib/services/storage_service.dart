@@ -57,8 +57,17 @@ class StorageService {
   
   Future<void> saveHighScore(String gameId, int score) async {
     final current = getHighScore(gameId);
-    if (score > current) {
-      await _prefs.setInt('hi_$gameId', score);
+    
+    // For Slide 15, a lower score (fewer moves) is better
+    if (gameId == 'slide_15') {
+      if (current == 0 || score < current) {
+        await _prefs.setInt('hi_$gameId', score);
+      }
+    } else {
+      // For all other games, a higher score is better
+      if (score > current) {
+        await _prefs.setInt('hi_$gameId', score);
+      }
     }
   }
 

@@ -50,7 +50,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
           AdService().showInterstitialAd();
         }
 
-        _question = _logic.generate();
+        _question = _logic.generate(_streak);
         _controller.clear();
       });
       _storage.saveHighScore('sequence', _score);
