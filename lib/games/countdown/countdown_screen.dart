@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:numbers/core/design_system.dart';
+import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'countdown_logic.dart';
 
 class CountdownScreen extends StatefulWidget {
@@ -82,12 +83,12 @@ class _CountdownScreenState extends State<CountdownScreen> {
   void _showWin() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Target Reached!'),
-        content: Text('Expression: $_expression'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
-        ],
+      barrierDismissible: false,
+      builder: (context) => GameResultDialog(
+        title: 'Target Reached!',
+        message: 'Expression: $_expression',
+        buttonText: 'COLLECT POINTS',
+        onButtonPressed: () => Navigator.pop(context),
       ),
     ).then((_) => Navigator.pop(context));
   }
@@ -95,12 +96,14 @@ class _CountdownScreenState extends State<CountdownScreen> {
   void _showGameOver(String msg) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(msg),
-        content: Text('Close but no cigar! Target was ${_game.target}. Your value: $_currentValue'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
-        ],
+      barrierDismissible: false,
+      builder: (context) => GameResultDialog(
+        title: msg,
+        message: 'Close but no cigar! Target was ${_game.target}. Your value: $_currentValue',
+        buttonText: 'TRY AGAIN',
+        color: NumbersColors.countdown,
+        icon: Icons.timer_off_outlined,
+        onButtonPressed: () => Navigator.pop(context),
       ),
     ).then((_) => Navigator.pop(context));
   }

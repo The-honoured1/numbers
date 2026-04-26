@@ -165,18 +165,16 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: const Text('Level Complete!'),
-          content: Text('You finished Level ${_currentLevel + 1}.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _nextLevel();
-              },
-              child: const Text('NEXT LEVEL'),
-            ),
-          ],
+        builder: (context) => GameResultDialog(
+          title: 'Connections Made!',
+          message: 'Level ${_currentLevel + 1} complete. All paths are linked without crossing.',
+          buttonText: 'NEXT PUZZLE',
+          color: NumbersColors.linkNumbers,
+          icon: Icons.link,
+          onButtonPressed: () {
+            Navigator.pop(context);
+            _nextLevel();
+          },
         ),
       );
     }

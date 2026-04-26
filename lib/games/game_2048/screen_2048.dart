@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:numbers/core/design_system.dart';
-import 'package:numbers/presentation/widgets/win_dialog.dart';
+import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'logic_2048.dart';
 
 class Screen2048 extends StatefulWidget {
@@ -32,16 +32,12 @@ class _Screen2048State extends State<Screen2048> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => WinDialog(
+      builder: (context) => GameResultDialog(
         title: 'Legendary!',
         message: 'You reached the 2048 tile. A master of the grid!',
-        onHome: () {
+        buttonText: 'CONTINUE PLAYING',
+        onButtonPressed: () {
           Navigator.pop(context);
-          Navigator.pop(context);
-        },
-        onNext: () {
-          Navigator.pop(context);
-          setState(() => _logic.reset());
         },
       ),
     );
@@ -50,18 +46,17 @@ class _Screen2048State extends State<Screen2048> {
   void _showGameOver() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Game Over'),
-        content: Text('Score: ${_logic.score}'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              setState(() => _logic.reset());
-            },
-            child: const Text('Try Again'),
-          ),
-        ],
+      barrierDismissible: false,
+      builder: (context) => GameResultDialog(
+        title: 'Game Over',
+        message: 'No moves left! Your final score: ${_logic.score}',
+        buttonText: 'TRY AGAIN',
+        color: NumbersColors.countdown,
+        icon: Icons.grid_off_outlined,
+        onButtonPressed: () {
+          Navigator.pop(context);
+          setState(() => _logic.reset());
+        },
       ),
     );
   }

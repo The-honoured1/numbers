@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:numbers/core/design_system.dart';
+import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'puzzle_logic.dart';
 
 class PuzzleScreen extends StatefulWidget {
@@ -65,29 +66,20 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Game Over'),
-        content: Text('Final Score: $_score\nLevel Reached: $_level'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            child: const Text('Home'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              setState(() {
-                _score = 0;
-                _level = 1;
-              });
-              _nextQuestion();
-            },
-            child: const Text('Restart'),
-          ),
-        ],
+      builder: (context) => GameResultDialog(
+        title: 'Game Over',
+        message: 'Final Score: $_score\nLevel Reached: $_level',
+        buttonText: 'RESTART GAME',
+        color: NumbersColors.countdown,
+        icon: Icons.error_outline,
+        onButtonPressed: () {
+          Navigator.pop(context);
+          setState(() {
+            _score = 0;
+            _level = 1;
+          });
+          _nextQuestion();
+        },
       ),
     );
   }
