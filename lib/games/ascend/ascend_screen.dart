@@ -23,10 +23,12 @@ class _AscendScreenState extends State<AscendScreen> {
   int _score = 0;
   int _timeLeft = 10;
   Timer? _timer;
+  final Stopwatch _sessionTimer = Stopwatch();
 
   @override
   void initState() {
     super.initState();
+    _sessionTimer.start();
     _startNewRound();
   }
 
@@ -102,6 +104,8 @@ class _AscendScreenState extends State<AscendScreen> {
   @override
   void dispose() {
     _timer?.cancel();
+    _sessionTimer.stop();
+    StorageService().addPlayTime('zen_ascend', _sessionTimer.elapsed.inSeconds);
     super.dispose();
   }
 

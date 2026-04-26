@@ -31,11 +31,20 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     Colors.teal,
     Colors.pink,
   ];
+  final Stopwatch _sessionTimer = Stopwatch();
 
   @override
   void initState() {
     super.initState();
+    _sessionTimer.start();
     _loadLevel(0);
+  }
+
+  @override
+  void dispose() {
+    _sessionTimer.stop();
+    _storage.addPlayTime('link', _sessionTimer.elapsed.inSeconds);
+    super.dispose();
   }
 
   void _loadLevel(int index) {

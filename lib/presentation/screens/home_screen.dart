@@ -490,7 +490,9 @@ class _StatsView extends StatelessWidget {
   Widget _buildMetricsTable() {
     final totalWins = storage.getTotalWins();
     final totalPlays = storage.gamesPlayed;
-    final accuracy = totalPlays > 0 ? (totalWins / totalPlays * 100).toStringAsFixed(0) : "0";
+    final totalTime = storage.getTotalPlayTime();
+    final avgSession = totalPlays > 0 ? (totalTime / totalPlays).round() : 0;
+    final winRate = totalPlays > 0 ? (totalWins / totalPlays * 100).toStringAsFixed(0) : "0";
     final favorite = storage.getFavoriteGame();
 
     return Container(
@@ -502,9 +504,13 @@ class _StatsView extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _metricRow("GAME ACCURACY", "$accuracy%", NumbersColors.green),
+          _metricRow("TOTAL PLAY TIME", StorageService.formatDuration(totalTime), NumbersColors.purple),
           const Divider(height: 32, color: NumbersColors.border),
-          _metricRow("FAVORITE GAME", favorite, NumbersColors.blue),
+          _metricRow("AVG SESSION", StorageService.formatDuration(avgSession), NumbersColors.blue),
+          const Divider(height: 32, color: NumbersColors.border),
+          _metricRow("WIN RATE", "$winRate%", NumbersColors.green),
+          const Divider(height: 32, color: NumbersColors.border),
+          _metricRow("FAVORITE GAME", favorite, NumbersColors.yellow),
           const Divider(height: 32, color: NumbersColors.border),
           _metricRow("TOTAL WINS", "$totalWins", NumbersColors.coral),
         ],

@@ -23,13 +23,23 @@ class _CountdownScreenState extends State<CountdownScreen> {
   String _expression = "";
   int _timeLeft = 60;
   Timer? _timer;
+  final Stopwatch _sessionTimer = Stopwatch();
   
   String? _pendingOp;
 
   @override
   void initState() {
     super.initState();
+    _sessionTimer.start();
     _startNewRound();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _sessionTimer.stop();
+    _storage.addPlayTime('countdown', _sessionTimer.elapsed.inSeconds);
+    super.dispose();
   }
 
   void _startNewRound() {

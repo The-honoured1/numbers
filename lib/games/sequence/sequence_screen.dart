@@ -20,12 +20,22 @@ class _SequenceScreenState extends State<SequenceScreen> {
   final TextEditingController _controller = TextEditingController();
   int _score = 0;
   int _streak = 0;
+  final Stopwatch _sessionTimer = Stopwatch();
 
   @override
   void initState() {
     super.initState();
     _storage.incrementPlayCount('sequence');
+    _sessionTimer.start();
     _question = _logic.generate();
+  }
+
+  @override
+  void dispose() {
+    _sessionTimer.stop();
+    _storage.addPlayTime('sequence', _sessionTimer.elapsed.inSeconds);
+    _controller.dispose();
+    super.dispose();
   }
 
   void _check() {

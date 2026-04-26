@@ -22,12 +22,22 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   int _level = 1;
   int _timeLeft = 10;
   Timer? _timer;
+  final Stopwatch _sessionTimer = Stopwatch();
 
   @override
   void initState() {
     super.initState();
     StorageService().incrementPlayCount('math_puzzle');
+    _sessionTimer.start();
     _nextQuestion();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _sessionTimer.stop();
+    StorageService().addPlayTime('math_puzzle', _sessionTimer.elapsed.inSeconds);
+    super.dispose();
   }
 
   void _nextQuestion() {

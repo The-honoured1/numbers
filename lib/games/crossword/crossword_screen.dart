@@ -19,12 +19,21 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   late CrosswordData _data;
   List<int?> _playerValues = List.generate(9, (_) => null);
   int? _selectedIndex;
+  final Stopwatch _sessionTimer = Stopwatch();
   
   @override
   void initState() {
     super.initState();
     _storage.incrementPlayCount('crossword');
+    _sessionTimer.start();
     _data = _logic.generate(3);
+  }
+
+  @override
+  void dispose() {
+    _sessionTimer.stop();
+    _storage.addPlayTime('crossword', _sessionTimer.elapsed.inSeconds);
+    super.dispose();
   }
 
   void _onKeyPress(int value) {

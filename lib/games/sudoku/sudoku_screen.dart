@@ -24,12 +24,21 @@ class _SudokuScreenState extends State<SudokuScreen> {
   int? _selectedRow;
   int? _selectedCol;
   bool _notesMode = false;
+  final Stopwatch _sessionTimer = Stopwatch();
 
   @override
   void initState() {
     super.initState();
     _difficulty = widget.difficulty;
+    _sessionTimer.start();
     _startNewGame();
+  }
+
+  @override
+  void dispose() {
+    _sessionTimer.stop();
+    StorageService().addPlayTime('sudoku', _sessionTimer.elapsed.inSeconds);
+    super.dispose();
   }
 
   void _startNewGame() {

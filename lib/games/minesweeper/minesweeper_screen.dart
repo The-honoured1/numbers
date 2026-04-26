@@ -68,14 +68,22 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
   bool _flagMode = false;
   int _currentLevel = 1;
   late MinesweeperLevel _levelConfig;
+  final Stopwatch _sessionTimer = Stopwatch();
 
   @override
   void initState() {
     super.initState();
-    // Load saved level progress
     _currentLevel = StorageService().getHighScore('minesweeper_level');
     if (_currentLevel < 1) _currentLevel = 1;
+    _sessionTimer.start();
     _startNewGame();
+  }
+
+  @override
+  void dispose() {
+    _sessionTimer.stop();
+    StorageService().addPlayTime('minesweeper', _sessionTimer.elapsed.inSeconds);
+    super.dispose();
   }
 
   void _startNewGame() {

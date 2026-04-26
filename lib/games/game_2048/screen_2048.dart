@@ -16,12 +16,21 @@ class Screen2048 extends StatefulWidget {
 
 class _Screen2048State extends State<Screen2048> {
   final Logic2048 _logic = Logic2048();
+  final Stopwatch _sessionTimer = Stopwatch();
 
   @override
   void initState() {
     super.initState();
     StorageService().incrementPlayCount('2048');
+    _sessionTimer.start();
     _logic.reset();
+  }
+
+  @override
+  void dispose() {
+    _sessionTimer.stop();
+    StorageService().addPlayTime('2048', _sessionTimer.elapsed.inSeconds);
+    super.dispose();
   }
 
   void _handleSwipe(MoveDirection dir) {

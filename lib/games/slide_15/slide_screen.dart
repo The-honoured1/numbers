@@ -18,11 +18,20 @@ class _SlideScreenState extends State<SlideScreen> {
   final SlideLogic _logic = SlideLogic();
   late List<int> _grid;
   int _moves = 0;
+  final Stopwatch _sessionTimer = Stopwatch();
 
   @override
   void initState() {
     super.initState();
+    _sessionTimer.start();
     _startNewGame();
+  }
+
+  @override
+  void dispose() {
+    _sessionTimer.stop();
+    StorageService().addPlayTime('slide_15', _sessionTimer.elapsed.inSeconds);
+    super.dispose();
   }
 
   void _startNewGame() {

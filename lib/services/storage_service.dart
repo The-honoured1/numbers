@@ -76,6 +76,12 @@ class StorageService {
     return games.any((id) => _prefs.getBool('daily_${dateStr}_$id') ?? false);
   }
 
+  // --- All game IDs ---
+  static const List<String> allGameIds = [
+    'sudoku', '2048', 'math_puzzle', 'sequence', 'countdown',
+    'crossword', 'link', 'minesweeper', 'slide_15', 'zen_ascend',
+  ];
+
   // --- Game Usage Tracking ---
   int getPlayCount(String gameId) => _prefs.getInt('plays_$gameId') ?? 0;
   int getWins(String gameId) => _prefs.getInt('wins_$gameId') ?? 0;
@@ -89,24 +95,52 @@ class StorageService {
     await _prefs.setInt('wins_$gameId', getWins(gameId) + 1);
   }
 
-  String getFavoriteGame() {
-    final games = ['sudoku','2048','math_puzzle','sequence','countdown','crossword','link','minesweeper'];
-    String favorite = 'sudoku';
-    int maxPlays = -1;
+  // --- Play Time Tracking (in seconds) ---
+  int getPlayTime(String gameId) => _prefs.getInt('time_$gameId') ?? 0;
 
-    for (final id in games) {
-      final plays = getPlayCount(id);
-      if (plays > maxPlays) {
-        maxPlays = plays;
+  Future<void> addPlayTime(String gameId, int seconds) async {
+    final current = getPlayTime(gameId);
+    await _prefs.setInt('time_$gameId', current + seconds);
+  }
+
+  int getTotalPlayTime() {
+    return allGameIds.fold(0, (sum, id) => sum + getPlayTime(id));
+  }
+
+  /// Returns a human-readable duration string
+  static String formatDuration(int totalSeconds) {
+    if (totalSeconds < 60) return '${totalSeconds}s';
+    final hours = totalSeconds ~/ 3600;
+    final minutes = (totalSeconds % 3600) ~/ 60;
+    if (hours > 0) return '${hours}h ${minutes}m';
+    return '${minutes}m';
+  }
+
+  /// Favorite game is the one the user has spent the most TIME playing
+  String getFavoriteGame() {
+    String favorite = 'sudoku';
+    int maxTime = -1;
+
+    for (final id in allGameIds) {
+      final time = getPlayTime(id);
+      if (time > maxTime) {
+        maxTime = time;
         favorite = id;
       }
     }
-    return favorite.toUpperCase();
+
+    // Prettify the ID for display
+    const names = {
+      'sudoku': 'SUDOKU', '2048': '2048', 'math_puzzle': 'MATH PUZZLE',
+      'sequence': 'SEQUENCE', 'countdown': 'COUNTDOWN', 'crossword': 'MATH CROSS',
+      'link': 'NUMBER LINK', 'minesweeper': 'MINESWEEPER', 'slide_15': 'SLIDE 15',
+      'zen_ascend': 'ZEN ASCEND',
+    };
+    return names[favorite] ?? favorite.toUpperCase();
   }
 
   int getTotalWins() {
-    final games = ['sudoku','2048','math_puzzle','sequence','countdown','crossword','link','minesweeper'];
-    return games.fold(0, (sum, id) => sum + getWins(id));
+    return allGameIds.fold(0, (sum, id) => sum + getWins(id));
   }
 
   Future<void> markDailyCompleted(String gameId) async {
