@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'package:numbers/services/storage_service.dart';
@@ -25,35 +26,6 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
     _data = _logic.generate(3);
   }
 
-  Widget _buildCell(String content, {Color? color, bool isInput = false, int? index}) {
-    bool isSelected = _selectedIndex == index && isInput;
-    
-    return GestureDetector(
-      onTap: isInput ? () => setState(() => _selectedIndex = index) : null,
-      child: Container(
-        width: 48,
-        height: 48,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: isSelected ? NumbersColors.selection.withOpacity(0.3) : (color ?? Colors.white),
-          border: Border.all(
-            color: isSelected ? NumbersColors.selection : NumbersColors.border,
-            width: isSelected ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          content,
-          style: GoogleFonts.inter(
-            fontSize: 16,
-            fontWeight: isInput ? FontWeight.w800 : FontWeight.w500,
-            color: isInput ? NumbersColors.textBody : NumbersColors.textFaint,
-          ),
-        ),
-      ),
-    );
-  }
-
   void _onKeyPress(int value) {
     if (_selectedIndex != null) {
       setState(() {
@@ -75,9 +47,11 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
           context: context,
           barrierDismissible: false,
           builder: (context) => GameResultDialog(
-            title: 'Well Done!',
-            message: 'You successfully completed the 3x3 Math Cross grid.',
-            buttonText: 'COLLECT STARS',
+            title: 'Masterfully Solved',
+            message: 'Your mathematical intuition is flawless. The grid is perfectly balanced.',
+            buttonText: 'NEXT PUZZLE',
+            color: NumbersColors.crossCorrect,
+            icon: Icons.auto_awesome,
             onButtonPressed: () => Navigator.pop(context),
           ),
         ).then((_) => Navigator.pop(context));
@@ -88,152 +62,274 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: NumbersColors.backgroundOffWhite,
       appBar: AppBar(
-        title: const Text('MATH CROSS'),
+        title: Text('MATH CROSS', style: GoogleFonts.lora(fontWeight: FontWeight.w800, fontSize: 18, letterSpacing: 1)),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Text(
+              'FILL THE GRID TO SATISFY ALL EQUATIONS',
+              style: GoogleFonts.inter(letterSpacing: 1.5, fontSize: 9, fontWeight: FontWeight.w800, color: NumbersColors.textFaint),
+            ),
+          ),
           Expanded(
             child: Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // ROW 1
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildCell(_playerValues[0]?.toString() ?? '', isInput: true, index: 0),
-                        _buildCell(_data.ops[0], color: NumbersColors.backgroundOffWhite),
-                        _buildCell(_playerValues[1]?.toString() ?? '', isInput: true, index: 1),
-                        _buildCell(_data.ops[1], color: NumbersColors.backgroundOffWhite),
-                        _buildCell(_playerValues[2]?.toString() ?? '', isInput: true, index: 2),
-                        _buildCell('=', color: NumbersColors.backgroundOffWhite),
-                        _buildCell('${_data.results[0]}', color: NumbersColors.crossCorrect.withOpacity(0.1)),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    // OPS ROW 1
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildCell(_data.ops[2], color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: 48 + 6), 
-                        _buildCell(_data.ops[3], color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: 48 + 6),
-                        _buildCell(_data.ops[4], color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: (48 + 6) * 2),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    // ROW 2
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildCell(_playerValues[3]?.toString() ?? '', isInput: true, index: 3),
-                        _buildCell(_data.ops[5], color: NumbersColors.backgroundOffWhite),
-                        _buildCell(_playerValues[4]?.toString() ?? '', isInput: true, index: 4),
-                        _buildCell(_data.ops[6], color: NumbersColors.backgroundOffWhite),
-                        _buildCell(_playerValues[5]?.toString() ?? '', isInput: true, index: 5),
-                        _buildCell('=', color: NumbersColors.backgroundOffWhite),
-                        _buildCell('${_data.results[1]}', color: NumbersColors.crossCorrect.withOpacity(0.1)),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    // OPS ROW 2
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildCell(_data.ops[7], color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: 48 + 6),
-                        _buildCell(_data.ops[8], color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: 48 + 6),
-                        _buildCell(_data.ops[9], color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: (48 + 6) * 2),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    // ROW 3
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildCell(_playerValues[6]?.toString() ?? '', isInput: true, index: 6),
-                        _buildCell(_data.ops[10], color: NumbersColors.backgroundOffWhite),
-                        _buildCell(_playerValues[7]?.toString() ?? '', isInput: true, index: 7),
-                        _buildCell(_data.ops[11], color: NumbersColors.backgroundOffWhite),
-                        _buildCell(_playerValues[8]?.toString() ?? '', isInput: true, index: 8),
-                        _buildCell('=', color: NumbersColors.backgroundOffWhite),
-                        _buildCell('${_data.results[2]}', color: NumbersColors.crossCorrect.withOpacity(0.1)),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    // EQUALS ROW
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildCell('=', color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: 48 + 6),
-                        _buildCell('=', color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: 48 + 6),
-                        _buildCell('=', color: NumbersColors.backgroundOffWhite),
-                        const SizedBox(width: (48 + 6) * 2),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    // RESULTS ROW
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildCell('${_data.results[3]}', color: NumbersColors.crossCorrect.withOpacity(0.1)),
-                        const SizedBox(width: 48 + 6),
-                        _buildCell('${_data.results[4]}', color: NumbersColors.crossCorrect.withOpacity(0.1)),
-                        const SizedBox(width: 48 + 6),
-                        _buildCell('${_data.results[5]}', color: NumbersColors.crossCorrect.withOpacity(0.1)),
-                        const SizedBox(width: (48 + 6) * 2),
-                      ],
-                    ),
-                  ],
+                physics: const BouncingScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: NumbersColors.border, width: 2),
+                        boxShadow: [
+                          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+                        ],
+                      ),
+                      child: _buildGrid(),
+                    ).animate().fadeIn(duration: 800.ms).moveY(begin: 20, end: 0),
                 ),
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(16, 24, 16, 40),
-            color: NumbersColors.backgroundOffWhite,
-            child: Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              alignment: WrapAlignment.center,
-              children: List.generate(9, (index) {
-                int val = index + 1;
-                return GestureDetector(
-                  onTap: () => _onKeyPress(val),
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: NumbersColors.border),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      '$val',
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: NumbersColors.textBody,
-                      ),
-                    ),
-                  ),
-                );
-              }),
-            ),
-          ),
+          _buildKeypad(),
         ],
       ),
     );
   }
+
+  Widget _buildGrid() {
+    return Column(
+      children: [
+        _buildRow([0, 1, 2], [0, 1], 0),
+        _buildOpRow([2, 3, 4]),
+        _buildRow([3, 4, 5], [5, 6], 1),
+        _buildOpRow([7, 8, 9]),
+        _buildRow([6, 7, 8], [10, 11], 2),
+        _buildResultRow(),
+      ],
+    );
+  }
+
+  Widget _buildRow(List<int> valIndices, List<int> opIndices, int resultRowIndex) {
+    return Expanded(
+      child: Row(
+        children: [
+          _buildInputCell(valIndices[0]),
+          _buildOpCell(_data.ops[opIndices[0]]),
+          _buildInputCell(valIndices[1]),
+          _buildOpCell(_data.ops[opIndices[1]]),
+          _buildInputCell(valIndices[2]),
+          _buildOpCell('=', color: NumbersColors.textFaint.withOpacity(0.3)),
+          _buildResultCell(_data.results[resultRowIndex]),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOpRow(List<int> opIndices) {
+    return Expanded(
+      child: Row(
+        children: [
+          _buildOpCell(_data.ops[opIndices[0]]),
+          const Expanded(child: SizedBox.shrink()),
+          _buildOpCell(_data.ops[opIndices[1]]),
+          const Expanded(child: SizedBox.shrink()),
+          _buildOpCell(_data.ops[opIndices[2]]),
+          const Expanded(child: SizedBox.shrink()),
+          const Expanded(child: SizedBox.shrink()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResultRow() {
+    return Expanded(
+      child: Row(
+        children: [
+          _buildOpCell('='),
+          const Expanded(child: SizedBox.shrink()),
+          _buildOpCell('='),
+          const Expanded(child: SizedBox.shrink()),
+          _buildOpCell('='),
+          const Expanded(child: SizedBox.shrink()),
+          const Expanded(child: SizedBox.shrink()),
+        ],
+      ),
+    );
+  }
+
+  // Result Row 4,5,6
+  Widget _buildResultCellRow() {
+    return Expanded(
+      child: Row(
+        children: [
+          _buildResultCell(_data.results[3]),
+          const Expanded(child: SizedBox.shrink()),
+          _buildResultCell(_data.results[4]),
+          const Expanded(child: SizedBox.shrink()),
+          _buildResultCell(_data.results[5]),
+          const Expanded(child: SizedBox.shrink()),
+          const Expanded(child: SizedBox.shrink()),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void _calculateGridStructure() {
+    // Override the grid builder with a static results row at the end
+  }
+
+  // Re-implementing buildGrid for more control
+  Widget _buildGridNew() {
+    return Column(
+      children: [
+        _buildRow([0, 1, 2], [0, 1], 0),
+        _buildOpRow([2, 3, 4]),
+        _buildRow([3, 4, 5], [5, 6], 1),
+        _buildOpRow([7, 8, 9]),
+        _buildRow([6, 7, 8], [10, 11], 2),
+        const Expanded(
+          child: Row(
+            children: [
+               _OpBox(text: '='),
+               Expanded(child: SizedBox.shrink()),
+               _OpBox(text: '='),
+               Expanded(child: SizedBox.shrink()),
+               _OpBox(text: '='),
+               Expanded(child: SizedBox.shrink()),
+               Expanded(child: SizedBox.shrink()),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Row(
+            children: [
+               _ResultBox(value: _data.results[3]),
+               const Expanded(child: SizedBox.shrink()),
+               _ResultBox(value: _data.results[4]),
+               const Expanded(child: SizedBox.shrink()),
+               _ResultBox(value: _data.results[5]),
+               const Expanded(child: SizedBox.shrink()),
+               const Expanded(child: SizedBox.shrink()),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInputCell(int index) {
+    bool isSelected = _selectedIndex == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedIndex = index),
+        child: Container(
+          margin: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: isSelected ? NumbersColors.selection.withOpacity(0.1) : Colors.transparent,
+            border: Border.all(color: isSelected ? NumbersColors.selection : NumbersColors.border, width: isSelected ? 2 : 1),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            _playerValues[index]?.toString() ?? '',
+            style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 18),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOpCell(String text, {Color? color}) {
+    return Expanded(
+      child: Container(
+        alignment: Alignment.center,
+        child: Text(text, style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, color: color ?? NumbersColors.textFaint)),
+      ),
+    );
+  }
+
+  Widget _buildResultCell(int value) {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          color: NumbersColors.crossCorrect.withOpacity(0.05),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        alignment: Alignment.center,
+        child: Text('$value', style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14, color: NumbersColors.crossCorrect)),
+      ),
+    );
+  }
+
+  Widget _buildKeypad() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 40),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: NumbersColors.border)),
+      ),
+      child: Wrap(
+        spacing: 12,
+        runSpacing: 12,
+        alignment: WrapAlignment.center,
+        children: [
+          ...List.generate(9, (index) => _keypadButton(index + 1)),
+          _keypadButton(0, isZero: true),
+        ],
+      ),
+    );
+  }
+
+  Widget _keypadButton(int value, {bool isZero = false}) {
+    return GestureDetector(
+      onTap: () => _onKeyPress(value),
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: NumbersColors.border),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 4, offset: const Offset(0, 2))],
+        ),
+        alignment: Alignment.center,
+        child: Text('$value', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w800)),
+      ),
+    );
+  }
+}
+
+class _OpBox extends StatelessWidget {
+  final String text;
+  const _OpBox({required this.text});
+  @override
+  Widget build(BuildContext context) => Expanded(child: Center(child: Text(text, style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, color: NumbersColors.textFaint))));
+}
+
+class _ResultBox extends StatelessWidget {
+  final int value;
+  const _ResultBox({required this.value});
+  @override
+  Widget build(BuildContext context) => Expanded(
+    child: Container(
+      margin: const EdgeInsets.all(2),
+      decoration: BoxDecoration(color: NumbersColors.crossCorrect.withOpacity(0.05), borderRadius: BorderRadius.circular(4)),
+      alignment: Alignment.center,
+      child: Text('$value', style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14, color: NumbersColors.crossCorrect)),
+    ),
+  );
 }
