@@ -91,7 +91,7 @@ class WinDialog extends StatelessWidget {
             ),
           ],
         ),
-      ).animate().scale(begin: const Offset(0.8, 0.8), curve: Curves.backOut),
+      ).animate().scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack),
     );
   }
 }

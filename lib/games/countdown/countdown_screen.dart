@@ -150,7 +150,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
                   child: IconButton.filled(
                     onPressed: () => _onOpTap(op),
                     icon: Text(op, style: const TextStyle(fontSize: 24, color: Colors.white)),
-                    backgroundColor: Colors.grey.shade800,
+                    style: IconButton.styleFrom(backgroundColor: Colors.grey.shade800),
                   ),
                 );
               }).toList(),
