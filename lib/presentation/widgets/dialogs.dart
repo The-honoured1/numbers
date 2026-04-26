@@ -8,6 +8,8 @@ class GameResultDialog extends StatelessWidget {
   final String message;
   final String buttonText;
   final VoidCallback onButtonPressed;
+  final VoidCallback? onRevive;
+  final String reviveButtonText;
   final IconData icon;
   final Color color;
 
@@ -17,6 +19,8 @@ class GameResultDialog extends StatelessWidget {
     required this.message,
     this.buttonText = 'CONTINUE',
     required this.onButtonPressed,
+    this.onRevive,
+    this.reviveButtonText = 'WATCH AD TO REVIVE',
     this.icon = Icons.check_circle_outline,
     this.color = NumbersColors.crossCorrect,
   });
@@ -71,6 +75,32 @@ class GameResultDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
+            if (onRevive != null) ...[
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: onRevive,
+                  icon: const Icon(Icons.play_circle_fill, size: 20),
+                  label: Text(
+                    reviveButtonText,
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.2,
+                      fontSize: 13,
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: NumbersColors.textBody,
+                    side: const BorderSide(color: NumbersColors.border, width: 2),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

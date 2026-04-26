@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'package:numbers/services/storage_service.dart';
+import 'package:numbers/services/ad_service.dart';
 import 'puzzle_logic.dart';
 
 class PuzzleScreen extends StatefulWidget {
@@ -56,6 +57,11 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
       setState(() {
         _score += 10 + _timeLeft;
         _level++;
+
+        // Show interstitial ad every 5 level milestones
+        if (_level > 1 && (_level - 1) % 5 == 0) {
+          AdService().showInterstitialAd();
+        }
       });
       StorageService().saveHighScore('math_puzzle', _score);
       _nextQuestion();
@@ -76,6 +82,12 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         buttonText: 'RESTART GAME',
         color: NumbersColors.countdown,
         icon: Icons.error_outline,
+        onRevive: () {
+          AdService().showRewardedAd(() {
+            Navigator.pop(context);
+            _nextQuestion(); // Continue from where they left off
+          });
+        },
         onButtonPressed: () {
           Navigator.pop(context);
           setState(() {

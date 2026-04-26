@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'package:numbers/services/storage_service.dart';
+import 'package:numbers/services/ad_service.dart';
 import 'sequence_logic.dart';
 
 class SequenceScreen extends StatefulWidget {
@@ -32,6 +33,12 @@ class _SequenceScreenState extends State<SequenceScreen> {
       setState(() {
         _score += (20 + _streak * 5);
         _streak++;
+        
+        // Show interstitial ad every 5 streak milestones
+        if (_streak > 0 && _streak % 5 == 0) {
+          AdService().showInterstitialAd();
+        }
+
         _question = _logic.generate();
         _controller.clear();
       });
@@ -46,6 +53,16 @@ class _SequenceScreenState extends State<SequenceScreen> {
           buttonText: 'TRY ANOTHER',
           color: NumbersColors.countdown,
           icon: Icons.close,
+          onRevive: () {
+            AdService().showRewardedAd(() {
+              Navigator.pop(context);
+              setState(() {
+                // Keep the streak and current score, just generate a new question
+                _question = _logic.generate();
+                _controller.clear();
+              });
+            });
+          },
           onButtonPressed: () {
             Navigator.pop(context);
             setState(() {

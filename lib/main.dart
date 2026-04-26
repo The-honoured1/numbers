@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'core/design_system.dart';
 import 'services/storage_service.dart';
+import 'services/ad_service.dart';
 import 'presentation/screens/home_screen.dart';
 
 void main() async {
@@ -8,6 +9,9 @@ void main() async {
   
   final storage = StorageService();
   await storage.init();
+
+  final adService = AdService();
+  await adService.init();
   
   runApp(const NumbersApp());
 }
