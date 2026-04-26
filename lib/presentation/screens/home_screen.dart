@@ -87,6 +87,14 @@ class _HomeScreenState extends State<HomeScreen> {
         accentColor: NumbersColors.linkNumbers,
         screen: const LinkNumbersScreen(),
       ),
+      GameModel(
+        id: 'minesweeper',
+        title: 'Minesweeper',
+        description: 'Clear the gem grid.',
+        icon: Icons.brightness_7_outlined,
+        accentColor: NumbersColors.minesweeper,
+        screen: const MinesweeperScreen(),
+      ),
     ];
   }
 
