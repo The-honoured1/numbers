@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
+import 'package:numbers/services/storage_service.dart';
 import 'sudoku_logic.dart';
 
 class SudokuScreen extends StatefulWidget {
@@ -48,6 +49,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
         _currentGrid[_selectedRow!][_selectedCol!] = num;
       });
       if (_logic.isComplete(_currentGrid)) {
+        StorageService().markDailyCompleted('sudoku');
         _showWinDialog();
       }
     }

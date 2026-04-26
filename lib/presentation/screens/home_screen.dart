@@ -24,13 +24,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final StorageService _storage = StorageService();
-  
   late List<GameModel> _games;
+  late GameModel _dailyGame;
 
   @override
   void initState() {
     super.initState();
-    _games = [
+    _games = _getGames();
+    _dailyGame = _games[DateTime.now().day % _games.length];
+  }
+
+  List<GameModel> _getGames() {
+    return [
       GameModel(
         id: 'sudoku',
         title: 'Number Grid',
@@ -98,6 +103,57 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
   }
 
+  void _showStats() {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4), side: const BorderSide(color: NumbersColors.border)),
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('STATISTICS', style: GoogleFonts.inter(letterSpacing: 2, fontWeight: FontWeight.w900, fontSize: 13)),
+              const SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _statItem('${_storage.gamesPlayed}', 'PLAYED'),
+                  _statItem('${_storage.currentStreak}', 'STREAK'),
+                  _statItem('${_storage.maxStreak}', 'MAX STREAK'),
+                ],
+              ),
+              const SizedBox(height: 48),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    backgroundColor: NumbersColors.textBody,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: const Text('BACK'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _statItem(String value, String label) {
+    return Column(
+      children: [
+        Text(value, style: GoogleFonts.inter(fontSize: 32, fontWeight: FontWeight.w200)),
+        Text(label, style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.textFaint)),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,61 +163,104 @@ class _HomeScreenState extends State<HomeScreen> {
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 60, 24, 32),
+                padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
                 child: Column(
                   children: [
-                    Text(
-                      'numbers',
-                      style: Theme.of(context).textTheme.displayLarge,
-                    ).animate().fadeIn(duration: 800.ms).moveY(begin: -10, end: 0, curve: Curves.easeOut),
-                    const SizedBox(height: 8),
-                    Text(
-                      'A DAILY COLLECTION OF PUZZLES',
-                      style: GoogleFonts.inter(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 2,
-                        color: NumbersColors.textFaint,
-                      ),
-                    ).animate().fadeIn(delay: 200.ms),
-                    const SizedBox(height: 48),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: NumbersColors.border),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.calendar_today_outlined, size: 16, color: NumbersColors.textBody),
-                          const SizedBox(width: 12),
-                          Text(
-                            'APRIL 26, 2026',
-                            style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12,
-                              color: NumbersColors.textBody,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Icon(Icons.menu, color: NumbersColors.textBody),
+                        Text(
+                          'numbers',
+                          style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 40),
+                        ).animate().fadeIn(duration: 800.ms),
+                        GestureDetector(
+                          onTap: _showStats,
+                          child: const Icon(Icons.bar_chart, color: NumbersColors.textBody),
+                        ),
+                      ],
+                    ),
+                    const Divider(height: 40, color: NumbersColors.border),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'SUNDAY, APRIL 26',
+                          style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 11, letterSpacing: 0.5),
+                        ),
+                        Row(
+                          children: [
+                            const Icon(Icons.bolt, color: Colors.orange, size: 18),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${_storage.currentStreak}',
+                              style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 12),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Container(width: 1, height: 16, color: NumbersColors.border),
-                          const SizedBox(width: 12),
-                          const Icon(Icons.bolt, color: Colors.orange, size: 18),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${_storage.getStreak()}',
-                            style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w900,
-                              color: NumbersColors.textBody,
-                              fontSize: 12,
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    // DAILY CHALLENGE HERO
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => _dailyGame.screen!),
+                      ).then((_) => setState(() {})),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: _dailyGame.accentColor.withOpacity(0.1),
+                          border: Border.all(color: _dailyGame.accentColor.withOpacity(0.3), width: 2),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(color: _dailyGame.accentColor, borderRadius: BorderRadius.circular(2)),
+                                  child: Text('DAILY', style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.w900, color: Colors.white, letterSpacing: 1)),
+                                ),
+                                const SizedBox(width: 8),
+                                if (_storage.isDailyCompleted(_dailyGame.id))
+                                  const Icon(Icons.check_circle, color: NumbersColors.crossCorrect, size: 16),
+                              ],
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 16),
+                            Text(_dailyGame.title, style: GoogleFonts.lora(fontSize: 32, fontWeight: FontWeight.w800)),
+                            Text(_dailyGame.description, style: GoogleFonts.inter(fontSize: 14, color: NumbersColors.textFaint)),
+                            const SizedBox(height: 24),
+                            SizedBox(
+                              width: 120,
+                              child: ElevatedButton(
+                                onPressed: () {}, // Handled by parent detector
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: NumbersColors.textBody,
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                ),
+                                child: Text(_storage.isDailyCompleted(_dailyGame.id) ? 'REPLAY' : 'PLAY', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ).animate().fadeIn(delay: 400.ms).scale(begin: const Offset(0.95, 0.95)),
+                    ).animate().fadeIn(delay: 300.ms).moveY(begin: 20, end: 0),
                   ],
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              sliver: SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Text('MORE PUZZLES', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1.5, color: NumbersColors.textFaint)),
                 ),
               ),
             ),
@@ -179,20 +278,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     final game = _games[index];
                     return GameCard(
                       game: game,
-                      isDailyDone: _storage.isDailyDone(game.id),
+                      isDailyDone: _storage.isDailyCompleted(game.id),
                       onTap: () {
                         if (game.screen != null) {
                           Navigator.push(
                             context,
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation, secondaryAnimation) => game.screen!,
-                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                );
-                              },
-                            ),
+                            MaterialPageRoute(builder: (context) => game.screen!),
                           ).then((_) => setState(() {}));
                         }
                       },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
+import 'package:numbers/services/storage_service.dart';
 import 'crossword_logic.dart';
 
 class CrosswordScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class CrosswordScreen extends StatefulWidget {
 
 class _CrosswordScreenState extends State<CrosswordScreen> {
   final CrosswordLogic _logic = CrosswordLogic();
+  final StorageService _storage = StorageService();
   late CrosswordData _data;
   List<int?> _playerValues = List.generate(9, (_) => null);
   int? _selectedIndex;
@@ -68,6 +70,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
         if (_playerValues[i] != _data.values[i]) win = false;
       }
       if (win) {
+        _storage.markDailyCompleted('crossword');
         showDialog(
           context: context,
           barrierDismissible: false,
