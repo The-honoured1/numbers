@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class NumeriaColors {
+class NumbersColors {
   static const Color background = Color(0xFFFFFFFF);
   static const Color textBody = Color(0xFF121212);
   static const Color textFaint = Color(0xFF757575);
@@ -22,34 +22,34 @@ class NumeriaColors {
   static const Color crossIncorrect = Color(0xFFFFCDD2);
 }
 
-class NumeriaTheme {
+class NumbersTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      scaffoldBackgroundColor: NumeriaColors.background,
+      scaffoldBackgroundColor: NumbersColors.background,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: NumeriaColors.sudoku,
-        background: NumeriaColors.background,
+        seedColor: NumbersColors.sudoku,
+        background: NumbersColors.background,
       ),
       textTheme: GoogleFonts.interTextTheme().copyWith(
         displayLarge: GoogleFonts.lora(
           fontSize: 32,
           fontWeight: FontWeight.bold,
-          color: NumeriaColors.textBody,
+          color: NumbersColors.textBody,
         ),
         headlineMedium: GoogleFonts.lora(
           fontSize: 24,
           fontWeight: FontWeight.w600,
-          color: NumeriaColors.textBody,
+          color: NumbersColors.textBody,
         ),
         titleMedium: GoogleFonts.inter(
           fontSize: 18,
           fontWeight: FontWeight.w600,
-          color: NumeriaColors.textBody,
+          color: NumbersColors.textBody,
         ),
         bodyMedium: GoogleFonts.inter(
           fontSize: 14,
-          color: NumeriaColors.textFaint,
+          color: NumbersColors.textFaint,
         ),
       ),
       cardTheme: CardTheme(

@@ -76,18 +76,18 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildCell('', isInput: true, index: 0),
-                  _buildCell(_data.ops[0], color: NumeriaColors.crossOperator),
+                  _buildCell(_data.ops[0], color: NumbersColors.crossOperator),
                   _buildCell('', isInput: true, index: 1),
-                  _buildCell('=', color: NumeriaColors.crossEquals),
-                  _buildCell('${_data.results[0]}', color: NumeriaColors.crossCorrect),
+                  _buildCell('=', color: NumbersColors.crossEquals),
+                  _buildCell('${_data.results[0]}', color: NumbersColors.crossCorrect),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildCell(_data.ops[1], color: NumeriaColors.crossOperator),
+                  _buildCell(_data.ops[1], color: NumbersColors.crossOperator),
                   const SizedBox(width: 50 * 1), // skipped col indices
-                  _buildCell(_data.ops[2], color: NumeriaColors.crossOperator),
+                  _buildCell(_data.ops[2], color: NumbersColors.crossOperator),
                   const SizedBox(width: 50 * 2), // skipped equals/res
                 ],
               ),
@@ -95,27 +95,27 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildCell('', isInput: true, index: 2),
-                  _buildCell(_data.ops[3], color: NumeriaColors.crossOperator),
+                  _buildCell(_data.ops[3], color: NumbersColors.crossOperator),
                   _buildCell('', isInput: true, index: 3),
-                  _buildCell('=', color: NumeriaColors.crossEquals),
-                  _buildCell('${_data.results[1]}', color: NumeriaColors.crossCorrect),
+                  _buildCell('=', color: NumbersColors.crossEquals),
+                  _buildCell('${_data.results[1]}', color: NumbersColors.crossCorrect),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildCell('=', color: NumeriaColors.crossEquals),
+                  _buildCell('=', color: NumbersColors.crossEquals),
                   const SizedBox(width: 50 * 1),
-                  _buildCell('=', color: NumeriaColors.crossEquals),
+                  _buildCell('=', color: NumbersColors.crossEquals),
                   const SizedBox(width: 50 * 2),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildCell('${_data.results[2]}', color: NumeriaColors.crossCorrect),
+                  _buildCell('${_data.results[2]}', color: NumbersColors.crossCorrect),
                   const SizedBox(width: 50 * 1),
-                  _buildCell('${_data.results[3]}', color: NumeriaColors.crossCorrect),
+                  _buildCell('${_data.results[3]}', color: NumbersColors.crossCorrect),
                   const SizedBox(width: 50 * 2),
                 ],
               ),

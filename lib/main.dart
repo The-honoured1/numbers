@@ -9,18 +9,18 @@ void main() async {
   final storage = StorageService();
   await storage.init();
   
-  runApp(const NumeriaApp());
+  runApp(const NumbersApp());
 }
 
-class NumeriaApp extends StatelessWidget {
-  const NumeriaApp({super.key});
+class NumbersApp extends StatelessWidget {
+  const NumbersApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Numeria',
+      title: 'Numbers',
       debugShowCheckedModeBanner: false,
-      theme: NumeriaTheme.lightTheme,
+      theme: NumbersTheme.lightTheme,
       home: const HomeScreen(),
     );
   }

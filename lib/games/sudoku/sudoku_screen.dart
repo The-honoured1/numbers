@@ -87,7 +87,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
               aspectRatio: 1,
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: NumeriaColors.textBody, width: 2),
+                  border: Border.all(color: NumbersColors.textBody, width: 2),
                 ),
                 child: GridView.builder(
                   physics: const NeverScrollableScrollPhysics(),
@@ -107,15 +107,15 @@ class _SudokuScreenState extends State<SudokuScreen> {
                         decoration: BoxDecoration(
                           border: Border(
                             right: BorderSide(
-                              color: (c + 1) % 3 == 0 && c != 8 ? NumeriaColors.textBody : Colors.grey.shade300,
+                              color: (c + 1) % 3 == 0 && c != 8 ? NumbersColors.textBody : Colors.grey.shade300,
                               width: (c + 1) % 3 == 0 && c != 8 ? 2 : 1,
                             ),
                             bottom: BorderSide(
-                              color: (r + 1) % 3 == 0 && r != 8 ? NumeriaColors.textBody : Colors.grey.shade300,
+                              color: (r + 1) % 3 == 0 && r != 8 ? NumbersColors.textBody : Colors.grey.shade300,
                               width: (r + 1) % 3 == 0 && r != 8 ? 2 : 1,
                             ),
                           ),
-                          color: isSelected ? NumeriaColors.sudoku.withOpacity(0.2) : Colors.white,
+                          color: isSelected ? NumbersColors.sudoku.withOpacity(0.2) : Colors.white,
                         ),
                         alignment: Alignment.center,
                         child: Text(
@@ -123,7 +123,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: isInitial ? FontWeight.bold : FontWeight.normal,
-                            color: isInitial ? NumeriaColors.textBody : NumeriaColors.sudoku,
+                            color: isInitial ? NumbersColors.textBody : NumbersColors.sudoku,
                           ),
                         ),
                       ),

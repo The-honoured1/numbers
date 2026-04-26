@@ -136,7 +136,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
               children: _availableNumbers.asMap().entries.map((e) {
                 return ElevatedButton(
                   onPressed: () => _onNumberTap(e.value, e.key),
-                  style: ElevatedButton.styleFrom(backgroundColor: NumeriaColors.countdown, foregroundColor: Colors.white),
+                  style: ElevatedButton.styleFrom(backgroundColor: NumbersColors.countdown, foregroundColor: Colors.white),
                   child: Text('${e.value}', style: const TextStyle(fontSize: 20)),
                 );
               }).toList(),

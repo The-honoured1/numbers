@@ -70,7 +70,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
             ElevatedButton(
               onPressed: _check,
               style: ElevatedButton.styleFrom(
-                backgroundColor: NumeriaColors.sequence,
+                backgroundColor: NumbersColors.sequence,
                 foregroundColor: Colors.white,
                 minimumSize: const Size(double.infinity, 50),
               ),

@@ -44,7 +44,7 @@ class GameCard extends StatelessWidget {
                     child: Icon(game.icon, color: game.accentColor, size: 32),
                   ),
                   if (isDailyDone)
-                    const Icon(Icons.check_circle, color: NumeriaColors.crossCorrect, size: 24)
+                    const Icon(Icons.check_circle, color: NumbersColors.crossCorrect, size: 24)
                         .animate()
                         .scale(duration: 300.ms),
                 ],

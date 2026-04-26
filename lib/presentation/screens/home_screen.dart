@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: 'Number Grid',
         description: 'Classic 9x9 Sudoku puzzles.',
         icon: Icons.grid_4x4,
-        accentColor: NumeriaColors.sudoku,
+        accentColor: NumbersColors.sudoku,
         screen: const SudokuScreen(difficulty: 'Medium'),
       ),
       GameModel(
@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: '2048',
         description: 'Slide tiles to reach 2048.',
         icon: Icons.apps,
-        accentColor: NumeriaColors.game2048,
+        accentColor: NumbersColors.game2048,
         screen: const Screen2048(),
       ),
       GameModel(
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: 'Math Puzzle',
         description: 'Quick math equations.',
         icon: Icons.calculate,
-        accentColor: NumeriaColors.mathPuzzle,
+        accentColor: NumbersColors.mathPuzzle,
         screen: const PuzzleScreen(),
       ),
       GameModel(
@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: 'Sequence',
         description: 'Find the missing number.',
         icon: Icons.trending_up,
-        accentColor: NumeriaColors.sequence,
+        accentColor: NumbersColors.sequence,
         screen: const SequenceScreen(),
       ),
       GameModel(
@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: 'Countdown',
         description: 'Reach the target number.',
         icon: Icons.timer,
-        accentColor: NumeriaColors.countdown,
+        accentColor: NumbersColors.countdown,
         screen: const CountdownScreen(),
       ),
       GameModel(
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: 'Math Cross',
         description: '2D equation challenge.',
         icon: Icons.grid_on,
-        accentColor: NumeriaColors.crossword,
+        accentColor: NumbersColors.crossword,
         screen: const CrosswordScreen(),
       ),
     ];
@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Numeria',
+                          'numbers',
                           style: Theme.of(context).textTheme.displayLarge,
                         ),
                         Container(

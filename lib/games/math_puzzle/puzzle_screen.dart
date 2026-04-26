@@ -113,14 +113,14 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               value: _timeLeft / 10,
               backgroundColor: Colors.grey.shade200,
               valueColor: AlwaysStoppedAnimation<Color>(
-                _timeLeft < 4 ? Colors.red : NumeriaColors.mathPuzzle),
+                _timeLeft < 4 ? Colors.red : NumbersColors.mathPuzzle),
             ),
             const SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('LEVEL $_level', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
-                Text('SCORE $_score', style: const TextStyle(fontWeight: FontWeight.bold, color: NumeriaColors.mathPuzzle)),
+                Text('SCORE $_score', style: const TextStyle(fontWeight: FontWeight.bold, color: NumbersColors.mathPuzzle)),
               ],
             ),
             const Spacer(),
@@ -140,7 +140,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                   onPressed: () => _checkAnswer(opt),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
-                    foregroundColor: NumeriaColors.textBody,
+                    foregroundColor: NumbersColors.textBody,
                     side: const BorderSide(color: Color(0xFFEEEEEE)),
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
