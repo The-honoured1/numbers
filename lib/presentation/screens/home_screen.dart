@@ -297,66 +297,152 @@ class _StatsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(32.0),
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            Text('STATISTICS', style: GoogleFonts.lora(fontSize: 32, fontWeight: FontWeight.w800, letterSpacing: -1)),
-            const SizedBox(height: 60),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Text('YOUR PROGRESS', style: GoogleFonts.lora(fontSize: 32, fontWeight: FontWeight.w800, letterSpacing: -1)),
+            ),
+            
+            // STREAK HERO
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: NumbersColors.border, width: 2),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Column(
+                children: [
+                  const Icon(Icons.bolt_rounded, color: Colors.orange, size: 80).animate(onPlay: (controller) => controller.repeat(reverse: true)).scale(begin: const Offset(1,1), end: const Offset(1.1, 1.1), duration: 1000.ms),
+                  const SizedBox(height: 16),
+                  Text('${storage.currentStreak}', style: GoogleFonts.inter(fontSize: 64, fontWeight: FontWeight.w900, height: 1)),
+                  Text('DAY STREAK', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w900, letterSpacing: 2, color: NumbersColors.textFaint)),
+                  const SizedBox(height: 32),
+                  _buildWeeklyTrack(),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 32),
+            
+            // MILESTONES / CARDS
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _StatItem(value: '${storage.gamesPlayed}', label: 'PLAYED'),
-                _StatItem(value: '${storage.currentStreak}', label: 'STREAK'),
-                _StatItem(value: '${storage.maxStreak}', label: 'MAX'),
+                Expanded(child: _InfoCard(label: 'ALL TIME', value: '${storage.maxStreak}', icon: Icons.emoji_events, color: Colors.amber)),
+                const SizedBox(width: 16),
+                Expanded(child: _InfoCard(label: 'TOTAL PLAYED', value: '${storage.gamesPlayed}', icon: Icons.videogame_asset, color: Colors.blue)),
               ],
             ),
+            
+            const SizedBox(height: 48),
+            
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text('KEY METRICS', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1, color: NumbersColors.textFaint)),
+            ),
+            const SizedBox(height: 16),
+            _buildMetricsTable(),
             const SizedBox(height: 60),
-            const Divider(color: NumbersColors.border),
-            const SizedBox(height: 40),
-            _buildStatList(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatList() {
-    return Column(
-      children: [
-        _statRow("DAILY COMPLETIONS", "75%"),
-        _statRow("AVERAGE TIME", "4:12"),
-        _statRow("PUZZLES SHARED", "12"),
-        _statRow("ACCURACY", "92%"),
-      ],
+  Widget _buildWeeklyTrack() {
+    final now = DateTime.now();
+    final weekDays = List.generate(7, (i) => now.subtract(Duration(days: 6 - i)));
+    final labels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: weekDays.asMap().entries.map((e) {
+        final date = e.value;
+        final isCompleted = storage.anyDailyCompleted(date);
+        final isToday = date.day == now.day && date.month == now.month && date.year == now.year;
+        
+        return Column(
+          children: [
+            Text(labels[date.weekday % 7], style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.textFaint)),
+            const SizedBox(height: 8),
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: isCompleted ? Colors.orange : Colors.transparent,
+                shape: BoxShape.circle,
+                border: Border.all(color: isToday ? Colors.orange : NumbersColors.border, width: isToday ? 2 : 1),
+              ),
+              child: isCompleted 
+                ? const Icon(Icons.check, color: Colors.white, size: 16) 
+                : (isToday ? Container(margin: const EdgeInsets.all(8), decoration: const BoxDecoration(color: NumbersColors.border, shape: BoxShape.circle)) : null),
+            ),
+          ],
+        );
+      }).toList(),
     );
   }
 
-  Widget _statRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildMetricsTable() {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: NumbersColors.border),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
         children: [
-          Text(label, style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w800, color: NumbersColors.textFaint, letterSpacing: 1)),
-          Text(value, style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w900)),
+          _metricRow("DAILY ACCURACY", "94%"),
+          const Divider(height: 24),
+          _metricRow("FAVORITE GAME", "SUDOKU"),
+          const Divider(height: 24),
+          _metricRow("AVG. SOLVE TIME", "3:45"),
         ],
       ),
     );
   }
+
+  Widget _metricRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1, color: NumbersColors.textFaint)),
+        Text(value, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w900)),
+      ],
+    );
+  }
 }
 
-class _StatItem extends StatelessWidget {
-  final String value;
+class _InfoCard extends StatelessWidget {
   final String label;
-  const _StatItem({required this.value, required this.label});
+  final String value;
+  final IconData icon;
+  final Color color;
+  const _InfoCard({required this.label, required this.value, required this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(value, style: GoogleFonts.inter(fontSize: 40, fontWeight: FontWeight.w200)),
-        Text(label, style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w900, color: NumbersColors.textFaint, letterSpacing: 1)),
-      ],
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: NumbersColors.border),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: 16),
+          Text(value, style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w900)),
+          Text(label, style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1, color: NumbersColors.textFaint)),
+        ],
+      ),
     );
   }
 }

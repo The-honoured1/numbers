@@ -36,7 +36,7 @@ class StorageService {
 
         if (diff == 1) {
           await _prefs.setInt('current_streak', currentStreak + 1);
-        } else {
+        } else if (diff > 1) {
           await _prefs.setInt('current_streak', 1);
         }
       } catch (e) {
@@ -63,14 +63,23 @@ class StorageService {
   }
 
   // --- Daily Challenges ---
-  bool isDailyCompleted(String gameId) {
-    final today = "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
-    return _prefs.getBool('daily_${today}_$gameId') ?? false;
+  bool isDailyCompleted(String gameId, {DateTime? date}) {
+    final d = date ?? DateTime.now();
+    final dateStr = "${d.year}-${d.month}-${d.day}";
+    return _prefs.getBool('daily_${dateStr}_$gameId') ?? false;
+  }
+
+  bool anyDailyCompleted(DateTime date) {
+    final dateStr = "${date.year}-${date.month}-${date.day}";
+    // This is a bit expensive if we have many games, but for 8 it's fine
+    final games = ['sudoku','2048','math_puzzle','sequence','countdown','crossword','link','minesweeper'];
+    return games.any((id) => _prefs.getBool('daily_${dateStr}_$id') ?? false);
   }
 
   Future<void> markDailyCompleted(String gameId) async {
-    final today = "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
-    await _prefs.setBool('daily_${today}_$gameId', true);
+    final todayStr = "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
+    await _prefs.setBool('daily_${todayStr}_$gameId', true);
     await updateStreak();
+    await incrementGamesPlayed();
   }
 }
