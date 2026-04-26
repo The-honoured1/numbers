@@ -1,5 +1,15 @@
-import 'package:numbers/presentation/widgets/dialogs.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:numbers/core/design_system.dart';
+import 'package:numbers/presentation/widgets/dialogs.dart';
+import 'sequence_logic.dart';
+
+class SequenceScreen extends StatefulWidget {
+  const SequenceScreen({super.key});
+
+  @override
+  State<SequenceScreen> createState() => _SequenceScreenState();
+}
 
 class _SequenceScreenState extends State<SequenceScreen> {
   final SequenceLogic _logic = SequenceLogic();
