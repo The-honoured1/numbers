@@ -27,7 +27,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
     super.initState();
     _storage.incrementPlayCount('sequence');
     _sessionTimer.start();
-    _question = _logic.generate();
+    _question = _logic.generate(_streak);
   }
 
   @override

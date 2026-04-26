@@ -21,6 +21,7 @@ class _AscendScreenState extends State<AscendScreen> {
   late List<int> _sorted;
   int _nextIdx = 0;
   int _score = 0;
+  int _round = 1;
   int _timeLeft = 10;
   Timer? _timer;
   final Stopwatch _sessionTimer = Stopwatch();
@@ -35,7 +36,7 @@ class _AscendScreenState extends State<AscendScreen> {
   void _startNewRound() {
     StorageService().incrementPlayCount('ascend');
     setState(() {
-      _numbers = _logic.generate(12, 100)..shuffle();
+      _numbers = _logic.generate(12, 100 * _round)..shuffle();
       _sorted = List.from(_numbers)..sort();
       _nextIdx = 0;
       _timeLeft = 10;

@@ -43,7 +43,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   void _nextQuestion() {
     setState(() {
       _currentQuestion = _logic.generateQuestion(_level);
-      _timeLeft = 10;
+      _timeLeft = (12 - (_level ~/ 3)).clamp(3, 12);
     });
     _startTimer();
   }

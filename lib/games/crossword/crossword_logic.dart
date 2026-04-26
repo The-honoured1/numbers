@@ -3,7 +3,7 @@ import 'dart:math';
 class CrosswordLogic {
   final Random _rand = Random();
 
-  CrosswordData generate(int size) {
+  CrosswordData generate(int level) {
     // 3x3 Numbers Grid
     // [n1] [o1] [n2] [o2] [n3] = [r1]
     // [o3]      [o4]      [o5]
@@ -17,8 +17,10 @@ class CrosswordLogic {
     late List<int> results;
     late List<String> ops;
 
+    int maxVal = 9 + (level * 2);
+
     while (true) {
-        values = List.generate(9, (_) => _rand.nextInt(9) + 1);
+        values = List.generate(9, (_) => _rand.nextInt(maxVal) + 1);
         ops = List.generate(12, (_) => ['+', '-', '×'][_rand.nextInt(3)]);
         
         // Row results

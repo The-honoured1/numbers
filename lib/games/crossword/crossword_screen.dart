@@ -19,6 +19,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   late CrosswordData _data;
   List<int?> _playerValues = List.generate(9, (_) => null);
   int? _selectedIndex;
+  int _level = 0;
   final Stopwatch _sessionTimer = Stopwatch();
   
   @override
@@ -26,7 +27,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
     super.initState();
     _storage.incrementPlayCount('crossword');
     _sessionTimer.start();
-    _data = _logic.generate(3);
+    _data = _logic.generate(_level);
   }
 
   @override
@@ -64,7 +65,14 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
             icon: Icons.auto_awesome,
             onButtonPressed: () => Navigator.pop(context),
           ),
-        ).then((_) => Navigator.pop(context));
+        ).then((_) {
+          setState(() {
+            _level++;
+            _data = _logic.generate(_level);
+            _playerValues = List.generate(9, (_) => null);
+            _selectedIndex = null;
+          });
+        });
       }
     }
   }
