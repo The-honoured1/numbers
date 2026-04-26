@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
+import 'package:numbers/services/ad_service.dart';
 import 'logic_2048.dart';
 
 class Screen2048 extends StatefulWidget {
@@ -29,6 +30,7 @@ class _Screen2048State extends State<Screen2048> {
   }
 
   void _showWinDialog() {
+    AdService().showInterstitialAd();
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -53,6 +55,14 @@ class _Screen2048State extends State<Screen2048> {
         buttonText: 'TRY AGAIN',
         color: NumbersColors.countdown,
         icon: Icons.grid_off_outlined,
+        onRevive: () {
+          AdService().showRewardedAd(() {
+            Navigator.pop(context);
+            setState(() {
+              _logic.revive();
+            });
+          });
+        },
         onButtonPressed: () {
           Navigator.pop(context);
           setState(() => _logic.reset());

@@ -57,6 +57,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   }
 
   void _showWinDialog() {
+    AdService().showInterstitialAd();
     showDialog(
       context: context,
       barrierDismissible: false,

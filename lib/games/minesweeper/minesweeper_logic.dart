@@ -102,4 +102,10 @@ class MinesweeperGame {
     }
     gameWon = win;
   }
+
+  void revive(int r, int c) {
+    if (!gameOver) return;
+    board[r][c].state = CellState.flagged;
+    gameOver = false;
+  }
 }

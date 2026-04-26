@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'package:numbers/services/storage_service.dart';
+import 'package:numbers/services/ad_service.dart';
 import 'minesweeper_logic.dart';
 
 class MinesweeperScreen extends StatefulWidget {
@@ -45,10 +46,12 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
       StorageService().markDailyCompleted('minesweeper');
       _showResult(true);
     }
-    if (_game.gameOver) _showResult(false);
+    if (_game.gameOver) _showResult(false, r: r, c: c);
   }
 
-  void _showResult(bool won) {
+  void _showResult(bool won, {int? r, int? c}) {
+    if (won) AdService().showInterstitialAd();
+    
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -60,6 +63,16 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
         buttonText: won ? 'NEXT PUZZLE' : 'TRY AGAIN',
         color: won ? NumbersColors.crossCorrect : NumbersColors.countdown,
         icon: won ? Icons.shield_outlined : Icons.brightness_7_outlined,
+        onRevive: won ? null : () {
+          AdService().showRewardedAd(() {
+            Navigator.pop(context);
+            if (r != null && c != null) {
+              setState(() {
+                _game.revive(r, c);
+              });
+            }
+          });
+        },
         onButtonPressed: () {
           Navigator.pop(context);
           _startNewGame();

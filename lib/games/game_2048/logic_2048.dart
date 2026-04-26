@@ -108,4 +108,15 @@ class Logic2048 {
     }
     over = true;
   }
+
+  void revive() {
+    for (int r = 0; r < size; r++) {
+      for (int c = 0; c < size; c++) {
+        if (grid[r][c] == 2 || grid[r][c] == 4) {
+          grid[r][c] = 0;
+        }
+      }
+    }
+    over = false;
+  }
 }

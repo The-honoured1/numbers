@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'package:numbers/services/storage_service.dart';
+import 'package:numbers/services/ad_service.dart';
 import 'link_numbers_logic.dart';
 
 class LinkNumbersScreen extends StatefulWidget {
@@ -160,6 +161,7 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
 
     if (allValuesLinked) {
       _storage.markDailyCompleted('link');
+      AdService().showInterstitialAd();
       showDialog(
         context: context,
         barrierDismissible: false,

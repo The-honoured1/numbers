@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'package:numbers/services/storage_service.dart';
+import 'package:numbers/services/ad_service.dart';
 import 'countdown_logic.dart';
 
 class CountdownScreen extends StatefulWidget {
@@ -85,6 +86,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
   }
 
   void _showWin() {
+    AdService().showInterstitialAd();
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -107,9 +109,22 @@ class _CountdownScreenState extends State<CountdownScreen> {
         buttonText: 'TRY AGAIN',
         color: NumbersColors.countdown,
         icon: Icons.timer_off_outlined,
+        onRevive: () {
+          AdService().showRewardedAd(() {
+            Navigator.pop(context);
+            setState(() {
+              _timeLeft = 30; // Give 30 more seconds
+              _startTimer();
+            });
+          });
+        },
         onButtonPressed: () => Navigator.pop(context),
       ),
-    ).then((_) => Navigator.pop(context));
+    ).then((_) {
+      if (mounted && _timeLeft == 0) {
+        Navigator.pop(context);
+      }
+    });
   }
 
   @override
