@@ -4,6 +4,12 @@ import '../../core/design_system.dart';
 import '../../core/game_model.dart';
 import '../../services/storage_service.dart';
 import '../widgets/game_card.dart';
+import '../../games/sudoku/sudoku_screen.dart';
+import '../../games/game_2048/screen_2048.dart';
+import '../../games/math_puzzle/puzzle_screen.dart';
+import '../../games/sequence/sequence_screen.dart';
+import '../../games/countdown/countdown_screen.dart';
+import '../../games/crossword/crossword_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
         description: 'Classic 9x9 Sudoku puzzles.',
         icon: Icons.grid_4x4,
         accentColor: NumeriaColors.sudoku,
+        screen: const SudokuScreen(difficulty: 'Medium'),
       ),
       GameModel(
         id: '2048',
@@ -34,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
         description: 'Slide tiles to reach 2048.',
         icon: Icons.apps,
         accentColor: NumeriaColors.game2048,
+        screen: const Screen2048(),
       ),
       GameModel(
         id: 'math_puzzle',
@@ -41,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         description: 'Quick math equations.',
         icon: Icons.calculate,
         accentColor: NumeriaColors.mathPuzzle,
+        screen: const PuzzleScreen(),
       ),
       GameModel(
         id: 'sequence',
@@ -48,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
         description: 'Find the missing number.',
         icon: Icons.trending_up,
         accentColor: NumeriaColors.sequence,
+        screen: const SequenceScreen(),
       ),
       GameModel(
         id: 'countdown',
@@ -55,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
         description: 'Reach the target number.',
         icon: Icons.timer,
         accentColor: NumeriaColors.countdown,
+        screen: const CountdownScreen(),
       ),
       GameModel(
         id: 'crossword',
@@ -62,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
         description: '2D equation challenge.',
         icon: Icons.grid_on,
         accentColor: NumeriaColors.crossword,
+        screen: const CrosswordScreen(),
       ),
     ];
   }
@@ -134,10 +146,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       game: game,
                       isDailyDone: _storage.isDailyDone(game.id),
                       onTap: () {
-                        // Navigation will be added as games are implemented
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('${game.title} coming soon!')),
-                        );
+                        if (game.screen != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => game.screen!),
+                          ).then((_) => setState(() {}));
+                        }
                       },
                     );
                   },
