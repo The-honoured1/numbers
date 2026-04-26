@@ -98,6 +98,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
                       ),
                       child: _buildGrid(),
                     ).animate().fadeIn(duration: 800.ms).moveY(begin: 20, end: 0),
+                  ),
                 ),
               ),
             ),
@@ -111,17 +112,18 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   Widget _buildGrid() {
     return Column(
       children: [
-        _buildRow([0, 1, 2], [0, 1], 0),
-        _buildOpRow([2, 3, 4]),
-        _buildRow([3, 4, 5], [5, 6], 1),
-        _buildOpRow([7, 8, 9]),
-        _buildRow([6, 7, 8], [10, 11], 2),
-        _buildResultRow(),
+        _buildMainRow([0, 1, 2], [0, 1], 0),
+        _buildOpConnectorRow([2, 3, 4]),
+        _buildMainRow([3, 4, 5], [5, 6], 1),
+        _buildOpConnectorRow([7, 8, 9]),
+        _buildMainRow([6, 7, 8], [10, 11], 2),
+        _buildEqualsVerticalRow(),
+        _buildVerticalResultsRow(),
       ],
     );
   }
 
-  Widget _buildRow(List<int> valIndices, List<int> opIndices, int resultRowIndex) {
+  Widget _buildMainRow(List<int> valIndices, List<int> opIndices, int resultRowIndex) {
     return Expanded(
       child: Row(
         children: [
@@ -137,7 +139,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
     );
   }
 
-  Widget _buildOpRow(List<int> opIndices) {
+  Widget _buildOpConnectorRow(List<int> opIndices) {
     return Expanded(
       child: Row(
         children: [
@@ -153,7 +155,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
     );
   }
 
-  Widget _buildResultRow() {
+  Widget _buildEqualsVerticalRow() {
     return Expanded(
       child: Row(
         children: [
@@ -169,8 +171,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
     );
   }
 
-  // Result Row 4,5,6
-  Widget _buildResultCellRow() {
+  Widget _buildVerticalResultsRow() {
     return Expanded(
       child: Row(
         children: [
@@ -183,50 +184,6 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
           const Expanded(child: SizedBox.shrink()),
         ],
       ),
-    );
-  }
-
-  @override
-  void _calculateGridStructure() {
-    // Override the grid builder with a static results row at the end
-  }
-
-  // Re-implementing buildGrid for more control
-  Widget _buildGridNew() {
-    return Column(
-      children: [
-        _buildRow([0, 1, 2], [0, 1], 0),
-        _buildOpRow([2, 3, 4]),
-        _buildRow([3, 4, 5], [5, 6], 1),
-        _buildOpRow([7, 8, 9]),
-        _buildRow([6, 7, 8], [10, 11], 2),
-        const Expanded(
-          child: Row(
-            children: [
-               _OpBox(text: '='),
-               Expanded(child: SizedBox.shrink()),
-               _OpBox(text: '='),
-               Expanded(child: SizedBox.shrink()),
-               _OpBox(text: '='),
-               Expanded(child: SizedBox.shrink()),
-               Expanded(child: SizedBox.shrink()),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Row(
-            children: [
-               _ResultBox(value: _data.results[3]),
-               const Expanded(child: SizedBox.shrink()),
-               _ResultBox(value: _data.results[4]),
-               const Expanded(child: SizedBox.shrink()),
-               _ResultBox(value: _data.results[5]),
-               const Expanded(child: SizedBox.shrink()),
-               const Expanded(child: SizedBox.shrink()),
-            ],
-          ),
-        ),
-      ],
     );
   }
 
@@ -245,7 +202,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
           alignment: Alignment.center,
           child: Text(
             _playerValues[index]?.toString() ?? '',
-            style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 18),
+            style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 18, color: NumbersColors.textBody),
           ),
         ),
       ),
@@ -288,13 +245,13 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
         alignment: WrapAlignment.center,
         children: [
           ...List.generate(9, (index) => _keypadButton(index + 1)),
-          _keypadButton(0, isZero: true),
+          _keypadButton(0),
         ],
       ),
     );
   }
 
-  Widget _keypadButton(int value, {bool isZero = false}) {
+  Widget _keypadButton(int value) {
     return GestureDetector(
       onTap: () => _onKeyPress(value),
       child: Container(
@@ -307,29 +264,8 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
           boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 4, offset: const Offset(0, 2))],
         ),
         alignment: Alignment.center,
-        child: Text('$value', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w800)),
+        child: Text('$value', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w800, color: NumbersColors.textBody)),
       ),
     );
   }
-}
-
-class _OpBox extends StatelessWidget {
-  final String text;
-  const _OpBox({required this.text});
-  @override
-  Widget build(BuildContext context) => Expanded(child: Center(child: Text(text, style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, color: NumbersColors.textFaint))));
-}
-
-class _ResultBox extends StatelessWidget {
-  final int value;
-  const _ResultBox({required this.value});
-  @override
-  Widget build(BuildContext context) => Expanded(
-    child: Container(
-      margin: const EdgeInsets.all(2),
-      decoration: BoxDecoration(color: NumbersColors.crossCorrect.withOpacity(0.05), borderRadius: BorderRadius.circular(4)),
-      alignment: Alignment.center,
-      child: Text('$value', style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14, color: NumbersColors.crossCorrect)),
-    ),
-  );
 }
