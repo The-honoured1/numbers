@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
+import 'package:numbers/services/storage_service.dart';
 import 'minesweeper_logic.dart';
 
 class MinesweeperScreen extends StatefulWidget {
@@ -40,7 +41,10 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
       }
     });
 
-    if (_game.gameWon) _showResult(true);
+    if (_game.gameWon) {
+      StorageService().markDailyCompleted('minesweeper');
+      _showResult(true);
+    }
     if (_game.gameOver) _showResult(false);
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
+import 'package:numbers/services/storage_service.dart';
 import 'countdown_logic.dart';
 
 class CountdownScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ class CountdownScreen extends StatefulWidget {
 
 class _CountdownScreenState extends State<CountdownScreen> {
   final CountdownLogic _logic = CountdownLogic();
+  final StorageService _storage = StorageService();
   late CountdownGame _game;
   List<int> _availableNumbers = [];
   double _currentValue = 0;
@@ -71,6 +73,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
 
     if (_currentValue == _game.target) {
       _timer?.cancel();
+      _storage.markDailyCompleted('countdown');
       _showWin();
     }
   }

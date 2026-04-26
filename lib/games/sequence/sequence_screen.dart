@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
+import 'package:numbers/services/storage_service.dart';
 import 'sequence_logic.dart';
 
 class SequenceScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class SequenceScreen extends StatefulWidget {
 
 class _SequenceScreenState extends State<SequenceScreen> {
   final SequenceLogic _logic = SequenceLogic();
+  final StorageService _storage = StorageService();
   late SequenceQuestion _question;
   final TextEditingController _controller = TextEditingController();
   int _score = 0;
@@ -26,12 +28,14 @@ class _SequenceScreenState extends State<SequenceScreen> {
 
   void _check() {
     if (_controller.text == _question.answer.toString()) {
+      _storage.markDailyCompleted('sequence');
       setState(() {
         _score += (20 + _streak * 5);
         _streak++;
         _question = _logic.generate();
         _controller.clear();
       });
+      _storage.saveHighScore('sequence', _score);
     } else {
       showDialog(
         context: context,
