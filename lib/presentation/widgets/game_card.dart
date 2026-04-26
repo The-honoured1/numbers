@@ -102,7 +102,8 @@ class GameCard extends StatelessWidget {
             ],
           ),
         ),
-      ).animate().fadeIn(duration: 600.ms, delay: 100.ms).moveY(begin: 30, end: 0, curve: Curves.easeOutQuad),
+      ).animate(onPlay: (controller) => controller.repeat(reverse: true))
+       .shimmer(delay: 2.seconds, duration: 1.5.seconds, color: Colors.white.withOpacity(0.2)),
     );
   }
 }

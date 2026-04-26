@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/design_system.dart';
+import '../widgets/win_dialog.dart';
 import 'sudoku_logic.dart';
 
 class SudokuScreen extends StatefulWidget {
@@ -54,18 +56,18 @@ class _SudokuScreenState extends State<SudokuScreen> {
   void _showWinDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Congratulations!'),
-        content: const Text('You solved the puzzle.'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            child: const Text('Finish'),
-          ),
-        ],
+      barrierDismissible: false,
+      builder: (context) => WinDialog(
+        title: 'Perfectly Solved!',
+        message: 'Your logic is sharp. The grid is complete.',
+        onHome: () {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },
+        onNext: () {
+          Navigator.pop(context);
+          setState(() => _startNewGame());
+        },
       ),
     );
   }

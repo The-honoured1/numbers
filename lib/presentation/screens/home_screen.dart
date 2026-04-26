@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             letterSpacing: -2,
                             color: NumbersColors.textBody,
                           ),
-                        ),
+                        ).animate().fadeIn(duration: 800.ms).moveY(begin: -20, end: 0, curve: Curves.easeOut),
                         const SizedBox(height: 8),
                         Container(
                           height: 3,
@@ -121,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: NumbersColors.textBody,
                             borderRadius: BorderRadius.circular(2),
                           ),
-                        ),
+                        ).animate().scaleX(delay: 400.ms, begin: 0, end: 1, curve: Curves.elasticOut),
                         const SizedBox(height: 24),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ],
                               ),
-                            ).animate().scale(delay: 500.ms),
+                            ).animate().scale(delay: 600.ms, curve: Curves.backOut),
                           ],
                         ),
                       ],
@@ -182,11 +182,23 @@ class _HomeScreenState extends State<HomeScreen> {
                             if (game.screen != null) {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => game.screen!),
+                                PageRouteBuilder(
+                                  pageBuilder: (context, animation, secondaryAnimation) => game.screen!,
+                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                    var begin = const Offset(0.0, 0.05);
+                                    var end = Offset.zero;
+                                    var curve = Curves.easeOut;
+                                    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: SlideTransition(position: animation.drive(tween), child: child),
+                                    );
+                                  },
+                                ),
                               ).then((_) => setState(() {}));
                             }
                           },
-                        );
+                        ).animate().fadeIn(delay: (index * 100 + 400).ms, duration: 600.ms).moveY(begin: 30, end: 0, curve: Curves.easeOutQuad);
                       },
                       childCount: _games.length,
                     ),

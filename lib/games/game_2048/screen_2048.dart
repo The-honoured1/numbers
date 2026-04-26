@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/design_system.dart';
+import '../widgets/win_dialog.dart';
 import 'logic_2048.dart';
 
 class Screen2048 extends StatefulWidget {
@@ -23,6 +25,26 @@ class _Screen2048State extends State<Screen2048> {
       _logic.move(dir);
     });
     if (_logic.over) _showGameOver();
+    if (_logic.won) _showWinDialog();
+  }
+
+  void _showWinDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => WinDialog(
+        title: 'Legendary!',
+        message: 'You reached the 2048 tile. A master of the grid!',
+        onHome: () {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },
+        onNext: () {
+          Navigator.pop(context);
+          setState(() => _logic.reset());
+        },
+      ),
+    );
   }
 
   void _showGameOver() {
