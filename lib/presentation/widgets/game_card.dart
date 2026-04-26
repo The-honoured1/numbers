@@ -23,87 +23,68 @@ class GameCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.grey.shade100, width: 2),
-          boxShadow: [
-            BoxShadow(
-              color: game.accentColor.withOpacity(0.1),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            )
-          ],
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: NumbersColors.border),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: Stack(
-            children: [
-              // Bottom Accent Bar
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: 6,
-                child: Container(color: game.accentColor),
-              ),
-              
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 50,
-                      height: 50,
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    game.title,
+                    style: GoogleFonts.inter(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: NumbersColors.textBody,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    game.description,
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      color: NumbersColors.textFaint,
+                      fontWeight: FontWeight.w400,
+                      height: 1.3,
+                    ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const Spacer(),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: game.accentColor.withOpacity(0.1),
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                      child: Icon(game.icon, color: game.accentColor, size: 28),
+                      child: Icon(game.icon, color: game.accentColor, size: 20),
                     ),
-                    const Spacer(),
-                    Text(
-                      game.title,
-                      style: GoogleFonts.inter(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w900,
-                        color: NumbersColors.textBody,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      game.description,
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: NumbersColors.textFaint,
-                        fontWeight: FontWeight.w500,
-                        height: 1.2,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              
-              if (isDailyDone)
-                Positioned(
-                  top: 12,
-                  right: 12,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(
-                      color: NumbersColors.crossCorrect,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.check, color: Colors.white, size: 14),
-                  ).animate().scale(duration: 400.ms, curve: Curves.elasticOut),
-                ),
-            ],
-          ),
+            ),
+            if (isDailyDone)
+              Positioned(
+                top: 8,
+                right: 8,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: NumbersColors.crossCorrect,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.check, color: Colors.white, size: 10),
+                ).animate().scale(duration: 400.ms, curve: Curves.elasticOut),
+              ),
+          ],
         ),
-      ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-       .shimmer(delay: 2.seconds, duration: 1.5.seconds, color: Colors.white.withOpacity(0.2)),
+      ),
     );
   }
 }

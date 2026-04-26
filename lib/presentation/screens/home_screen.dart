@@ -12,6 +12,7 @@ import 'package:numbers/games/math_puzzle/puzzle_screen.dart';
 import 'package:numbers/games/sequence/sequence_screen.dart';
 import 'package:numbers/games/countdown/countdown_screen.dart';
 import 'package:numbers/games/crossword/crossword_screen.dart';
+import 'package:numbers/games/link_numbers/link_numbers_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -77,138 +78,124 @@ class _HomeScreenState extends State<HomeScreen> {
         accentColor: NumbersColors.crossword,
         screen: const CrosswordScreen(),
       ),
+      GameModel(
+        id: 'link',
+        title: 'Number Link',
+        description: 'Connect pairs of numbers.',
+        icon: Icons.gesture,
+        accentColor: NumbersColors.linkNumbers,
+        screen: const LinkNumbersScreen(),
+      ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Background Decorations
-          Positioned.fill(
-            child: CustomPaint(
-              painter: DottedPathPainter(),
-            ),
-          ),
-          const FloatingShape(color: NumbersColors.sudoku, size: 40, top: 100, left: -20, rotation: 0.5),
-          const FloatingShape(color: NumbersColors.crossword, size: 30, top: 400, left: 350, rotation: -0.2),
-          const FloatingShape(color: NumbersColors.game2048, size: 20, top: 600, left: 50, rotation: 0.8),
-          
-          SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'numbers',
-                          style: GoogleFonts.lora(
-                            fontSize: 48,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -2,
-                            color: NumbersColors.textBody,
+      backgroundColor: NumbersColors.backgroundOffWhite,
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 60, 24, 32),
+                child: Column(
+                  children: [
+                    Text(
+                      'numbers',
+                      style: Theme.of(context).textTheme.displayLarge,
+                    ).animate().fadeIn(duration: 800.ms).moveY(begin: -10, end: 0, curve: Curves.easeOut),
+                    const SizedBox(height: 8),
+                    Text(
+                      'A DAILY COLLECTION OF PUZZLES',
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 2,
+                        color: NumbersColors.textFaint,
+                      ),
+                    ).animate().fadeIn(delay: 200.ms),
+                    const SizedBox(height: 48),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: NumbersColors.border),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.calendar_today_outlined, size: 16, color: NumbersColors.textBody),
+                          const SizedBox(width: 12),
+                          Text(
+                            'APRIL 26, 2026',
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
+                              color: NumbersColors.textBody,
+                            ),
                           ),
-                        ).animate().fadeIn(duration: 800.ms).moveY(begin: -20, end: 0, curve: Curves.easeOut),
-                        const SizedBox(height: 8),
-                        Container(
-                          height: 3,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: NumbersColors.textBody,
-                            borderRadius: BorderRadius.circular(2),
+                          const SizedBox(width: 12),
+                          Container(width: 1, height: 16, color: NumbersColors.border),
+                          const SizedBox(width: 12),
+                          const Icon(Icons.bolt, color: Colors.orange, size: 18),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${_storage.getStreak()}',
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w900,
+                              color: NumbersColors.textBody,
+                              fontSize: 12,
+                            ),
                           ),
-                        ).animate().scaleX(delay: 400.ms, begin: 0, end: 1, curve: Curves.elasticOut),
-                        const SizedBox(height: 24),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(30),
-                                border: Border.all(color: Colors.grey.shade200),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 4),
-                                  )
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.bolt, color: Colors.orange, size: 20),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    '${_storage.getStreak()} DAY STREAK',
-                                    style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.orange.shade800,
-                                      fontSize: 12,
-                                      letterSpacing: 1.2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ).animate().scale(delay: 600.ms, curve: Curves.easeOutBack),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                        ],
+                      ),
+                    ).animate().fadeIn(delay: 400.ms).scale(begin: const Offset(0.95, 0.95)),
+                  ],
                 ),
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  sliver: SliverGrid(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 20,
-                      crossAxisSpacing: 20,
-                      childAspectRatio: 0.8,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final game = _games[index];
-                        return GameCard(
-                          game: game,
-                          isDailyDone: _storage.isDailyDone(game.id),
-                          onTap: () {
-                            if (game.screen != null) {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) => game.screen!,
-                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                    var begin = const Offset(0.0, 0.05);
-                                    var end = Offset.zero;
-                                    var curve = Curves.easeOut;
-                                    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                                    return FadeTransition(
-                                      opacity: animation,
-                                      child: SlideTransition(position: animation.drive(tween), child: child),
-                                    );
-                                  },
-                                ),
-                              ).then((_) => setState(() {}));
-                            }
-                          },
-                        ).animate().fadeIn(delay: (index * 100 + 400).ms, duration: 600.ms).moveY(begin: 30, end: 0, curve: Curves.easeOutQuad);
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 0.85,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final game = _games[index];
+                    return GameCard(
+                      game: game,
+                      isDailyDone: _storage.isDailyDone(game.id),
+                      onTap: () {
+                        if (game.screen != null) {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation, secondaryAnimation) => game.screen!,
+                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                );
+                              },
+                            ),
+                          ).then((_) => setState(() {}));
+                        }
                       },
-                      childCount: _games.length,
-                    ),
-                  ),
+                    ).animate().fadeIn(delay: (index * 50 + 500).ms, duration: 400.ms);
+                  },
+                  childCount: _games.length,
                 ),
-                const SliverToBoxAdapter(child: SizedBox(height: 60)),
-              ],
+              ),
             ),
-          ),
-        ],
+            const SliverToBoxAdapter(child: SizedBox(height: 60)),
+          ],
+        ),
       ),
     );
   }
