@@ -26,6 +26,15 @@ class _Screen2048State extends State<Screen2048> {
     StorageService().incrementPlayCount('2048');
     _sessionTimer.start();
     _logic.reset();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await TutorialScreen.checkAndShow(
+        context: context,
+        gameId: '2048',
+        title: '2048',
+        description: 'Swipe to move the tiles. When two tiles with the same number touch, they merge into one! Reach the 2048 tile to win.',
+        icon: Icons.dashboard_rounded,
+      );
+    });
   }
 
   @override

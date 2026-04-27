@@ -105,99 +105,101 @@ class _SequenceScreenState extends State<SequenceScreen> {
       appBar: AppBar(
         title: Text('SEQUENCE', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: NumbersColors.purple.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                _question.typeName.toUpperCase(),
-                style: GoogleFonts.outfit(
-                  letterSpacing: 2,
-                  color: NumbersColors.purple,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 12,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: NumbersColors.purple.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  _question.typeName.toUpperCase(),
+                  style: GoogleFonts.outfit(
+                    letterSpacing: 2,
+                    color: NumbersColors.purple,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 12,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 48),
-            Container(
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                color: context.surface,
-                borderRadius: BorderRadius.circular(32),
-                border: Border.all(color: context.border, width: 2.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: context.shadow,
-                    offset: const Offset(8, 8),
-                  )
+              const SizedBox(height: 48),
+              Container(
+                padding: const EdgeInsets.all(32),
+                decoration: BoxDecoration(
+                  color: context.surface,
+                  borderRadius: BorderRadius.circular(32),
+                  border: Border.all(color: context.border, width: 2.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: context.shadow,
+                      offset: const Offset(8, 8),
+                    )
+                  ],
+                ),
+                child: Text(
+                  _question.text,
+                  style: GoogleFonts.outfit(
+                    fontSize: 48,
+                    fontWeight: FontWeight.w900,
+                    color: context.onSurface,
+                    letterSpacing: 1,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 48),
+              TextField(
+                controller: _controller,
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+                autofocus: true,
+                style: GoogleFonts.outfit(fontSize: 40, fontWeight: FontWeight.w900, color: NumbersColors.purple),
+                decoration: InputDecoration(
+                  hintText: '?',
+                  hintStyle: TextStyle(color: context.border),
+                  filled: true,
+                  fillColor: context.surface,
+                  contentPadding: const EdgeInsets.all(24),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide(color: context.border, width: 2.5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide(color: NumbersColors.purple, width: 3),
+                  ),
+                ),
+                onSubmitted: (_) => _check(),
+              ),
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _StatTile(label: 'SCORE', value: '$_score', color: NumbersColors.purple),
+                  const SizedBox(width: 60),
+                  _StatTile(label: 'STREAK', value: '$_streak', color: NumbersColors.yellow),
                 ],
               ),
-              child: Text(
-                _question.text,
-                style: GoogleFonts.outfit(
-                  fontSize: 48,
-                  fontWeight: FontWeight.w900,
-                  color: context.onSurface,
-                  letterSpacing: 1,
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _check,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: context.onSurface,
+                    foregroundColor: context.surface,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  ),
+                  child: Text('CHECK SEQUENCE', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
                 ),
               ),
-            ),
-            const SizedBox(height: 48),
-            TextField(
-              controller: _controller,
-              keyboardType: TextInputType.number,
-              textAlign: TextAlign.center,
-              autofocus: true,
-              style: GoogleFonts.outfit(fontSize: 40, fontWeight: FontWeight.w900, color: NumbersColors.purple),
-              decoration: InputDecoration(
-                hintText: '?',
-                hintStyle: TextStyle(color: context.border),
-                filled: true,
-                fillColor: context.surface,
-                contentPadding: const EdgeInsets.all(24),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
-                  borderSide: BorderSide(color: context.border, width: 2),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
-                  borderSide: BorderSide(color: NumbersColors.purple, width: 3),
-                ),
-              ),
-              onSubmitted: (_) => _check(),
-            ),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _StatTile(label: 'SCORE', value: '$_score', color: NumbersColors.purple),
-                const SizedBox(width: 60),
-                _StatTile(label: 'STREAK', value: '$_streak', color: NumbersColors.yellow),
-              ],
-            ),
-            const SizedBox(height: 40),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _check,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.onSurface,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                ),
-                child: Text('CHECK SEQUENCE', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

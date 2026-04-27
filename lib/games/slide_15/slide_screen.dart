@@ -96,8 +96,10 @@ class _SlideScreenState extends State<SlideScreen> {
       appBar: AppBar(
         title: Text('SLIDE 15', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),
-      body: Column(
-        children: [
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
           Padding(
             padding: const EdgeInsets.all(24.0),
             child: Row(
@@ -171,6 +173,8 @@ class _SlideScreenState extends State<SlideScreen> {
           ),
         ],
       ),
+    ),
+    ),
     );
   }
 }
