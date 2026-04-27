@@ -24,6 +24,8 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   int _level = 1;
   int _timeLeft = 10;
   Timer? _timer;
+  int _lives = 3;
+  bool _isWrong = false;
   final Stopwatch _sessionTimer = Stopwatch();
   int _revivesUsed = 0;
 
@@ -83,12 +85,25 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         _level++;
       });
       StorageService().saveHighScore('math_puzzle', _score);
-      
       _nextQuestion();
     } else {
-      StorageService().markDailyCompleted('math_puzzle');
       _timer?.cancel();
-      _showGameOver();
+      setState(() {
+        _lives--;
+        _isWrong = true;
+      });
+      
+      // Haptic/Visual feedback
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (mounted) setState(() => _isWrong = false);
+      });
+
+      if (_lives <= 0) {
+        StorageService().markDailyCompleted('math_puzzle');
+        _showGameOver();
+      } else {
+        _nextQuestion();
+      }
     }
   }
 
@@ -102,20 +117,22 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         buttonText: 'RESTART GAME',
         color: NumbersColors.green,
         icon: Icons.error_outline,
-        onRevive: _revivesUsed < 2 ? () {
+        onRevive: () {
           AdService().showRewardedAd(() {
             Navigator.pop(context);
             setState(() {
+              _lives = 3;
               _revivesUsed++;
             });
-            _nextQuestion(); // Continue from where they left off
+            _nextQuestion();
           });
-        } : null,
+        },
         onButtonPressed: () {
           Navigator.pop(context);
           setState(() {
             _score = 0;
             _level = 1;
+            _lives = 3;
             _revivesUsed = 0;
           });
           _nextQuestion();
@@ -152,7 +169,13 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _StatDisplay(label: 'LEVEL', value: '$_level', color: context.textFaint),
-                _StatDisplay(label: 'BEST', value: '${StorageService().getHighScore('math_puzzle')}', color: NumbersColors.blue),
+                Row(
+                  children: List.generate(3, (i) => Icon(
+                    i < _lives ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+                    color: i < _lives ? NumbersColors.coral : context.textFaint.withOpacity(0.3),
+                    size: 28,
+                  ).animate(target: i < _lives ? 1 : 0).scale(duration: 200.ms)),
+                ),
                 _StatDisplay(label: 'SCORE', value: '$_score', color: NumbersColors.green),
               ],
             ),
@@ -161,12 +184,12 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               padding: const EdgeInsets.symmetric(vertical: 40),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: context.surface,
+                color: _isWrong ? NumbersColors.coral.withOpacity(0.1) : context.surface,
                 borderRadius: BorderRadius.circular(32),
-                border: Border.all(color: context.border, width: 2),
+                border: Border.all(color: _isWrong ? NumbersColors.coral : context.border, width: _isWrong ? 4 : 2),
                 boxShadow: [
                   BoxShadow(
-                    color: context.shadow.withOpacity(0.05),
+                    color: _isWrong ? NumbersColors.coral.withOpacity(0.2) : context.shadow.withOpacity(0.05),
                     blurRadius: 30,
                     offset: const Offset(0, 15),
                   )
@@ -175,8 +198,11 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               child: Center(
                 child: Text(
                   _currentQuestion.text,
-                  style: GoogleFonts.outfit(fontSize: 56, fontWeight: FontWeight.w900, color: context.onSurface),
-                ).animate(key: ValueKey(_currentQuestion.text)).fadeIn().scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack),
+                  style: GoogleFonts.outfit(fontSize: 48, fontWeight: FontWeight.w900, color: _isWrong ? NumbersColors.coral : context.onSurface),
+                ).animate(key: ValueKey(_currentQuestion.text))
+                  .fadeIn()
+                  .scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack)
+                  .shake(hz: _isWrong ? 10 : 0, curve: Curves.easeInOut),
               ),
             ),
             const Spacer(),

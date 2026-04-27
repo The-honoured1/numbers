@@ -159,124 +159,130 @@ class _SudokuScreenState extends State<SudokuScreen> {
           )
         ],
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _StatItem(label: 'DIFFICULTY', value: _difficulty.toUpperCase(), color: NumbersColors.yellow),
-                _StatItem(label: 'HIGH SCORE', value: '$hiScore', color: context.textFaint),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: context.onSurface, width: 3),
-                  borderRadius: BorderRadius.circular(16),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _StatItem(label: 'DIFFICULTY', value: _difficulty.toUpperCase(), color: NumbersColors.yellow),
+                    _StatItem(label: 'HIGH SCORE', value: '$hiScore', color: context.textFaint),
+                  ],
                 ),
-                clipBehavior: Clip.antiAlias,
-                child: GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 9,
-                  ),
-                  itemCount: 81,
-                  itemBuilder: (context, index) {
-                    int r = index ~/ 9;
-                    int c = index % 9;
-                    bool isInitial = _initialGrid[r][c] != 0;
-                    bool isSelected = _selectedRow == r && _selectedCol == c;
-                    final val = _currentGrid[r][c];
-                    
-                    // Error highlighting: if row/col/box has same number
-                    bool isError = false;
-                    if (_autoCheck && val != 0 && !isInitial) {
-                      _currentGrid[r][c] = 0;
-                      isError = !_logic.isValid(_currentGrid, r, c, val);
-                      _currentGrid[r][c] = val;
-                    }
-
-                    return GestureDetector(
-                      onTap: () => _onCellTap(r, c),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                            right: BorderSide(
-                              color: (c + 1) % 3 == 0 && c != 8 ? context.onSurface : context.gridBorder,
-                              width: (c + 1) % 3 == 0 && c != 8 ? 2 : 0.5,
-                            ),
-                            bottom: BorderSide(
-                              color: (r + 1) % 3 == 0 && r != 8 ? context.onSurface : context.gridBorder,
-                              width: (r + 1) % 3 == 0 && r != 8 ? 2 : 0.5,
-                            ),
-                          ),
-                          color: isSelected ? NumbersColors.yellow.withOpacity(0.2) : context.surface,
-                        ),
-                        alignment: Alignment.center,
-                        child: val != 0 
-                          ? Text(
-                              val.toString(),
-                              style: GoogleFonts.outfit(
-                                fontSize: 22,
-                                fontWeight: isInitial ? FontWeight.w900 : FontWeight.w600,
-                                color: isInitial ? context.onSurface : (isError ? NumbersColors.coral : NumbersColors.yellow),
-                              ),
-                            )
-                          : _buildNotes(r, c),
+              ),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: context.onSurface, width: 3),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(color: context.shadow, offset: const Offset(8, 8)),
+                      ],
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 9,
                       ),
-                    );
-                  },
+                      itemCount: 81,
+                      itemBuilder: (context, index) {
+                        int r = index ~/ 9;
+                        int c = index % 9;
+                        bool isInitial = _initialGrid[r][c] != 0;
+                        bool isSelected = _selectedRow == r && _selectedCol == c;
+                        final val = _currentGrid[r][c];
+                        
+                        bool isError = false;
+                        if (_autoCheck && val != 0 && !isInitial) {
+                          _currentGrid[r][c] = 0;
+                          isError = !_logic.isValid(_currentGrid, r, c, val);
+                          _currentGrid[r][c] = val;
+                        }
+
+                        return GestureDetector(
+                          onTap: () => _onCellTap(r, c),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                right: BorderSide(
+                                  color: (c + 1) % 3 == 0 && c != 8 ? context.onSurface : context.gridBorder,
+                                  width: (c + 1) % 3 == 0 && c != 8 ? 2 : 0.5,
+                                ),
+                                bottom: BorderSide(
+                                  color: (r + 1) % 3 == 0 && r != 8 ? context.onSurface : context.gridBorder,
+                                  width: (r + 1) % 3 == 0 && r != 8 ? 2 : 0.5,
+                                ),
+                              ),
+                              color: isSelected 
+                                  ? NumbersColors.yellow.withOpacity(0.3) 
+                                  : (isInitial ? (Theme.of(context).brightness == Brightness.dark ? context.surface : const Color(0xFFF8FAFC)) : context.surface),
+                            ),
+                            alignment: Alignment.center,
+                            child: val != 0 
+                              ? Text(
+                                  val.toString(),
+                                  style: GoogleFonts.outfit(
+                                    fontSize: 22,
+                                    fontWeight: isInitial ? FontWeight.w900 : FontWeight.w600,
+                                    color: (isError && !isInitial) 
+                                        ? NumbersColors.coral 
+                                        : (isInitial ? context.onSurface : NumbersColors.yellow),
+                                  ),
+                                )
+                              : _buildNotes(r, c),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
-              ).animate().fadeIn(duration: 800.ms).scale(begin: const Offset(0.98, 0.98)),
-            ),
-          ),
-          const Spacer(),
-          _buildControls(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(9, (index) {
-                int num = index + 1;
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2.5),
-                    child: InkWell(
+              ),
+              _buildControls(),
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
+                child: Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  alignment: WrapAlignment.center,
+                  children: List.generate(9, (index) {
+                    int num = index + 1;
+                    return InkWell(
                       onTap: () => _onNumberTap(num),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(16),
                       child: Container(
-                        height: 55,
+                        width: (MediaQuery.of(context).size.width - 80) / 4.5,
+                        height: 60,
                         decoration: BoxDecoration(
                           color: context.surface,
                           border: Border.all(color: context.border, width: 2.5),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(16),
                           boxShadow: [
-                            BoxShadow(
-                              color: context.shadow,
-                              offset: const Offset(4, 4),
-                            )
+                            BoxShadow(color: context.shadow, offset: const Offset(4, 4)),
                           ],
                         ),
                         alignment: Alignment.center,
                         child: Text(num.toString(), 
-                          style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.w900, color: context.onSurface)),
+                          style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w900, color: context.onSurface)),
                       ),
-                    ),
-                  ),
-                );
-              }),
-            ),
+                    );
+                  }),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ),,
     );
   }
 

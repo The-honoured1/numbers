@@ -43,21 +43,21 @@ class LinkNumbersLogic {
     int gridSize;
     int pairCount;
 
-    if (levelIndex < 5) {
+    if (levelIndex < 10) {
       gridSize = 5;
-      pairCount = 3 + (levelIndex ~/ 2); 
-    } else if (levelIndex < 15) {
+      pairCount = 5; 
+    } else if (levelIndex < 25) {
       gridSize = 6;
-      pairCount = 4 + ((levelIndex - 5) ~/ 3);
-    } else if (levelIndex < 30) {
+      pairCount = 6;
+    } else if (levelIndex < 50) {
       gridSize = 7;
-      pairCount = 5 + ((levelIndex - 15) ~/ 4);
-    } else if (levelIndex < 60) {
+      pairCount = 7;
+    } else if (levelIndex < 100) {
       gridSize = 8;
-      pairCount = 6 + ((levelIndex - 30) ~/ 6);
+      pairCount = 8;
     } else {
       gridSize = 9;
-      pairCount = 7 + ((levelIndex - 60) ~/ 10);
+      pairCount = 10;
     }
 
     // Keep trying until we get a valid puzzle
@@ -80,18 +80,18 @@ class LinkNumbersLogic {
     List<int> values = [];
 
     for (int v = 1; v <= pairCount; v++) {
-      // Pick a random unoccupied start cell
       Point? start = _findFreeCell(occupied, gridSize);
-      if (start == null) return null;
+      if (start == null) break; 
 
-      // Random walk from start to create a path
-      int pathLen = gridSize + _rand.nextInt(gridSize * 2); 
       List<Point> path = [start];
       occupied[start.y][start.x] = true;
 
-      for (int step = 0; step < pathLen; step++) {
+      // Longer, winding paths to fill the board
+      int maxPathLen = (gridSize * gridSize) ~/ pairCount + 2;
+      for (int step = 0; step < maxPathLen; step++) {
         List<Point> candidates = [];
-        for (var d in _dirs) {
+        var shDirs = List.from(_dirs)..shuffle();
+        for (var d in shDirs) {
           Point next = path.last.move(d[0], d[1]);
           if (_inBounds(next, gridSize) && !occupied[next.y][next.x]) {
             candidates.add(next);
@@ -103,12 +103,14 @@ class LinkNumbersLogic {
         occupied[chosen.y][chosen.x] = true;
       }
 
-      if (path.length < 2) return null;
-
-      endpoints[path.first] = v;
-      endpoints[path.last] = v;
-      values.add(v);
+      if (path.length >= 2) {
+        endpoints[path.first] = v;
+        endpoints[path.last] = v;
+        values.add(v);
+      }
     }
+
+    if (values.isEmpty) return null;
 
     return LinkNumbersData(
       gridSize: gridSize,

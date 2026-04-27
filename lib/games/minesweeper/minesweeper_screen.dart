@@ -340,12 +340,12 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
           Icons.flag_rounded, 
           color: NumbersColors.coral, 
           size: 22,
-        ).animate().scale(duration: 200.ms, curve: Curves.backOut);
+        ).animate().scale(duration: 200.ms, curve: Curves.easeOutBack);
       case CellState.revealed:
         if (cell.isMine) {
           return Icon(
             Icons.brightness_7_rounded, 
-            color: NumbersColors.onSurface, 
+            color: context.onSurface, 
             size: 24,
           ).animate().shake();
         }
@@ -363,5 +363,6 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
             ],
           ),
         );
+    }
   }
 }

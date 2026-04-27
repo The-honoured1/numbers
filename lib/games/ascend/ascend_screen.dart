@@ -28,6 +28,7 @@ class _AscendScreenState extends State<AscendScreen> {
   Timer? _timer;
   final Stopwatch _sessionTimer = Stopwatch();
   int _revivesUsed = 0;
+  bool _isWrong = false;
 
   @override
   void initState() {
@@ -81,7 +82,6 @@ class _AscendScreenState extends State<AscendScreen> {
       setState(() {
         _nextIdx++;
         _score += 10;
-        _timeLeft += 1; // Bonus time
       });
       StorageService().saveHighScore('ascend', _score);
       if (_nextIdx == _sorted.length) {
@@ -98,10 +98,16 @@ class _AscendScreenState extends State<AscendScreen> {
         }
       }
     } else {
-      setState(() {
-        _timeLeft = (_timeLeft - 2).clamp(0, 99);
-      });
+      // Wrong tap feedback
+      _showWrongFeedback();
     }
+  }
+
+  void _showWrongFeedback() {
+    setState(() => _isWrong = true);
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (mounted) setState(() => _isWrong = false);
+    });
   }
 
   void _endGame() {
@@ -155,10 +161,13 @@ class _AscendScreenState extends State<AscendScreen> {
       appBar: AppBar(
         title: Text('ZEN ASCEND', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
+      body: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        color: _isWrong ? NumbersColors.coral.withOpacity(0.1) : context.surface,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
           Padding(
             padding: const EdgeInsets.all(24.0),
             child: Row(
