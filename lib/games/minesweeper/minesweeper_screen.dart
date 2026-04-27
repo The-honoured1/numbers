@@ -181,7 +181,13 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     return Scaffold(
       backgroundColor: context.surface,
       appBar: AppBar(
-        title: Text('MINESWEEPER', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w900, fontSize: 24, letterSpacing: 1.2)),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('MINESWEEPER', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w900, fontSize: 18, letterSpacing: 0.5)),
+            Text('LEVEL $_currentLevel • $remaining MINES', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1)),
+          ],
+        ),
         actions: [
           IconButton(onPressed: _startNewGame, icon: const Icon(Icons.refresh_rounded)),
           const SizedBox(width: 8),
@@ -189,71 +195,35 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
       ),
       body: Column(
         children: [
-          // Header Stats
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildTopStat('LEVEL', '$_currentLevel/500', NumbersColors.blue),
-                    _buildTopStat('MINES', '$remaining', NumbersColors.coral),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: _levelConfig.difficultyColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: _levelConfig.difficultyColor, width: 1.5),
-                      ),
-                      child: Text(
-                        _levelConfig.difficulty,
-                        style: GoogleFonts.outfit(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w900,
-                          color: _levelConfig.difficultyColor,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: LinearProgressIndicator(
-                    value: _currentLevel / 500,
-                    backgroundColor: context.gridBorder,
-                    valueColor: AlwaysStoppedAnimation<Color>(_levelConfig.difficultyColor),
-                    minHeight: 8,
+          const SizedBox(height: 16),
+          // Compact Mode Toggle
+          Center(
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: context.onSurface.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(100),
+                border: Border.all(color: context.border, width: 2),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildCompactModeButton(
+                    active: !_flagMode,
+                    onTap: () => setState(() => _flagMode = false),
+                    icon: Icons.ads_click_rounded,
+                    label: 'Reveal',
+                    color: NumbersColors.minesweeper,
                   ),
-                ),
-              ],
-            ),
-          ),
-
-          // Flag Toggle / Move Controls
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildModeButton(
-                  active: !_flagMode,
-                  onTap: () => setState(() => _flagMode = false),
-                  icon: Icons.ads_click_rounded,
-                  label: 'REVEAL',
-                  color: NumbersColors.blue,
-                ),
-                const SizedBox(width: 16),
-                _buildModeButton(
-                  active: _flagMode,
-                  onTap: () => setState(() => _flagMode = true),
-                  icon: Icons.flag_rounded,
-                  label: 'FLAG',
-                  color: NumbersColors.coral,
-                ),
-              ],
+                  _buildCompactModeButton(
+                    active: _flagMode,
+                    onTap: () => setState(() => _flagMode = true),
+                    icon: Icons.flag_rounded,
+                    label: 'Flag',
+                    color: NumbersColors.coral,
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -263,18 +233,18 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
           Expanded(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(24.0),
                 child: AspectRatio(
                   aspectRatio: _levelConfig.cols / _levelConfig.rows,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: context.border,
+                      color: context.onSurface.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: context.border, width: 3),
+                      border: Border.all(color: context.border, width: 2.5),
                       boxShadow: [
                         BoxShadow(
                           color: context.shadow,
-                          offset: const Offset(8, 8),
+                          offset: const Offset(6, 6),
                         )
                       ],
                     ),
@@ -284,8 +254,8 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: _levelConfig.cols,
                         childAspectRatio: 1,
-                        mainAxisSpacing: 2,
-                        crossAxisSpacing: 2,
+                        mainAxisSpacing: 1.5,
+                        crossAxisSpacing: 1.5,
                       ),
                       itemCount: _levelConfig.rows * _levelConfig.cols,
                       itemBuilder: (context, index) {
@@ -308,47 +278,29 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     );
   }
 
-  Widget _buildTopStat(String label, String value, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1)),
-        Text(value, style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: color)),
-      ],
-    );
-  }
-
-  Widget _buildModeButton({required bool active, required VoidCallback onTap, required IconData icon, required String label, required Color color}) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: 200.ms,
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: active ? color : context.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: context.border, width: 2.5),
-            boxShadow: [
-              if (active) BoxShadow(color: context.shadow, offset: const Offset(4, 4))
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: active ? Colors.white : context.onSurface, size: 20),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: GoogleFonts.outfit(
-                  color: active ? Colors.white : context.onSurface,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 13,
-                  letterSpacing: 1,
-                ),
+  Widget _buildCompactModeButton({required bool active, required VoidCallback onTap, required IconData icon, required String label, required Color color}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: 200.ms,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        decoration: BoxDecoration(
+          color: active ? color : Colors.transparent,
+          borderRadius: BorderRadius.circular(100),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: active ? Colors.white : context.onSurface.withOpacity(0.4), size: 16),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: GoogleFonts.outfit(
+                color: active ? Colors.white : context.onSurface.withOpacity(0.4),
+                fontWeight: FontWeight.w800,
+                fontSize: 12,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -369,10 +321,10 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
         cellColor = context.surface;
       }
     } else {
-      // Hidden cells
-      cellColor = isAlt ? const Color(0xFFF3F4F6) : const Color(0xFFE5E7EB);
+      // Hidden cells - Stylish Indigo tints
+      cellColor = isAlt ? const Color(0xFFEEF2FF) : const Color(0xFFE0E7FF);
       if (Theme.of(context).brightness == Brightness.dark) {
-        cellColor = isAlt ? const Color(0xFF27272A) : const Color(0xFF18181B);
+        cellColor = isAlt ? const Color(0xFF2E1065) : const Color(0xFF1E1B4B);
       }
     }
 
@@ -383,8 +335,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
         child: Center(
           child: _buildCellContent(cell),
         ),
-      ).animate(target: isRevealed ? 1 : 0)
-       .shimmer(duration: 400.ms, color: Colors.white.withOpacity(0.2)),
+      ).animate(target: isRevealed ? 1 : 0),
     );
   }
 
