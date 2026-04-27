@@ -26,12 +26,25 @@ class _SudokuScreenState extends State<SudokuScreen> {
   bool _notesMode = false;
   final Stopwatch _sessionTimer = Stopwatch();
 
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
+
   @override
   void initState() {
     super.initState();
     _difficulty = widget.difficulty;
-    _sessionTimer.start();
-    _startNewGame();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await TutorialDialog.checkAndShow(
+        context: context,
+        gameId: 'sudoku',
+        title: 'Number Grid',
+        description: 'Fill the 9×9 grid so that each column, each row, and each of the nine 3×3 subgrids contain all the digits from 1 to 9.',
+        icon: Icons.grid_4x4_rounded,
+      );
+      if (!mounted) return;
+      _sessionTimer.start();
+      setState(() => _startNewGame());
+    });
   }
 
   @override

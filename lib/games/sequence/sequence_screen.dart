@@ -22,12 +22,27 @@ class _SequenceScreenState extends State<SequenceScreen> {
   int _streak = 0;
   final Stopwatch _sessionTimer = Stopwatch();
 
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
+
   @override
   void initState() {
     super.initState();
     _storage.incrementPlayCount('sequence');
-    _sessionTimer.start();
-    _question = _logic.generate(_streak);
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await TutorialDialog.checkAndShow(
+        context: context,
+        gameId: 'sequence',
+        title: 'Sequence',
+        description: 'Analyze the pattern and type in the missing number to keep your streak alive!',
+        icon: Icons.trending_up_rounded,
+      );
+      if (!mounted) return;
+      _sessionTimer.start();
+      setState(() {
+        _question = _logic.generate(_streak);
+      });
+    });
   }
 
   @override

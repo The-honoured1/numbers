@@ -28,11 +28,24 @@ class _CountdownScreenState extends State<CountdownScreen> {
   
   String? _pendingOp;
 
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
+
   @override
   void initState() {
     super.initState();
-    _sessionTimer.start();
-    _startNewRound();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await TutorialDialog.checkAndShow(
+        context: context,
+        gameId: 'countdown',
+        title: 'Countdown',
+        description: 'Use the available numbers and mathematical operators provided to exactly calculate the target number before time runs out!',
+        icon: Icons.timer_rounded,
+      );
+      if (!mounted) return;
+      _sessionTimer.start();
+      _startNewRound();
+    });
   }
 
   @override
