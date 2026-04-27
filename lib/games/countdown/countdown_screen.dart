@@ -1,3 +1,4 @@
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,7 +29,6 @@ class _CountdownScreenState extends State<CountdownScreen> {
   
   String? _pendingOp;
 
-import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 
   @override
   void initState() {

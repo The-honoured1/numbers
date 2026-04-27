@@ -1,3 +1,4 @@
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
@@ -22,7 +23,6 @@ class _SequenceScreenState extends State<SequenceScreen> {
   int _streak = 0;
   final Stopwatch _sessionTimer = Stopwatch();
 
-import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 
   @override
   void initState() {

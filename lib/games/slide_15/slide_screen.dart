@@ -1,3 +1,4 @@
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,8 +24,19 @@ class _SlideScreenState extends State<SlideScreen> {
   @override
   void initState() {
     super.initState();
-    _sessionTimer.start();
-    _startNewGame();
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await TutorialDialog.checkAndShow(
+        context: context,
+        gameId: 'slide_15',
+        title: 'Slide 15',
+        description: 'Slide the tiles into the empty space to arrange them in numerical order from 1 to 15.',
+        icon: Icons.filter_4_rounded,
+      );
+      if (!mounted) return;
+      _sessionTimer.start();
+      setState(() => _startNewGame());
+    });
   }
 
   @override

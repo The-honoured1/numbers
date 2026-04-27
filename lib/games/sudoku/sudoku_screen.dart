@@ -1,3 +1,4 @@
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -26,7 +27,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
   bool _notesMode = false;
   final Stopwatch _sessionTimer = Stopwatch();
 
-import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 
   @override
   void initState() {
