@@ -32,6 +32,8 @@ class _AscendScreenState extends State<AscendScreen> {
   @override
   void initState() {
     super.initState();
+    _numbers = _logic.generate(12, 100 * _round)..shuffle();
+    _sorted = List.from(_numbers)..sort();
     _sessionTimer.start();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -42,10 +44,6 @@ class _AscendScreenState extends State<AscendScreen> {
         description: 'Tap the sequence of numbers in strictly ascending order as fast as you can. Incorrect taps incur a time penalty.',
         icon: Icons.keyboard_double_arrow_up_rounded,
       );
-      if (!mounted) return;
-      AdService().showInterstitialAd(onClosed: () {
-        if (mounted) _startNewRound();
-      });
     });
   }
 
@@ -192,12 +190,18 @@ class _AscendScreenState extends State<AscendScreen> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     decoration: BoxDecoration(
-                      color: isSolved ? NumbersColors.green.withOpacity(0.1) : Colors.white,
-                      borderRadius: BorderRadius.circular(20),
+                      color: isSolved ? NumbersColors.green.withOpacity(0.15) : context.surface,
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: isSolved ? NumbersColors.green : context.border,
-                        width: 2,
+                        width: 2.5,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.shadow,
+                          offset: const Offset(4, 4),
+                        )
+                      ],
                     ),
                     alignment: Alignment.center,
                     child: Text(

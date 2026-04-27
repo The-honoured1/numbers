@@ -215,11 +215,7 @@ class _TodayView extends StatelessWidget {
                                         child: Text('DAILY PUZZLE', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w900, color: context.onSurface, letterSpacing: 1.5)),
                                       ),
                                       const Spacer(),
-                                      if (storage.isDailyCompleted(dailyGame.id))
-                                        Container(
-                                          decoration: BoxDecoration(shape: BoxShape.circle, color: context.surface),
-                                          child: Icon(Icons.check_circle_rounded, color: context.onSurface, size: 32),
-                                        ),
+
                                     ],
                                   ),
                                   const SizedBox(height: 60),

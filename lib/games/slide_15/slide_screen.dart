@@ -24,6 +24,8 @@ class _SlideScreenState extends State<SlideScreen> {
   @override
   void initState() {
     super.initState();
+    _grid = _logic.generate();
+    _sessionTimer.start();
     
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await TutorialDialog.checkAndShow(
@@ -33,9 +35,6 @@ class _SlideScreenState extends State<SlideScreen> {
         description: 'Slide the tiles into the empty space to arrange them in numerical order from 1 to 15.',
         icon: Icons.filter_4_rounded,
       );
-      if (!mounted) return;
-      _sessionTimer.start();
-      setState(() => _startNewGame());
     });
   }
 
@@ -138,11 +137,11 @@ class _SlideScreenState extends State<SlideScreen> {
                         decoration: BoxDecoration(
                           color: context.surface,
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: context.border, width: 2),
                           boxShadow: [
                             BoxShadow(
-                              color: context.shadow.withOpacity(0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+                              color: context.shadow,
+                              offset: const Offset(3, 3),
                             )
                           ],
                         ),

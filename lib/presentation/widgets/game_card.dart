@@ -78,20 +78,7 @@ class GameCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (isDailyDone)
-              Positioned(
-                top: 16,
-                right: 16,
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: NumbersColors.crossCorrect,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: context.border, width: 2),
-                  ),
-                  child: Icon(Icons.check, color: context.onSurface, size: 12),
-                ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
-              ),
+
           ],
         ),
       ),

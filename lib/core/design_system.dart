@@ -10,6 +10,15 @@ class NumbersColors {
   static const Color border = Color(0xFF000000); // Hard Black Borders
   static const Color cardShadow = Color(0xFF000000); // Solid Black Shadows
 
+  // Zinc Palette for Dark Mode
+  static const Color darkBackground = Color(0xFF09090B); // Zinc 950
+  static const Color darkSurface = Color(0xFF18181B);    // Zinc 900
+  static const Color darkBorder = Color(0xFF27272A);     // Zinc 800
+  static const Color darkGridBorder = Color(0xFF3F3F46); // Zinc 700
+  static const Color darkOnSurface = Color(0xFFFAFAFA);  // Zinc 50
+  static const Color darkTextFaint = Color(0xFFA1A1AA);  // Zinc 400
+  static const Color darkSelection = Color(0xFF3B82F6);  // Bright Blue for selection
+
   // Vibrant Component Colors (From Image)
   static const Color yellow = Color(0xFFF5D64C); // Mustard Yellow
   static const Color green = Color(0xFF8DCA64); // Grass Green
@@ -37,14 +46,14 @@ class NumbersColors {
 extension ThemeColorsExt on BuildContext {
   Color get surface => Theme.of(this).colorScheme.surface;
   Color get onSurface => Theme.of(this).colorScheme.onSurface;
-  Color get border => Theme.of(this).colorScheme.onSurface; 
+  Color get border => Theme.of(this).brightness == Brightness.dark ? NumbersColors.darkBorder : NumbersColors.border;
   Color get gridBorder => Theme.of(this).brightness == Brightness.dark 
-      ? Theme.of(this).colorScheme.onSurface.withOpacity(0.15)
+      ? NumbersColors.darkGridBorder
       : Theme.of(this).colorScheme.onSurface.withOpacity(0.1);
   Color get shadow => Theme.of(this).colorScheme.onSurface; 
   Color get textFaint => Theme.of(this).brightness == Brightness.dark 
-      ? const Color(0xFF8B949E) 
-      : const Color(0xFF555555);
+      ? NumbersColors.darkTextFaint 
+      : NumbersColors.textFaint;
 }
 
 class NumbersTheme {
@@ -61,10 +70,10 @@ class NumbersTheme {
 
   static ThemeData _buildTheme(Brightness brightness) {
     final bool isDark = brightness == Brightness.dark;
-    final Color bgColor = isDark ? const Color(0xFF0D1117) : const Color(0xFFFFFFFF);
-    final Color cardColor = isDark ? const Color(0xFF161B22) : const Color(0xFFFFFFFF);
-    final Color textColor = isDark ? const Color(0xFFC9D1D9) : const Color(0xFF000000);
-    final Color borderColor = textColor;
+    final Color bgColor = isDark ? NumbersColors.darkBackground : NumbersColors.backgroundOffWhite;
+    final Color cardColor = isDark ? NumbersColors.darkSurface : NumbersColors.backgroundOffWhite;
+    final Color textColor = isDark ? NumbersColors.darkOnSurface : NumbersColors.textBody;
+    final Color borderColor = isDark ? NumbersColors.darkBorder : NumbersColors.border;
 
     return ThemeData(
       brightness: brightness,
