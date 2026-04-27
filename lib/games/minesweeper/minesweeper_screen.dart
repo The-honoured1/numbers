@@ -113,15 +113,27 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     });
   }
 
-  void _handleCellTap(int r, int c) {
+  void _handleCellTap(int r, int c, {bool isLongPress = false}) {
     setState(() {
-      if (_flagMode) {
+      if (isLongPress) {
         _game.toggleFlag(r, c);
       } else {
         _game.reveal(r, c);
       }
     });
 
+    if (_game.gameWon) {
+      StorageService().markDailyCompleted('minesweeper');
+      StorageService().incrementWins('minesweeper');
+      _showResult(true);
+    }
+    if (_game.gameOver) _showResult(false, r: r, c: c);
+  }
+
+  void _handleChord(int r, int c) {
+    setState(() {
+      _game.chord(r, c);
+    });
     if (_game.gameWon) {
       StorageService().markDailyCompleted('minesweeper');
       StorageService().incrementWins('minesweeper');
@@ -181,55 +193,37 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     return Scaffold(
       backgroundColor: context.surface,
       appBar: AppBar(
+        centerTitle: false,
+        backgroundColor: NumbersColors.minesweeper,
+        foregroundColor: Colors.white,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('MINESWEEPER', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w900, fontSize: 18, letterSpacing: 0.5)),
-            Text('LEVEL $_currentLevel • $remaining MINES', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1)),
+            Text('MINESWEEPER', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20, letterSpacing: 0.5, color: Colors.white)),
+            Text('LVL $_currentLevel • $remaining MINES', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.white.withOpacity(0.8), letterSpacing: 1)),
           ],
         ),
         actions: [
-          IconButton(onPressed: _startNewGame, icon: const Icon(Icons.refresh_rounded)),
+          IconButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Long-press to FLAG • Tap to REVEAL', style: GoogleFonts.outfit(fontWeight: FontWeight.w700)),
+                  backgroundColor: NumbersColors.minesweeper,
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
+            icon: const Icon(Icons.help_outline_rounded, color: Colors.white),
+          ),
+          IconButton(onPressed: _startNewGame, icon: const Icon(Icons.refresh_rounded, color: Colors.white)),
           const SizedBox(width: 8),
         ],
       ),
       body: Column(
         children: [
-          const SizedBox(height: 16),
-          // Compact Mode Toggle
-          Center(
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: context.onSurface.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(100),
-                border: Border.all(color: context.border, width: 2),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildCompactModeButton(
-                    active: !_flagMode,
-                    onTap: () => setState(() => _flagMode = false),
-                    icon: Icons.ads_click_rounded,
-                    label: 'Reveal',
-                    color: NumbersColors.minesweeper,
-                  ),
-                  _buildCompactModeButton(
-                    active: _flagMode,
-                    onTap: () => setState(() => _flagMode = true),
-                    icon: Icons.flag_rounded,
-                    label: 'Flag',
-                    color: NumbersColors.coral,
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 24),
-
-          // The Board
+          const SizedBox(height: 32),
+          
           Expanded(
             child: Center(
               child: Padding(
@@ -238,13 +232,14 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                   aspectRatio: _levelConfig.cols / _levelConfig.rows,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: context.onSurface.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: context.border, width: 2.5),
+                      color: NumbersColors.minesweeper.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: NumbersColors.minesweeper, width: 2.5),
                       boxShadow: [
                         BoxShadow(
-                          color: context.shadow,
-                          offset: const Offset(6, 6),
+                          color: NumbersColors.minesweeper.withOpacity(0.2),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
                         )
                       ],
                     ),
@@ -254,8 +249,8 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: _levelConfig.cols,
                         childAspectRatio: 1,
-                        mainAxisSpacing: 1.5,
-                        crossAxisSpacing: 1.5,
+                        mainAxisSpacing: 1,
+                        crossAxisSpacing: 1,
                       ),
                       itemCount: _levelConfig.rows * _levelConfig.cols,
                       itemBuilder: (context, index) {
@@ -263,7 +258,15 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                         int c = index % _levelConfig.cols;
                         final cell = _game.board[r][c];
                         
-                        return _buildCell(r, c, cell);
+                        return GestureDetector(
+                          onTap: () => _handleCellTap(r, c, isLongPress: false),
+                          onLongPress: () {
+                             Feedback.forLongPress(context);
+                             _handleCellTap(r, c, isLongPress: true);
+                          },
+                          onDoubleTap: () => _handleChord(r, c),
+                          child: _buildCell(r, c, cell),
+                        );
                       },
                     ),
                   ),
@@ -271,6 +274,11 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
               ),
             ),
           ),
+          const SizedBox(height: 48),
+        ],
+      ),
+    );
+  }
           
           const SizedBox(height: 32),
         ],
@@ -282,61 +290,30 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: 200.ms,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        decoration: BoxDecoration(
-          color: active ? color : Colors.transparent,
-          borderRadius: BorderRadius.circular(100),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: active ? Colors.white : context.onSurface.withOpacity(0.4), size: 16),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: GoogleFonts.outfit(
-                color: active ? Colors.white : context.onSurface.withOpacity(0.4),
-                fontWeight: FontWeight.w800,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+
 
   Widget _buildCell(int r, int c, MineCell cell) {
     final bool isRevealed = cell.state == CellState.revealed;
     final bool isFlagged = cell.state == CellState.flagged;
-    
-    // NYT Style Checkered hidden board or clean grid
     final bool isAlt = (r + c) % 2 == 0;
     
     Color cellColor;
     if (isRevealed) {
-      if (cell.isMine) {
-        cellColor = NumbersColors.coral;
-      } else {
-        cellColor = context.surface;
-      }
+      cellColor = cell.isMine ? NumbersColors.coral : context.surface;
     } else {
-      // Hidden cells - Stylish Indigo tints
+      // Hidden cells - Soft Indigo checkered
       cellColor = isAlt ? const Color(0xFFEEF2FF) : const Color(0xFFE0E7FF);
       if (Theme.of(context).brightness == Brightness.dark) {
-        cellColor = isAlt ? const Color(0xFF2E1065) : const Color(0xFF1E1B4B);
+        cellColor = isAlt ? const Color(0xFF312E81) : const Color(0xFF1E1B4B);
       }
     }
 
-    return GestureDetector(
-      onTap: () => _handleCellTap(r, c),
-      child: Container(
-        color: cellColor,
-        child: Center(
-          child: _buildCellContent(cell),
-        ),
-      ).animate(target: isRevealed ? 1 : 0),
-    );
+    return Container(
+      color: cellColor,
+      child: Center(
+        child: _buildCellContent(cell),
+      ),
+    ).animate(target: isRevealed ? 1 : 0);
   }
 
   Widget _buildCellContent(MineCell cell) {
@@ -364,7 +341,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
 
     return Text(
       '${cell.neighborMines}',
-      style: GoogleFonts.playfairDisplay(
+      style: GoogleFonts.outfit(
         color: _getNumberColor(cell.neighborMines),
         fontWeight: FontWeight.w900,
         fontSize: 22,
