@@ -6,8 +6,11 @@ import 'package:numbers/services/storage_service.dart';
 import 'package:numbers/services/ad_service.dart';
 import 'link_numbers_logic.dart';
 
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
+
 class LinkNumbersScreen extends StatefulWidget {
-  const LinkNumbersScreen({super.key});
+  final int initialLevel;
+  const LinkNumbersScreen({super.key, this.initialLevel = 0});
 
   @override
   State<LinkNumbersScreen> createState() => _LinkNumbersScreenState();
@@ -37,7 +40,17 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
   void initState() {
     super.initState();
     _sessionTimer.start();
-    _loadLevel(0);
+    _loadLevel(widget.initialLevel);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await TutorialDialog.checkAndShow(
+        context: context,
+        gameId: 'link',
+        title: 'Number Link',
+        description: 'Draw paths to connect the matching colored numbers. Every dot must be linked, and paths cannot intersect or overlap each other.',
+        icon: Icons.link_rounded,
+      );
+    });
   }
 
   @override
@@ -209,27 +222,30 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
           ),
           Expanded(
             child: Center(
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      return GestureDetector(
-                        onPanStart: (d) => _handlePanStart(d, constraints),
-                        onPanUpdate: (d) => _handlePanUpdate(d, constraints),
-                        onPanEnd: _handlePanEnd,
-                        child: CustomPaint(
-                          painter: LinkPainter(
-                            gridSize: _data.gridSize,
-                            numbers: _data.numbers,
-                            paths: _paths,
-                            valueColors: _valueColors,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return GestureDetector(
+                          onPanStart: (d) => _handlePanStart(d, constraints),
+                          onPanUpdate: (d) => _handlePanUpdate(d, constraints),
+                          onPanEnd: _handlePanEnd,
+                          child: CustomPaint(
+                            painter: LinkPainter(
+                              gridSize: _data.gridSize,
+                              numbers: _data.numbers,
+                              paths: _paths,
+                              valueColors: _valueColors,
+                            ),
+                            size: Size.infinite,
                           ),
-                          size: Size.infinite,
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),

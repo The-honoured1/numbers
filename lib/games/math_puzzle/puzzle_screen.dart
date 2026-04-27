@@ -15,6 +15,8 @@ class PuzzleScreen extends StatefulWidget {
   State<PuzzleScreen> createState() => _PuzzleScreenState();
 }
 
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
+
 class _PuzzleScreenState extends State<PuzzleScreen> {
   final MathPuzzleLogic _logic = MathPuzzleLogic();
   late Question _currentQuestion;
@@ -30,9 +32,19 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     super.initState();
     StorageService().incrementPlayCount('math_puzzle');
     _sessionTimer.start();
-    // Intercept game start with an ad
-    AdService().showInterstitialAd(onClosed: () {
-      if (mounted) _nextQuestion();
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await TutorialDialog.checkAndShow(
+        context: context,
+        gameId: 'math_puzzle',
+        title: 'Math Puzzle',
+        description: 'Read the equation and select the correct answer before the time expires. Each correct answer speeds up the clock!',
+        icon: Icons.calculate_rounded,
+      );
+      if (!mounted) return;
+      AdService().showInterstitialAd(onClosed: () {
+        if (mounted) _nextQuestion();
+      });
     });
   }
 

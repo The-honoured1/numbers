@@ -15,6 +15,8 @@ class AscendScreen extends StatefulWidget {
   State<AscendScreen> createState() => _AscendScreenState();
 }
 
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
+
 class _AscendScreenState extends State<AscendScreen> {
   final AscendLogic _logic = AscendLogic();
   late List<int> _numbers;
@@ -31,9 +33,19 @@ class _AscendScreenState extends State<AscendScreen> {
   void initState() {
     super.initState();
     _sessionTimer.start();
-    // Intercept game start with an ad
-    AdService().showInterstitialAd(onClosed: () {
-      if (mounted) _startNewRound();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await TutorialDialog.checkAndShow(
+        context: context,
+        gameId: 'zen_ascend',
+        title: 'Zen Ascend',
+        description: 'Tap the sequence of numbers in strictly ascending order as fast as you can. Incorrect taps incur a time penalty.',
+        icon: Icons.keyboard_double_arrow_up_rounded,
+      );
+      if (!mounted) return;
+      AdService().showInterstitialAd(onClosed: () {
+        if (mounted) _startNewRound();
+      });
     });
   }
 
