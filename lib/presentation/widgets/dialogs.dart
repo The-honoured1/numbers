@@ -70,14 +70,14 @@ class _GameResultDialogState extends State<GameResultDialog> {
       child: Container(
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(32),
-          border: Border.all(color: NumbersColors.border, width: 2),
-          boxShadow: [
+          color: NumbersColors.backgroundOffWhite,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: NumbersColors.border, width: 2.5),
+          boxShadow: const [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              blurRadius: 40,
-              offset: const Offset(0, 20),
+              color: NumbersColors.cardShadow,
+              blurRadius: 0,
+              offset: Offset(8, 8),
             )
           ],
         ),
@@ -87,27 +87,24 @@ class _GameResultDialogState extends State<GameResultDialog> {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [widget.color, widget.color.withOpacity(0.7)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: widget.color, // Solid color, no gradient
                 shape: BoxShape.circle,
-                boxShadow: [
+                border: Border.all(color: NumbersColors.border, width: 2.5),
+                boxShadow: const [
                   BoxShadow(
-                    color: widget.color.withOpacity(0.3),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
+                    color: NumbersColors.cardShadow,
+                    blurRadius: 0,
+                    offset: Offset(4, 4),
                   )
                 ],
               ),
-              child: Icon(widget.icon, color: Colors.white, size: 48),
+              child: Icon(widget.icon, color: NumbersColors.textBody, size: 48), // Dark icon
             ).animate().scale(duration: 800.ms, curve: Curves.elasticOut),
             const SizedBox(height: 32),
             Text(
               widget.title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
+              style: GoogleFonts.playfairDisplay(
                 fontSize: 32,
                 fontWeight: FontWeight.w900,
                 color: NumbersColors.textBody,
@@ -121,8 +118,8 @@ class _GameResultDialogState extends State<GameResultDialog> {
               textAlign: TextAlign.center,
               style: GoogleFonts.outfit(
                 fontSize: 15,
-                color: NumbersColors.textFaint,
-                fontWeight: FontWeight.w500,
+                color: NumbersColors.textBody, // Darker text
+                fontWeight: FontWeight.w600,
                 height: 1.5,
               ),
             ),
@@ -164,6 +161,7 @@ class _GameResultDialogState extends State<GameResultDialog> {
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
+                      side: const BorderSide(color: NumbersColors.border, width: 2.5),
                     ),
                     elevation: 0,
                   ),
@@ -173,14 +171,17 @@ class _GameResultDialogState extends State<GameResultDialog> {
             ],
             SizedBox(
               width: double.infinity,
-              child: OutlinedButton(
+              child: ElevatedButton( // Changed from OutlinedButton to conform to neobrutal flat style
                 onPressed: widget.onButtonPressed,
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: NumbersColors.border, width: 2),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: NumbersColors.backgroundOffWhite,
+                  foregroundColor: NumbersColors.textBody,
+                  side: const BorderSide(color: NumbersColors.border, width: 2.5),
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
+                  elevation: 0,
                 ),
                 child: Text(
                   widget.buttonText.toUpperCase(),

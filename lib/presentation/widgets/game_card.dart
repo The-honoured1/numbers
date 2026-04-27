@@ -22,52 +22,40 @@ class GameCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: NumbersColors.backgroundOffWhite,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: NumbersColors.border, width: 1.5),
-          boxShadow: [
+          color: game.accentColor, // NYT uses solid block colors
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: NumbersColors.border, width: 2.5),
+          boxShadow: const [
             BoxShadow(
-              color: NumbersColors.cardShadow.withOpacity(0.05),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
+              color: NumbersColors.cardShadow, // Hard black shadow
+              blurRadius: 0,
+              offset: Offset(4, 4),
             )
           ],
         ),
         clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
-            // Background Accent Glow
-            Positioned(
-              right: -20,
-              bottom: -20,
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: game.accentColor.withOpacity(0.05),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: game.accentColor.withOpacity(0.1),
+                      color: NumbersColors.backgroundOffWhite, // White box for icon
                       borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: NumbersColors.border, width: 2), // Thick inner border
                     ),
-                    child: Icon(game.icon, color: game.accentColor, size: 24),
+                    child: Icon(game.icon, color: NumbersColors.textBody, size: 24),
                   ),
                   const Spacer(),
                   Text(
                     game.title,
                     style: GoogleFonts.outfit(
                       fontSize: 18,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w900,
                       color: NumbersColors.textBody,
                       letterSpacing: -0.5,
                       height: 1.1,
@@ -80,8 +68,8 @@ class GameCard extends StatelessWidget {
                     game.description,
                     style: GoogleFonts.outfit(
                       fontSize: 12,
-                      color: NumbersColors.textFaint,
-                      fontWeight: FontWeight.w500,
+                      color: NumbersColors.textBody.withOpacity(0.8),
+                      fontWeight: FontWeight.w700,
                       height: 1.3,
                     ),
                     maxLines: 2,
@@ -96,11 +84,12 @@ class GameCard extends StatelessWidget {
                 right: 16,
                 child: Container(
                   padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: NumbersColors.crossCorrect,
                     shape: BoxShape.circle,
+                    border: Border.all(color: NumbersColors.border, width: 2),
                   ),
-                  child: const Icon(Icons.check, color: Colors.white, size: 12),
+                  child: const Icon(Icons.check, color: NumbersColors.textBody, size: 12),
                 ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
               ),
           ],

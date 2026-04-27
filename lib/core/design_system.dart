@@ -2,30 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class NumbersColors {
-  // Vibrant Base Palette
+  // NYT Games Neo-Brutalist Palette
   static const Color background = Color(0xFFF9FAFB);
   static const Color backgroundOffWhite = Color(0xFFFFFFFF);
-  static const Color textBody = Color(0xFF1F2937); // Deep Slate
-  static const Color textFaint = Color(0xFF6B7280); // Slate 500
-  static const Color border = Color(0xFFE5E7EB);
-  static const Color cardShadow = Color(0x1A000000);
+  static const Color textBody = Color(0xFF000000); // Pitch Black
+  static const Color textFaint = Color(0xFF555555); // Dark Gray
+  static const Color border = Color(0xFF000000); // Hard Black Borders
+  static const Color cardShadow = Color(0xFF000000); // Solid Black Shadows
 
-  // Vibrant Component Colors (Requested Yellow & Green focus)
-  static const Color yellow = Color(0xFFFFD93D);
-  static const Color green = Color(0xFF6BCB77);
-  static const Color blue = Color(0xFF4D96FF);
-  static const Color coral = Color(0xFFFF6B6B);
-  static const Color purple = Color(0xFF916AFF);
+  // Vibrant Component Colors (From Image)
+  static const Color yellow = Color(0xFFF5D64C); // Mustard Yellow
+  static const Color green = Color(0xFF8DCA64); // Grass Green
+  static const Color blue = Color(0xFF8BB5F3); // Cornflower Blue
+  static const Color orange = Color(0xFFF6A13D); // Vibrant Orange
+  static const Color purple = Color(0xFFB1A9FF); // Pastel Purple
+  static const Color coral = Color(0xFFFF6B6B); // Kept coral, tweaked
 
-  // Game specific (Vibrant versions)
+  // Game specific (Mapped to vibrant versions)
   static const Color sudoku = yellow;
   static const Color game2048 = blue;
   static const Color mathPuzzle = coral;
   static const Color sequence = purple;
-  static const Color countdown = Color(0xFFFF8E3C); // Energetic Orange
-  static const Color crossword = Color(0xFF4ECDC4); // Vibrant Teal
-  static const Color linkNumbers = Color(0xFFFF6AC1); // Punchy Pink
-  static const Color minesweeper = Color(0xFF393E46); // Modern Dark Slate
+  static const Color countdown = orange; 
+  static const Color crossword = green; 
+  static const Color linkNumbers = Color(0xFFFF6AC1); 
+  static const Color minesweeper = Color(0xFFC0C0C0); // Classic gray for minesweeper, or maybe deep slate
 
   // Status
   static const Color crossCorrect = green;
@@ -34,62 +35,65 @@ class NumbersColors {
 }
 
 class NumbersTheme {
+  
+  static final TextTheme _baseTextTheme = GoogleFonts.outfitTextTheme();
+  
   static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      scaffoldBackgroundColor: NumbersColors.background,
+      scaffoldBackgroundColor: NumbersColors.backgroundOffWhite, // NYT uses stark white backgrounds
       appBarTheme: AppBarTheme(
-        backgroundColor: NumbersColors.background,
+        backgroundColor: NumbersColors.backgroundOffWhite,
         elevation: 0,
         centerTitle: true,
         surfaceTintColor: Colors.transparent,
         iconTheme: const IconThemeData(color: NumbersColors.textBody),
-        titleTextStyle: GoogleFonts.outfit(
+        titleTextStyle: GoogleFonts.unifrakturMaguntia( // The gothic title look
           color: NumbersColors.textBody,
           fontSize: 26,
-          fontWeight: FontWeight.w800,
-          letterSpacing: -0.5,
+          fontWeight: FontWeight.w700,
         ),
       ),
       colorScheme: ColorScheme.fromSeed(
-        seedColor: NumbersColors.purple,
+        seedColor: NumbersColors.blue,
         surface: NumbersColors.backgroundOffWhite,
-        primary: NumbersColors.purple,
+        primary: NumbersColors.blue,
       ),
-      textTheme: GoogleFonts.outfitTextTheme().copyWith(
-        displayLarge: GoogleFonts.outfit(
+      textTheme: _baseTextTheme.copyWith(
+        displayLarge: GoogleFonts.playfairDisplay( // Classic Serif for huge headings
           fontSize: 48,
           fontWeight: FontWeight.w900,
           color: NumbersColors.textBody,
-          letterSpacing: -1.5,
+          height: 1.1,
+          letterSpacing: -1.0,
         ),
-        headlineMedium: GoogleFonts.outfit(
+        headlineMedium: GoogleFonts.playfairDisplay(
           fontSize: 34,
           fontWeight: FontWeight.w800,
           color: NumbersColors.textBody,
-          letterSpacing: -1,
+          height: 1.1,
         ),
         titleLarge: GoogleFonts.outfit(
           fontSize: 22,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w800,
           color: NumbersColors.textBody,
         ),
         titleMedium: GoogleFonts.outfit(
           fontSize: 18,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
           color: NumbersColors.textBody,
         ),
         bodyMedium: GoogleFonts.outfit(
           fontSize: 15,
-          fontWeight: FontWeight.w400,
-          color: NumbersColors.textFaint,
+          fontWeight: FontWeight.w500,
+          color: NumbersColors.textBody,
         ),
       ),
       cardTheme: CardThemeData(
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24), // Modern rounded corners
-          side: const BorderSide(color: NumbersColors.border, width: 1.5),
+          borderRadius: BorderRadius.circular(16), // Slightly sharper corners
+          side: const BorderSide(color: NumbersColors.border, width: 2.5), // Thick black border
         ),
         color: NumbersColors.backgroundOffWhite,
       ),
@@ -97,10 +101,14 @@ class NumbersTheme {
         style: ElevatedButton.styleFrom(
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: const BorderSide(color: NumbersColors.border, width: 2.5),
+          ),
           textStyle: GoogleFonts.outfit(fontWeight: FontWeight.w800, fontSize: 16),
         ),
       ),
     );
   }
 }
+
