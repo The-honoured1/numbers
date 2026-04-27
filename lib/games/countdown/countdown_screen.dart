@@ -167,7 +167,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
             const SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(color: context.onSurface, borderRadius: BorderRadius.circular(12)),
               child: Text('${_game.target}', style: TextStyle(color: context.surface, fontSize: 64, fontWeight: FontWeight.bold, letterSpacing: 8)),
             ),
             const SizedBox(height: 40),

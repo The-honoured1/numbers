@@ -188,7 +188,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
       appBar: AppBar(
         title: Text('MINESWEEPER', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 18, letterSpacing: 2)),
         actions: [
-          IconButton(onPressed: _startNewGame, icon: const Icon(Icons.refresh)),
+          IconButton(onPressed: _startNewGame, icon: Icon(Icons.refresh)),
         ],
       ),
       body: Column(
@@ -226,7 +226,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.brightness_7, color: NumbersColors.coral, size: 18),
+                    Icon(Icons.brightness_7, color: NumbersColors.coral, size: 18),
                     const SizedBox(width: 6),
                     Text('$remaining', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w900)),
                   ],
@@ -311,13 +311,13 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
 
   Widget _buildCellContent(MineCell cell) {
     if (cell.state == CellState.flagged) {
-      return const Icon(Icons.flag, color: NumbersColors.countdown, size: 16)
+      return Icon(Icons.flag, color: NumbersColors.countdown, size: 16)
           .animate().scale(duration: 200.ms, curve: Curves.easeOutBack);
     }
     
     if (cell.state == CellState.revealed) {
       if (cell.isMine) {
-        return const Icon(Icons.brightness_7_outlined, color: Colors.orange, size: 18);
+        return Icon(Icons.brightness_7_outlined, color: Colors.orange, size: 18);
       }
       if (cell.neighborMines > 0) {
         return Text(

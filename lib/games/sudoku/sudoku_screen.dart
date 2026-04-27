@@ -131,7 +131,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
         centerTitle: true,
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(Icons.settings_outlined),
+            icon: Icon(Icons.settings_outlined),
             onSelected: (val) {
               setState(() {
                 _difficulty = val;

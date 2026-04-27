@@ -116,7 +116,7 @@ class _Screen2048State extends State<Screen2048> {
           IconButton(onPressed: () => setState(() {
             _revivesUsed = 0;
             _logic.reset();
-          }), icon: const Icon(Icons.refresh)),
+          }), icon: Icon(Icons.refresh)),
         ],
       ),
       body: Column(

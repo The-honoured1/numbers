@@ -21,6 +21,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   final StorageService _storage = StorageService();
   late CrosswordData _data;
   List<int?> _playerValues = List.generate(9, (_) => null);
+  final Set<int> _hintIndices = {};
   int? _selectedIndex;
   int _level = 0;
   final Stopwatch _sessionTimer = Stopwatch();
@@ -47,6 +48,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   void _startNewLevel() {
     _data = _logic.generate(_level);
     _playerValues = List.generate(9, (_) => null);
+    _hintIndices.clear();
     _selectedIndex = null;
 
     // Prefill hints (less hints on higher levels)
@@ -54,7 +56,9 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
     List<int> indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     indices.shuffle();
     for (int i = 0; i < hints; i++) {
-        _playerValues[indices[i]] = _data.values[indices[i]];
+        int idx = indices[i];
+        _playerValues[idx] = _data.values[idx];
+        _hintIndices.add(idx);
     }
   }
 
@@ -138,7 +142,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: context.border, width: 2),
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+                          BoxShadow(color: context.onSurface.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
                         ],
                       ),
                       child: _buildGrid(),
@@ -234,15 +238,11 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
 
   Widget _buildInputCell(int index) {
     bool isSelected = _selectedIndex == index;
-    // Check if it's a fixed hint tile
-    bool isHint = _playerValues[index] != null && _playerValues[index] == _data.values[index] && _selectedIndex != index;
-    // We determine true hint by checking if other cells are empty, but simply we can just disable onTap for correct matches initially.
-    // Actually, any hint won't be editable.
-    // Wait, let's just make hints semi-transparent background and not selectable.
+    bool isHint = _hintIndices.contains(index);
     
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => _selectedIndex = index),
+        onTap: isHint ? null : () => setState(() => _selectedIndex = index),
         child: Container(
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
@@ -312,7 +312,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
           color: context.surface,
           border: Border.all(color: context.border),
           borderRadius: BorderRadius.circular(8),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 4, offset: const Offset(0, 2))],
+          boxShadow: [BoxShadow(color: context.onSurface.withOpacity(0.03), blurRadius: 4, offset: const Offset(0, 2))],
         ),
         alignment: Alignment.center,
         child: Text('$value', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w800, color: context.onSurface)),
