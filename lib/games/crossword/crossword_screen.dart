@@ -25,6 +25,9 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   final Set<int> _hintIndices = {};
   int? _selectedIndex;
   int _level = 0;
+  int _lives = 3;
+  bool _isWrong = false;
+  int _revivesUsed = 0;
   final Stopwatch _sessionTimer = Stopwatch();
   
   @override
@@ -51,6 +54,8 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
     _playerValues = List.generate(9, (_) => null);
     _hintIndices.clear();
     _selectedIndex = null;
+    _lives = 3;
+    _isWrong = false;
 
     // Prefill hints (less hints on higher levels)
     int hints = (4 - (_level ~/ 25)).clamp(1, 4);
@@ -71,12 +76,58 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   }
 
   void _onKeyPress(int value) {
-    if (_selectedIndex != null) {
-      setState(() {
-        _playerValues[_selectedIndex!] = value;
-      });
-      _checkWin();
+    if (_selectedIndex != null && _lives > 0) {
+      if (_data.values[_selectedIndex!] == value) {
+        setState(() {
+          _playerValues[_selectedIndex!] = value;
+        });
+        _checkWin();
+      } else {
+        _handleWrongAnswer();
+      }
     }
+  }
+
+  void _handleWrongAnswer() {
+    setState(() {
+      _lives--;
+      _isWrong = true;
+    });
+    
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (mounted) setState(() => _isWrong = false);
+    });
+
+    if (_lives <= 0) {
+      _showGameOver();
+    }
+  }
+
+  void _showGameOver() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => GameResultDialog(
+        title: 'Out of Hearts',
+        message: 'You made too many mistakes. Keep practicing!',
+        buttonText: 'RETRY LEVEL',
+        color: NumbersColors.countdown,
+        icon: Icons.favorite_border_rounded,
+        onRevive: _revivesUsed < 1 ? () {
+          AdService().showRewardedAd(() {
+            Navigator.pop(context);
+            setState(() {
+              _lives = 3;
+              _revivesUsed++;
+            });
+          });
+        } : null,
+        onButtonPressed: () {
+          Navigator.pop(context);
+          setState(() => _startNewLevel());
+        },
+      ),
+    );
   }
 
   void _checkWin() {
@@ -137,15 +188,30 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Text(
-              'FILL THE GRID TO SATISFY ALL EQUATIONS',
-              style: GoogleFonts.inter(letterSpacing: 1.5, fontSize: 9, fontWeight: FontWeight.w800, color: context.textFaint),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'FILL THE GRID TO SATISFY ALL EQUATIONS',
+                  style: GoogleFonts.inter(letterSpacing: 1.5, fontSize: 9, fontWeight: FontWeight.w800, color: context.textFaint),
+                ),
+                Row(
+                  children: List.generate(3, (i) => Icon(
+                    i < _lives ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                    color: NumbersColors.coral,
+                    size: 18,
+                  )),
+                ),
+              ],
             ),
           ),
           Expanded(
-            child: Center(
-              child: SingleChildScrollView(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              color: _isWrong ? NumbersColors.coral.withOpacity(0.1) : Colors.transparent,
+              child: Center(
+                child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),

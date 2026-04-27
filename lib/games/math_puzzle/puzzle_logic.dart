@@ -4,11 +4,7 @@ class MathPuzzleLogic {
   final Random _rand = Random();
 
   Question generateQuestion(int level) {
-    if (level < 5) {
-      return _generateSimple(level);
-    } else {
-      return _generateBODMAS(level);
-    }
+    return _generateSimple(level);
   }
 
   Question _generateSimple(int level) {
@@ -36,30 +32,7 @@ class MathPuzzleLogic {
     return _buildQuestion(a, operator, b, result);
   }
 
-  Question _generateBODMAS(int level) {
-    int a = _rand.nextInt(10) + 1;
-    int b = _rand.nextInt(10) + 1;
-    int c = _rand.nextInt(10) + 1;
-    int op1 = _rand.nextInt(3); 
-    int op2 = _rand.nextInt(3);
-    String sOp1 = ['+', '-', '×'][op1];
-    String sOp2 = ['+', '-', '×'][op2];
-    
-    int result;
-    if (op2 == 2 && op1 < 2) {
-      int sub = b * c;
-      result = op1 == 0 ? a + sub : a - sub;
-    } else if (op1 == 2 && op2 < 2) {
-      int sub = a * b;
-      result = op2 == 0 ? sub + c : sub - c;
-    } else {
-      int sub = _calc(a, b, op1);
-      result = _calc(sub, c, op2);
-    }
 
-    String questionText = '$a $sOp1 $b $sOp2 $c = ?';
-    return _buildQuestionFromText(questionText, result);
-  }
 
   int _calc(int a, int b, int op) {
     if (op == 0) return a + b;

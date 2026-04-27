@@ -391,7 +391,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
               ),
             ],
           ),
-        ).animate().fadeIn(duration: 200.ms).scale(begin: const Offset(0.5, 0.5), curve: Curves.backOut);
+        ).animate().fadeIn(duration: 200.ms).scale(begin: const Offset(0.5, 0.5), curve: Curves.easeOutBack);
     }
   }
 }
