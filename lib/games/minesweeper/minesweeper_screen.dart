@@ -169,11 +169,14 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
 
   Color _getNumberColor(int n) {
     switch (n) {
-      case 1: return Colors.blue;
-      case 2: return Colors.green;
-      case 3: return Colors.red;
-      case 4: return Colors.purple;
-      case 5: return Colors.orange;
+      case 1: return const Color(0xFF2196F3);
+      case 2: return const Color(0xFF4CAF50);
+      case 3: return const Color(0xFFF44336);
+      case 4: return const Color(0xFF3F51B5);
+      case 5: return const Color(0xFF795548);
+      case 6: return const Color(0xFF009688);
+      case 7: return Colors.black;
+      case 8: return Colors.grey;
       default: return context.onSurface;
     }
   }
@@ -288,9 +291,15 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: cell.state == CellState.revealed 
-                                  ? (cell.isMine ? NumbersColors.coral : context.surface.withOpacity(0.5))
-                                  : context.textFaint.withOpacity(0.1),
-                              border: Border.all(color: context.gridBorder, width: 1.5),
+                                  ? (cell.isMine ? NumbersColors.coral : context.surface)
+                                  : NumbersColors.blue.withOpacity(0.1),
+                              border: Border.all(
+                                color: context.onSurface, 
+                                width: cell.state == CellState.revealed ? 0.5 : 2,
+                              ),
+                              boxShadow: cell.state == CellState.revealed ? [] : [
+                                BoxShadow(color: context.shadow, offset: const Offset(2, 2)),
+                              ],
                             ),
                             alignment: Alignment.center,
                             child: _buildCellContent(cell),

@@ -32,6 +32,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     super.initState();
     StorageService().incrementPlayCount('math_puzzle');
     _sessionTimer.start();
+    _nextQuestion();
     
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await TutorialDialog.checkAndShow(
@@ -41,10 +42,6 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         description: 'Read the equation and select the correct answer before the time expires. Each correct answer speeds up the clock!',
         icon: Icons.calculate_rounded,
       );
-      if (!mounted) return;
-      AdService().showInterstitialAd(onClosed: () {
-        if (mounted) _nextQuestion();
-      });
     });
   }
 
@@ -87,14 +84,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
       });
       StorageService().saveHighScore('math_puzzle', _score);
       
-      // Show interstitial ad every 3 level milestones, delaying next question
-      if (_level > 1 && (_level - 1) % 3 == 0) {
-        AdService().showInterstitialAd(onClosed: () {
-          if (mounted) _nextQuestion();
-        });
-      } else {
-        _nextQuestion();
-      }
+      _nextQuestion();
     } else {
       StorageService().markDailyCompleted('math_puzzle');
       _timer?.cancel();

@@ -32,6 +32,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
   void initState() {
     super.initState();
     _difficulty = widget.difficulty;
+    _startNewGame();
+    _sessionTimer.start();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await TutorialDialog.checkAndShow(
@@ -41,9 +43,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
         description: 'Fill the 9×9 grid so that each column, each row, and each of the nine 3×3 subgrids contain all the digits from 1 to 9.',
         icon: Icons.grid_4x4_rounded,
       );
-      if (!mounted) return;
-      _sessionTimer.start();
-      setState(() => _startNewGame());
     });
   }
 

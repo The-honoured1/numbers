@@ -27,12 +27,14 @@ class _CountdownScreenState extends State<CountdownScreen> {
   Timer? _timer;
   final Stopwatch _sessionTimer = Stopwatch();
   
-  String? _pendingOp;
-
-
   @override
   void initState() {
     super.initState();
+    _game = _logic.generate();
+    _availableNumbers = List.from(_game.numbers);
+    _timeLeft = 60;
+    _sessionTimer.start();
+    _startTimer();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await TutorialDialog.checkAndShow(
@@ -42,9 +44,6 @@ class _CountdownScreenState extends State<CountdownScreen> {
         description: 'Use the available numbers and mathematical operators provided to exactly calculate the target number before time runs out!',
         icon: Icons.timer_rounded,
       );
-      if (!mounted) return;
-      _sessionTimer.start();
-      _startNewRound();
     });
   }
 
@@ -112,7 +111,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
   }
 
   void _showWin() {
-    AdService().showInterstitialAd();
+    _storage.markDailyCompleted('countdown');
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -163,7 +162,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            Text('TIME: $_timeLeft', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: _timeLeft < 10 ? Colors.red : Colors.black)),
+            Text('TIME: $_timeLeft', style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w900, color: _timeLeft < 10 ? NumbersColors.coral : context.onSurface)),
             const SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.all(32),

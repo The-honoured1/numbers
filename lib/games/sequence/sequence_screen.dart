@@ -23,11 +23,12 @@ class _SequenceScreenState extends State<SequenceScreen> {
   int _streak = 0;
   final Stopwatch _sessionTimer = Stopwatch();
 
-
   @override
   void initState() {
     super.initState();
     _storage.incrementPlayCount('sequence');
+    _question = _logic.generate(_streak);
+    _sessionTimer.start();
     
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await TutorialDialog.checkAndShow(
@@ -37,11 +38,6 @@ class _SequenceScreenState extends State<SequenceScreen> {
         description: 'Analyze the pattern and type in the missing number to keep your streak alive!',
         icon: Icons.trending_up_rounded,
       );
-      if (!mounted) return;
-      _sessionTimer.start();
-      setState(() {
-        _question = _logic.generate(_streak);
-      });
     });
   }
 
