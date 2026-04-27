@@ -25,6 +25,8 @@ class NumbersApp extends StatelessWidget {
       title: 'Numbers',
       debugShowCheckedModeBanner: false,
       theme: NumbersTheme.lightTheme,
+      darkTheme: NumbersTheme.darkTheme,
+      themeMode: ThemeMode.system,
       home: const HomeScreen(),
     );
   }

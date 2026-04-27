@@ -24,12 +24,12 @@ class GameCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: game.accentColor, // NYT uses solid block colors
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: NumbersColors.border, width: 2.5),
-          boxShadow: const [
+          border: Border.all(color: context.border, width: 2.5),
+          boxShadow: [
             BoxShadow(
-              color: NumbersColors.cardShadow, // Hard black shadow
+              color: context.shadow, // Hard text/border matching shadow
               blurRadius: 0,
-              offset: Offset(4, 4),
+              offset: const Offset(4, 4),
             )
           ],
         ),
@@ -44,11 +44,11 @@ class GameCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: NumbersColors.backgroundOffWhite, // White box for icon
+                      color: context.surface, // Container to pop out icon
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: NumbersColors.border, width: 2), // Thick inner border
+                      border: Border.all(color: context.border, width: 2), // Thick inner border
                     ),
-                    child: Icon(game.icon, color: NumbersColors.textBody, size: 24),
+                    child: Icon(game.icon, color: context.onSurface, size: 24),
                   ),
                   const Spacer(),
                   Text(
@@ -56,7 +56,7 @@ class GameCard extends StatelessWidget {
                     style: GoogleFonts.outfit(
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
-                      color: NumbersColors.textBody,
+                      color: context.onSurface,
                       letterSpacing: -0.5,
                       height: 1.1,
                     ),
@@ -68,7 +68,7 @@ class GameCard extends StatelessWidget {
                     game.description,
                     style: GoogleFonts.outfit(
                       fontSize: 12,
-                      color: NumbersColors.textBody.withOpacity(0.8),
+                      color: context.onSurface.withOpacity(0.8),
                       fontWeight: FontWeight.w700,
                       height: 1.3,
                     ),
@@ -87,9 +87,9 @@ class GameCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: NumbersColors.crossCorrect,
                     shape: BoxShape.circle,
-                    border: Border.all(color: NumbersColors.border, width: 2),
+                    border: Border.all(color: context.border, width: 2),
                   ),
-                  child: const Icon(Icons.check, color: NumbersColors.textBody, size: 12),
+                  child: Icon(Icons.check, color: context.onSurface, size: 12),
                 ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
               ),
           ],
