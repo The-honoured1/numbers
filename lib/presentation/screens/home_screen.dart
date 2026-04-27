@@ -131,9 +131,10 @@ class _TodayView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: [
+    return RepaintBoundary(
+      child: SafeArea(
+        child: Column(
+          children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
             child: Row(
@@ -141,7 +142,21 @@ class _TodayView extends StatelessWidget {
               children: [
                 Icon(Icons.blur_on, color: context.onSurface, size: 32),
                 Text('The Numbers Games', style: GoogleFonts.unifrakturMaguntia(fontSize: 26, fontWeight: FontWeight.w700, color: context.onSurface)),
-                Icon(Icons.notifications_none_rounded, color: context.onSurface, size: 28),
+                IconButton(
+                  icon: Icon(
+                    StorageService().themeNotifier.value == ThemeMode.dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                    color: context.onSurface,
+                    size: 28,
+                  ),
+                  onPressed: () {
+                    final current = StorageService().themeNotifier.value;
+                    if (current == ThemeMode.dark) {
+                      StorageService().setThemeMode(ThemeMode.light);
+                    } else {
+                      StorageService().setThemeMode(ThemeMode.dark);
+                    }
+                  },
+                ),
               ],
             ),
           ),
@@ -300,8 +315,9 @@ class _HubView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: CustomScrollView(
+    return RepaintBoundary(
+      child: SafeArea(
+        child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverToBoxAdapter(
@@ -352,8 +368,9 @@ class _StatsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
+    return RepaintBoundary(
+      child: SafeArea(
+        child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -556,32 +573,27 @@ class _StatsView extends StatelessWidget {
   }
 
   Widget _metricRow(BuildContext context, String label, String value, Color color) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Flexible(
-          child: Row(
-            children: [
-              Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-              const SizedBox(width: 12),
-              Flexible(
-                child: Text(
-                  label, 
-                  style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 1, color: context.textFaint),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label, 
+              style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 1, color: context.textFaint),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-        Flexible(
-          child: FittedBox(
+          const SizedBox(width: 16),
+          FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(value, style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, color: context.onSurface)),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

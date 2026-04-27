@@ -6,9 +6,29 @@ class StorageService {
   StorageService._internal();
 
   late SharedPreferences _prefs;
+  final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.system);
 
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
+    themeNotifier.value = themeMode;
+  }
+
+  // --- Theme Mode ---
+  ThemeMode get themeMode {
+    final mode = _prefs.getString('theme_mode') ?? 'system';
+    switch (mode) {
+      case 'light': return ThemeMode.light;
+      case 'dark': return ThemeMode.dark;
+      default: return ThemeMode.system;
+    }
+  }
+
+  Future<void> setThemeMode(ThemeMode mode) async {
+    String val = 'system';
+    if (mode == ThemeMode.light) val = 'light';
+    if (mode == ThemeMode.dark) val = 'dark';
+    await _prefs.setString('theme_mode', val);
+    themeNotifier.value = mode;
   }
 
   // --- Streak Related ---
