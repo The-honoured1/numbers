@@ -221,8 +221,11 @@ class _AscendScreenState extends State<AscendScreen> {
               },
             ),
           ),
-        ),
+        ],
       ),
+    ),
+    ),
+    ),
     );
   }
 }
