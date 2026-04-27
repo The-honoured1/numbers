@@ -163,7 +163,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
@@ -174,18 +174,15 @@ class _SudokuScreenState extends State<SudokuScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
                 child: AspectRatio(
                   aspectRatio: 1,
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: context.onSurface, width: 3),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(color: context.shadow, offset: const Offset(8, 8)),
-                      ],
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: GridView.builder(

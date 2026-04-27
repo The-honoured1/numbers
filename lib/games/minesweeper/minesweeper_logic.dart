@@ -19,9 +19,10 @@ class MinesweeperGame {
   late List<List<MineCell>> board;
   bool gameOver;
   bool gameWon;
+  bool _firstMove;
 
   MinesweeperGame({required this.rows, required this.cols, required this.mineCount}) 
-    : gameOver = false, gameWon = false {
+    : gameOver = false, gameWon = false, _firstMove = true {
     _initializeBoard();
   }
 
@@ -60,7 +61,19 @@ class MinesweeperGame {
   }
 
   void reveal(int r, int c) {
-    if (gameOver || gameWon || board[r][c].state != CellState.hidden) return;
+    if (gameOver || gameWon || board[r][c].state == CellState.flagged) return;
+
+    if (board[r][c].state == CellState.revealed) {
+      chord(r, c);
+      return;
+    }
+
+    if (_firstMove) {
+      _firstMove = false;
+      if (board[r][c].isMine || board[r][c].neighborMines > 0) {
+        _moveMineAndRecompute(r, c);
+      }
+    }
 
     if (board[r][c].isMine) {
       board[r][c].state = CellState.revealed;
@@ -70,6 +83,67 @@ class MinesweeperGame {
 
     _recursiveReveal(r, c);
     _checkWin();
+  }
+
+  void chord(int r, int c) {
+    if (board[r][c].state != CellState.revealed) return;
+    int flags = 0;
+    for (int dr = -1; dr <= 1; dr++) {
+      for (int dc = -1; dc <= 1; dc++) {
+        int nr = r + dr, nc = c + dc;
+        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && board[nr][nc].state == CellState.flagged) {
+          flags++;
+        }
+      }
+    }
+
+    if (flags == board[r][c].neighborMines) {
+      for (int dr = -1; dr <= 1; dr++) {
+        for (int dc = -1; dc <= 1; dc++) {
+          int nr = r + dr, nc = c + dc;
+          if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && board[nr][nc].state == CellState.hidden) {
+            _revealInternal(nr, nc);
+          }
+        }
+      }
+      _checkWin();
+    }
+  }
+
+  void _revealInternal(int r, int c) {
+    if (board[r][c].isMine) {
+      board[r][c].state = CellState.revealed;
+      gameOver = true;
+      return;
+    }
+    _recursiveReveal(r, c);
+  }
+
+  void _moveMineAndRecompute(int r, int c) {
+    // Very simple first-move safety: clear a 3x3 area
+    for (int dr = -1; dr <= 1; dr++) {
+      for (int dc = -1; dc <= 1; dc++) {
+        int nr = r + dr, nc = c + dc;
+        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+          board[nr][nc].isMine = false;
+        }
+      }
+    }
+    // Re-calculate all neighbors
+    for (int tr = 0; tr < rows; tr++) {
+      for (int tc = 0; tc < cols; tc++) {
+        if (!board[tr][tc].isMine) {
+          int count = 0;
+          for (int dr = -1; dr <= 1; dr++) {
+            for (int dc = -1; dc <= 1; dc++) {
+              int nr = tr + dr, nc = tc + dc;
+              if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && board[nr][nc].isMine) count++;
+            }
+          }
+          board[tr][tc].neighborMines = count;
+        }
+      }
+    }
   }
 
   void _recursiveReveal(int r, int c) {

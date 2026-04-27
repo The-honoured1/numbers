@@ -181,8 +181,15 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     }
   }
 
+  Color _getCellBgColor(int n) {
+    if (n == 0) return Colors.white;
+    return _getNumberColor(n).withOpacity(0.05);
+  }
+
   Color _getHiddenColor(int r, int c) {
-    return (r + c) % 2 == 0 ? Colors.white : const Color(0xFFF1F5F9);
+    // A nice Zinc/Slate pattern
+    bool isDark = (r + c) % 2 == 0;
+    return isDark ? const Color(0xFFF8FAFC) : Colors.white;
   }
 
   @override
@@ -202,25 +209,40 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Column(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('LEVEL', style: GoogleFonts.outfit(letterSpacing: 1, fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint)),
-                    Text('$_currentLevel / 500', style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.w900)),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('LEVEL', style: GoogleFonts.outfit(letterSpacing: 1, fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint)),
+                        Text('$_currentLevel / 500', style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.w900)),
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: _levelConfig.difficultyColor.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: _levelConfig.difficultyColor.withOpacity(0.3), width: 1.5),
+                      ),
+                      child: Text(
+                        _levelConfig.difficulty,
+                        style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w900, color: _levelConfig.difficultyColor, letterSpacing: 1.5),
+                      ),
+                    ),
                   ],
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: _levelConfig.difficultyColor.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    _levelConfig.difficulty,
-                    style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w900, color: _levelConfig.difficultyColor, letterSpacing: 1.5),
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: _currentLevel / 500,
+                    backgroundColor: context.gridBorder,
+                    valueColor: AlwaysStoppedAnimation<Color>(_levelConfig.difficultyColor),
+                    minHeight: 6,
                   ),
                 ),
               ],
@@ -243,17 +265,17 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: _flagMode ? NumbersColors.coral : context.surface,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: context.onSurface, width: 2.5),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.shadow,
-                          offset: _flagMode ? const Offset(0, 0) : const Offset(4, 4),
-                        )
-                      ],
-                    ),
+                      decoration: BoxDecoration(
+                        color: _flagMode ? NumbersColors.coral : context.surface,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: context.onSurface, width: 3),
+                        boxShadow: [
+                          BoxShadow(
+                            color: context.shadow,
+                            offset: _flagMode ? const Offset(2, 2) : const Offset(6, 6),
+                          )
+                        ],
+                      ),
                     child: Row(
                       children: [
                         Icon(Icons.flag, color: _flagMode ? Colors.white : context.onSurface, size: 16),
@@ -300,23 +322,27 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                         return GestureDetector(
                           onTap: () => _handleCellTap(r, c),
                           child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            curve: Curves.easeInOut,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.fastOutSlowIn,
                             decoration: BoxDecoration(
                               color: cell.state == CellState.revealed 
-                                  ? (cell.isMine ? NumbersColors.coral.withOpacity(0.3) : Colors.white)
+                                  ? (cell.isMine ? NumbersColors.coral.withOpacity(0.4) : _getCellBgColor(cell.neighborMines))
                                   : _getHiddenColor(r, c),
                               border: Border.all(
                                 color: context.onSurface, 
-                                width: cell.state == CellState.revealed ? 1 : 2.5,
+                                width: cell.state == CellState.revealed ? 1.5 : 3,
                               ),
                               boxShadow: cell.state == CellState.revealed ? [] : [
-                                BoxShadow(color: context.shadow, offset: const Offset(3, 3)),
+                                BoxShadow(color: context.shadow, offset: const Offset(4, 4)),
                               ],
                             ),
                             alignment: Alignment.center,
                             child: _buildCellContent(cell),
-                          ).animate(target: cell.state == CellState.revealed ? 1 : 0).scale(begin: const Offset(1, 1), end: const Offset(1.05, 1.05), duration: 100.ms).then().scale(begin: const Offset(1.05, 1.05), end: const Offset(1, 1), duration: 100.ms),
+                          ).animate(target: cell.state == CellState.revealed ? 1 : 0)
+                            .scale(begin: const Offset(1, 1), end: const Offset(1.1, 1.1), duration: 150.ms)
+                            .then()
+                            .scale(begin: const Offset(1.1, 1.1), end: const Offset(1, 1), duration: 150.ms)
+                            .shimmer(duration: 400.ms, color: Colors.white.withOpacity(0.2)),
                         );
                       },
                     ),
@@ -356,13 +382,16 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
           style: GoogleFonts.outfit(
             color: _getNumberColor(cell.neighborMines),
             fontWeight: FontWeight.w900,
-            fontSize: 22,
+            fontSize: 24,
             shadows: [
-              if (Theme.of(context).brightness == Brightness.light)
-                Shadow(color: _getNumberColor(cell.neighborMines).withOpacity(0.2), offset: const Offset(1, 1), blurRadius: 2),
+              Shadow(
+                color: _getNumberColor(cell.neighborMines).withOpacity(0.3),
+                offset: const Offset(1.5, 1.5),
+                blurRadius: 4,
+              ),
             ],
           ),
-        );
+        ).animate().fadeIn(duration: 200.ms).scale(begin: const Offset(0.5, 0.5), curve: Curves.backOut);
     }
   }
 }

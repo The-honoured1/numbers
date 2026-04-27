@@ -90,7 +90,7 @@ class _GameResultDialogState extends State<GameResultDialog> {
               BoxShadow(
                 color: context.shadow,
                 blurRadius: 0,
-                offset: Offset(8, 8),
+                offset: const Offset(8, 8),
               )
             ],
           ),
@@ -108,117 +108,124 @@ class _GameResultDialogState extends State<GameResultDialog> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: widget.color, // Solid color, no gradient
-                shape: BoxShape.circle,
-                border: Border.all(color: context.border, width: 2.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: context.shadow,
-                    blurRadius: 0,
-                    offset: Offset(4, 4),
-                  )
-                ],
-              ),
-              child: Icon(widget.icon, color: context.onSurface, size: 48), // Dark icon
-            ).animate().scale(duration: 800.ms, curve: Curves.elasticOut),
-            const SizedBox(height: 32),
-            Text(
-              widget.title,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.playfairDisplay(
-                fontSize: 32,
-                fontWeight: FontWeight.w900,
-                color: context.onSurface,
-                letterSpacing: -1,
-                height: 1.1,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              widget.message,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(
-                fontSize: 15,
-                color: context.onSurface, // Darker text
-                fontWeight: FontWeight.w600,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 40),
-            if (showRevive) ...[
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    _timer?.cancel();
-                    widget.onRevive!();
-                  },
-                  icon: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(
-                        width: 28,
-                        height: 28,
-                        child: CircularProgressIndicator(
-                          value: _secondsRemaining / 5,
-                          strokeWidth: 3,
-                          color: context.onSurface.withOpacity(0.3),
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: widget.color,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: context.border, width: 2.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.shadow,
+                          blurRadius: 0,
+                          offset: const Offset(4, 4),
+                        )
+                      ],
+                    ),
+                    child: Icon(widget.icon, color: context.onSurface, size: 48),
+                  ).animate().scale(duration: 800.ms, curve: Curves.elasticOut),
+                  const SizedBox(height: 32),
+                  Text(
+                    widget.title,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w900,
+                      color: context.onSurface,
+                      letterSpacing: -1,
+                      height: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    widget.message,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.outfit(
+                      fontSize: 15,
+                      color: context.onSurface,
+                      fontWeight: FontWeight.w600,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  if (showRevive) ...[
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          _timer?.cancel();
+                          widget.onRevive!();
+                        },
+                        icon: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox(
+                              width: 28,
+                              height: 28,
+                              child: CircularProgressIndicator(
+                                value: _secondsRemaining / 5,
+                                strokeWidth: 3,
+                                color: context.onSurface.withOpacity(0.3),
+                              ),
+                            ),
+                            Text('$_secondsRemaining',
+                                style: GoogleFonts.outfit(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w900,
+                                    color: context.onSurface)),
+                          ],
+                        ),
+                        label: Text(
+                          widget.reviveButtonText.toUpperCase(),
+                          style: GoogleFonts.outfit(
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.5,
+                            fontSize: 13,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: NumbersColors.yellow,
+                          foregroundColor: context.onSurface,
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            side: BorderSide(color: context.border, width: 2.5),
+                          ),
+                          elevation: 0,
                         ),
                       ),
-                      Text('$_secondsRemaining', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w900, color: context.onSurface)),
-                    ],
-                  ),
-                  label: Text(
-                    widget.reviveButtonText.toUpperCase(),
-                    style: GoogleFonts.outfit(
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.5,
-                      fontSize: 13,
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: widget.onButtonPressed,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: context.surface,
+                        foregroundColor: context.onSurface,
+                        side: BorderSide(color: context.border, width: 2.5),
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        widget.buttonText.toUpperCase(),
+                        style: GoogleFonts.outfit(
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.5,
+                          fontSize: 13,
+                          color: context.onSurface,
+                        ),
+                      ),
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: NumbersColors.yellow,
-                    foregroundColor: context.onSurface,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(color: context.border, width: 2.5),
-                    ),
-                    elevation: 0,
-                  ),
-                ),
+                ],
               ),
-              const SizedBox(height: 12),
             ],
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton( // Changed from OutlinedButton to conform to neobrutal flat style
-                onPressed: widget.onButtonPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.surface,
-                  foregroundColor: context.onSurface,
-                  side: BorderSide(color: context.border, width: 2.5),
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  widget.buttonText.toUpperCase(),
-                  style: GoogleFonts.outfit(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 1.5,
-                    fontSize: 13,
-                    color: context.onSurface,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     ).animate().fadeIn(duration: 400.ms).scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack);
