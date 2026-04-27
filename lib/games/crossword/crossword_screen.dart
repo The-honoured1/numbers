@@ -80,12 +80,25 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
 
   void _checkWin() {
     if (_playerValues.every((v) => v != null)) {
+      final p = _playerValues;
+      final o = _data.ops;
+      final r = _data.results;
+
       bool win = true;
-      for (int i = 0; i < 9; i++) {
-        if (_playerValues[i] != _data.values[i]) win = false;
-      }
+      
+      // Horizontal Rows
+      if (_logic.calculate(_logic.calculate(p[0]!, p[1]!, o[0]), p[2]!, o[1]) != r[0]) win = false;
+      if (_logic.calculate(_logic.calculate(p[3]!, p[4]!, o[5]), p[5]!, o[6]) != r[1]) win = false;
+      if (_logic.calculate(_logic.calculate(p[6]!, p[7]!, o[10]), p[8]!, o[11]) != r[2]) win = false;
+
+      // Vertical Columns
+      if (_logic.calculate(_logic.calculate(p[0]!, p[3]!, o[2]), p[6]!, o[7]) != r[3]) win = false;
+      if (_logic.calculate(_logic.calculate(p[1]!, p[4]!, o[3]), p[7]!, o[8]) != r[4]) win = false;
+      if (_logic.calculate(_logic.calculate(p[2]!, p[5]!, o[4]), p[8]!, o[9]) != r[5]) win = false;
+
       if (win) {
         _storage.markDailyCompleted('crossword');
+        _storage.saveHighScore('crossword_level', _level + 1);
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -100,7 +113,6 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
         ).then((_) {
           setState(() {
             _level++;
-            _storage.saveHighScore('crossword_level', _level);
             _startNewLevel();
           });
         });
@@ -246,9 +258,10 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
         child: Container(
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-            color: isSelected ? NumbersColors.selection.withOpacity(0.1) : (isHint ? context.gridBorder.withOpacity(0.5) : Colors.transparent),
-            border: Border.all(color: isSelected ? NumbersColors.selection : context.gridBorder, width: isSelected ? 2 : 1),
+            color: isSelected ? context.surface : (isHint ? context.gridBorder.withOpacity(0.3) : context.surface),
+            border: Border.all(color: isSelected ? NumbersColors.selection : context.border, width: isSelected ? 3 : 2),
             borderRadius: BorderRadius.circular(4),
+            boxShadow: isSelected ? [BoxShadow(color: context.shadow, offset: const Offset(3, 3))] : [],
           ),
           alignment: Alignment.center,
           child: Text(

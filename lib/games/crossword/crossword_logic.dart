@@ -24,14 +24,14 @@ class CrosswordLogic {
         ops = List.generate(12, (_) => ['+', '-', '×'][_rand.nextInt(3)]);
         
         // Row results
-        int r1 = _calculate(_calculate(values[0], values[1], ops[0]), values[2], ops[1]);
-        int r2 = _calculate(_calculate(values[3], values[4], ops[5]), values[5], ops[6]);
-        int r3 = _calculate(_calculate(values[6], values[7], ops[10]), values[8], ops[11]);
+        int r1 = calculate(calculate(values[0], values[1], ops[0]), values[2], ops[1]);
+        int r2 = calculate(calculate(values[3], values[4], ops[5]), values[5], ops[6]);
+        int r3 = calculate(calculate(values[6], values[7], ops[10]), values[8], ops[11]);
 
         // Col results
-        int r4 = _calculate(_calculate(values[0], values[3], ops[2]), values[6], ops[7]);
-        int r5 = _calculate(_calculate(values[1], values[4], ops[3]), values[7], ops[8]);
-        int r6 = _calculate(_calculate(values[2], values[5], ops[4]), values[8], ops[9]);
+        int r4 = calculate(calculate(values[0], values[3], ops[2]), values[6], ops[7]);
+        int r5 = calculate(calculate(values[1], values[4], ops[3]), values[7], ops[8]);
+        int r6 = calculate(calculate(values[2], values[5], ops[4]), values[8], ops[9]);
 
         results = [r1, r2, r3, r4, r5, r6];
 
@@ -48,7 +48,7 @@ class CrosswordLogic {
     );
   }
 
-  int _calculate(int a, int b, String op) {
+  int calculate(int a, int b, String op) {
     if (op == '+') return a + b;
     if (op == '-') return a - b;
     if (op == '×') return a * b;

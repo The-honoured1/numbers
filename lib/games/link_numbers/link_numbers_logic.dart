@@ -43,15 +43,21 @@ class LinkNumbersLogic {
     int gridSize;
     int pairCount;
 
-    if (levelIndex < 3) {
+    if (levelIndex < 5) {
       gridSize = 5;
-      pairCount = 3 + levelIndex; // 3, 4, 5 pairs
-    } else if (levelIndex < 6) {
+      pairCount = 3 + (levelIndex ~/ 2); 
+    } else if (levelIndex < 15) {
       gridSize = 6;
-      pairCount = 4 + (levelIndex - 3); // 4, 5, 6 pairs
-    } else {
+      pairCount = 4 + ((levelIndex - 5) ~/ 3);
+    } else if (levelIndex < 30) {
       gridSize = 7;
-      pairCount = 5 + ((levelIndex - 6) % 4); // 5-8 pairs
+      pairCount = 5 + ((levelIndex - 15) ~/ 4);
+    } else if (levelIndex < 60) {
+      gridSize = 8;
+      pairCount = 6 + ((levelIndex - 30) ~/ 6);
+    } else {
+      gridSize = 9;
+      pairCount = 7 + ((levelIndex - 60) ~/ 10);
     }
 
     // Keep trying until we get a valid puzzle
@@ -79,7 +85,7 @@ class LinkNumbersLogic {
       if (start == null) return null;
 
       // Random walk from start to create a path
-      int pathLen = 2 + _rand.nextInt(gridSize); // path of 2-gridSize cells
+      int pathLen = gridSize + _rand.nextInt(gridSize * 2); 
       List<Point> path = [start];
       occupied[start.y][start.x] = true;
 
