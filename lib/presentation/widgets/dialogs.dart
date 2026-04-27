@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
+import 'package:numbers/services/share_service.dart';
+import 'package:flutter/rendering.dart';
 
 class GameResultDialog extends StatefulWidget {
   final String title;
@@ -31,6 +33,7 @@ class GameResultDialog extends StatefulWidget {
 }
 
 class _GameResultDialogState extends State<GameResultDialog> {
+  final GlobalKey _shareKey = GlobalKey();
   int _secondsRemaining = 5;
   Timer? _timer;
 
@@ -54,6 +57,14 @@ class _GameResultDialogState extends State<GameResultDialog> {
     });
   }
 
+  void _share() async {
+    await ShareService().shareWidgetAsImage(
+      key: _shareKey,
+      text: 'Look at my score in Numbers! 🧩📈 ${widget.message}',
+      subject: 'My Numbers Result',
+    );
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -67,23 +78,36 @@ class _GameResultDialogState extends State<GameResultDialog> {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Container(
-        padding: const EdgeInsets.all(32),
-        decoration: BoxDecoration(
-          color: context.surface,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: context.border, width: 2.5),
-          boxShadow: [
-            BoxShadow(
-              color: context.shadow,
-              blurRadius: 0,
-              offset: Offset(8, 8),
-            )
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+      child: RepaintBoundary(
+        key: _shareKey,
+        child: Container(
+          padding: const EdgeInsets.all(32),
+          decoration: BoxDecoration(
+            color: context.surface,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: context.border, width: 2.5),
+            boxShadow: [
+              BoxShadow(
+                color: context.shadow,
+                blurRadius: 0,
+                offset: Offset(8, 8),
+              )
+            ],
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                top: -10,
+                right: -10,
+                child: IconButton(
+                  onPressed: _share,
+                  icon: Icon(Icons.share_rounded, color: context.onSurface),
+                  tooltip: 'Share Score',
+                ),
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(

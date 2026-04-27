@@ -282,7 +282,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
             ],
           ),
         ),
-      ),,
+      ),
     );
   }
 

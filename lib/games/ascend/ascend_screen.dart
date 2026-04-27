@@ -233,8 +233,9 @@ class _AscendScreenState extends State<AscendScreen> {
         ),
       ),
     ),
-    );
-  }
+  ),
+);
+}
 }
 
 class _StatItem extends StatelessWidget {
