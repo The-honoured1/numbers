@@ -87,8 +87,8 @@ class _AscendScreenState extends State<AscendScreen> {
         _timer?.cancel();
         _round++;
         
-        // Show interstitial ad every 3 level milestones, delaying next round
-        if (_round > 1 && (_round - 1) % 3 == 0) {
+        // Show interstitial ad every 5 rounds
+        if (_round > 1 && (_round - 1) % 5 == 0) {
           AdService().showInterstitialAd(onClosed: () {
             if (mounted) _startNewRound();
           });
@@ -154,8 +154,12 @@ class _AscendScreenState extends State<AscendScreen> {
       appBar: AppBar(
         title: Text('ZEN ASCEND', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),
-      body: Column(
-        children: [
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.top,
+            child: Column(
+              children: [
           Padding(
             padding: const EdgeInsets.all(24.0),
             child: Row(
@@ -217,7 +221,7 @@ class _AscendScreenState extends State<AscendScreen> {
               },
             ),
           ),
-        ],
+        ),
       ),
     );
   }

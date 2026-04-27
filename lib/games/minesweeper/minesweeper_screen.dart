@@ -130,7 +130,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
   }
 
   void _showResult(bool won, {int? r, int? c}) {
-    if (won) AdService().showInterstitialAd();
+    if (won && (_currentLevel + 1) % 5 == 0) AdService().showInterstitialAd();
     
     showDialog(
       context: context,

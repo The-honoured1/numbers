@@ -108,7 +108,10 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
             buttonText: 'NEXT PUZZLE',
             color: NumbersColors.crossCorrect,
             icon: Icons.auto_awesome,
-            onButtonPressed: () => Navigator.pop(context),
+            onButtonPressed: () {
+              Navigator.pop(context);
+              if ((_level + 1) % 5 == 0) AdService().showInterstitialAd();
+            },
           ),
         ).then((_) {
           setState(() {
