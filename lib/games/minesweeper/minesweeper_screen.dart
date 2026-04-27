@@ -174,7 +174,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
       case 3: return Colors.red;
       case 4: return Colors.purple;
       case 5: return Colors.orange;
-      default: return Colors.black;
+      default: return context.onSurface;
     }
   }
 

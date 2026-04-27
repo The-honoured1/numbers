@@ -37,9 +37,15 @@ class NumbersColors {
 extension ThemeColorsExt on BuildContext {
   Color get surface => Theme.of(this).colorScheme.surface;
   Color get onSurface => Theme.of(this).colorScheme.onSurface;
-  Color get border => Theme.of(this).colorScheme.onSurface; // Border always matches text color
-  Color get shadow => Theme.of(this).colorScheme.onSurface; // Shadow matches text/border color
-  Color get textFaint => Theme.of(this).brightness == Brightness.dark ? const Color(0xFFAAAAAA) : const Color(0xFF555555);
+  Color get border => Theme.of(this).brightness == Brightness.dark 
+      ? const Color(0xFFE0E0E0) // Stark light-gray border in dark mode for pop
+      : Theme.of(this).colorScheme.onSurface; 
+  Color get shadow => Theme.of(this).brightness == Brightness.dark
+      ? Colors.black 
+      : Theme.of(this).colorScheme.onSurface; 
+  Color get textFaint => Theme.of(this).brightness == Brightness.dark 
+      ? const Color(0xFFBDBDBD) 
+      : const Color(0xFF555555);
 }
 
 class NumbersTheme {
@@ -56,9 +62,10 @@ class NumbersTheme {
 
   static ThemeData _buildTheme(Brightness brightness) {
     final bool isDark = brightness == Brightness.dark;
-    final Color bgColor = isDark ? const Color(0xFF141414) : const Color(0xFFFFFFFF);
-    final Color textColor = isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
-    final Color borderColor = textColor;
+    final Color bgColor = isDark ? const Color(0xFF101010) : const Color(0xFFFFFFFF);
+    final Color cardColor = isDark ? const Color(0xFF1C1C1C) : const Color(0xFFFFFFFF);
+    final Color textColor = isDark ? const Color(0xFFEEEEEE) : const Color(0xFF000000);
+    final Color borderColor = isDark ? const Color(0xFF333333) : const Color(0xFF000000);
 
     return ThemeData(
       brightness: brightness,
@@ -79,7 +86,7 @@ class NumbersTheme {
       colorScheme: ColorScheme.fromSeed(
         brightness: brightness,
         seedColor: NumbersColors.blue,
-        surface: bgColor,
+        surface: cardColor,
         onSurface: textColor,
         primary: NumbersColors.blue,
       ),
@@ -119,7 +126,7 @@ class NumbersTheme {
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: borderColor, width: 2.5),
         ),
-        color: bgColor,
+        color: cardColor,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(

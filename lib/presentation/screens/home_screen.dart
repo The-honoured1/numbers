@@ -385,8 +385,8 @@ class _StatsView extends StatelessWidget {
               child: Column(
                 children: [
                   Icon(Icons.bolt_rounded, color: context.surface, size: 80)
-                    .animate(onPlay: (controller) => controller.repeat(reverse: true))
-                    .scale(begin: const Offset(1,1), end: const Offset(1.1, 1.1), duration: 1000.ms),
+                    .animate()
+                    .scale(begin: const Offset(1,1), end: const Offset(1.1, 1.1), duration: 1000.ms, curve: Curves.easeInOut),
                   const SizedBox(height: 16),
                   Text('${storage.currentStreak}', style: GoogleFonts.outfit(fontSize: 72, fontWeight: FontWeight.w900, height: 1, color: context.surface)),
                   Text('DAY STREAK', style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 3, color: context.surface.withOpacity(0.9))),
@@ -495,26 +495,28 @@ class _StatsView extends StatelessWidget {
         final isCompleted = storage.anyDailyCompleted(date);
         final isToday = date.day == now.day && date.month == now.month && date.year == now.year;
         
-        return Column(
-          children: [
-            Text(labels[date.weekday % 7], style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.onSurface.withOpacity(0.6))),
-            const SizedBox(height: 12),
-            Container(
-              width: 36,
-              height: 46,
-              decoration: BoxDecoration(
-                color: isCompleted ? NumbersColors.green : context.surface,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: context.border, width: 2),
-                boxShadow: [
-                  BoxShadow(color: context.shadow, blurRadius: 0, offset: Offset(2, 2))
-                ],
+        return Expanded(
+          child: Column(
+            children: [
+              FittedBox(child: Text(labels[date.weekday % 7], style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.onSurface.withOpacity(0.6)))),
+              const SizedBox(height: 12),
+              Container(
+                width: 36,
+                height: 46,
+                decoration: BoxDecoration(
+                  color: isCompleted ? NumbersColors.green : context.surface,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: context.border, width: 2),
+                  boxShadow: [
+                    BoxShadow(color: context.shadow, blurRadius: 0, offset: Offset(2, 2))
+                  ],
+                ),
+                child: isCompleted 
+                  ? Icon(Icons.check_rounded, color: context.onSurface, size: 24) 
+                  : Center(child: Text('${date.day}', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.onSurface))),
               ),
-              child: isCompleted 
-                ? Icon(Icons.check_rounded, color: context.onSurface, size: 24) 
-                : Center(child: Text('${date.day}', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.onSurface))),
-            ),
-          ],
+            ],
+          ),
         );
       }).toList(),
     );
@@ -572,8 +574,13 @@ class _StatsView extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: 16),
-        Text(value, style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, color: context.onSurface)),
+        const SizedBox(width: 8),
+        Flexible(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(value, style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, color: context.onSurface)),
+          ),
+        ),
       ],
     );
   }
@@ -589,11 +596,11 @@ class _InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: context.surface,
-        border: Border.all(color: context.border, width: 2.5),
+        border: Border.all(color: context.border, width: 2),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -608,20 +615,23 @@ class _InfoCard extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10), border: Border.all(color: context.border, width: 2)),
-            child: Icon(icon, color: context.onSurface, size: 24),
+            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10), border: Border.all(color: context.border, width: 1.5)),
+            child: Icon(icon, color: context.onSurface, size: 20),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
-            child: Text(value, style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.w900, color: context.onSurface)),
+            child: Text(value, style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w900, color: context.onSurface)),
           ),
-          Text(
-            label, 
-            style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          const SizedBox(height: 4),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              label, 
+              style: GoogleFonts.outfit(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 1.2, color: context.textFaint),
+            ),
           ),
         ],
       ),
