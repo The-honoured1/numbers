@@ -80,7 +80,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NumbersColors.backgroundOffWhite,
+      backgroundColor: context.surface,
       appBar: AppBar(
         title: Text('MATH CROSS', style: GoogleFonts.lora(fontWeight: FontWeight.w800, fontSize: 18, letterSpacing: 1)),
         centerTitle: true,
@@ -93,7 +93,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Text(
               'FILL THE GRID TO SATISFY ALL EQUATIONS',
-              style: GoogleFonts.inter(letterSpacing: 1.5, fontSize: 9, fontWeight: FontWeight.w800, color: NumbersColors.textFaint),
+              style: GoogleFonts.inter(letterSpacing: 1.5, fontSize: 9, fontWeight: FontWeight.w800, color: context.textFaint),
             ),
           ),
           Expanded(
@@ -109,7 +109,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: NumbersColors.border, width: 2),
+                        border: Border.all(color: context.border, width: 2),
                         boxShadow: [
                           BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
                         ],
@@ -150,7 +150,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
           _buildInputCell(valIndices[1]),
           _buildOpCell(_data.ops[opIndices[1]]),
           _buildInputCell(valIndices[2]),
-          _buildOpCell('=', color: NumbersColors.textFaint.withOpacity(0.3)),
+          _buildOpCell('=', color: context.textFaint.withOpacity(0.3)),
           _buildResultCell(_data.results[resultRowIndex]),
         ],
       ),
@@ -214,13 +214,13 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
             color: isSelected ? NumbersColors.selection.withOpacity(0.1) : Colors.transparent,
-            border: Border.all(color: isSelected ? NumbersColors.selection : NumbersColors.border, width: isSelected ? 2 : 1),
+            border: Border.all(color: isSelected ? NumbersColors.selection : context.border, width: isSelected ? 2 : 1),
             borderRadius: BorderRadius.circular(4),
           ),
           alignment: Alignment.center,
           child: Text(
             _playerValues[index]?.toString() ?? '',
-            style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 18, color: NumbersColors.textBody),
+            style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 18, color: context.onSurface),
           ),
         ),
       ),
@@ -231,7 +231,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
     return Expanded(
       child: Container(
         alignment: Alignment.center,
-        child: Text(text, style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, color: color ?? NumbersColors.textFaint)),
+        child: Text(text, style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600, color: color ?? context.textFaint)),
       ),
     );
   }
@@ -255,7 +255,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 40),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(top: BorderSide(color: NumbersColors.border)),
+        border: Border(top: BorderSide(color: context.border)),
       ),
       child: Wrap(
         spacing: 12,
@@ -277,12 +277,12 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
         height: 60,
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: NumbersColors.border),
+          border: Border.all(color: context.border),
           borderRadius: BorderRadius.circular(8),
           boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 4, offset: const Offset(0, 2))],
         ),
         alignment: Alignment.center,
-        child: Text('$value', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w800, color: NumbersColors.textBody)),
+        child: Text('$value', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w800, color: context.onSurface)),
       ),
     );
   }

@@ -152,14 +152,14 @@ class _AscendScreenState extends State<AscendScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _StatItem(label: 'TIME', value: '${_timeLeft}s', color: _timeLeft < 4 ? NumbersColors.coral : NumbersColors.green),
-                _StatItem(label: 'SCORE', value: '$_score', color: NumbersColors.textBody),
+                _StatItem(label: 'SCORE', value: '$_score', color: context.onSurface),
               ],
             ),
           ),
           const SizedBox(height: 20),
           Text(
             'TAP NUMBERS IN ASCENDING ORDER',
-            style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.textFaint, letterSpacing: 2),
+            style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 2),
           ),
           const SizedBox(height: 40),
           Expanded(
@@ -183,7 +183,7 @@ class _AscendScreenState extends State<AscendScreen> {
                       color: isSolved ? NumbersColors.green.withOpacity(0.1) : Colors.white,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: isSolved ? NumbersColors.green : NumbersColors.border,
+                        color: isSolved ? NumbersColors.green : context.border,
                         width: 2,
                       ),
                     ),
@@ -193,7 +193,7 @@ class _AscendScreenState extends State<AscendScreen> {
                       style: GoogleFonts.outfit(
                         fontSize: 28,
                         fontWeight: FontWeight.w900,
-                        color: isSolved ? NumbersColors.green : NumbersColors.textBody,
+                        color: isSolved ? NumbersColors.green : context.onSurface,
                       ),
                     ),
                   ).animate(key: ValueKey('tile_$num')).fadeIn().scale(),
@@ -218,7 +218,7 @@ class _StatItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.textFaint, letterSpacing: 1.5)),
+        Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1.5)),
         Text(value, style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w900, color: color)),
       ],
     );

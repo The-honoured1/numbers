@@ -93,7 +93,7 @@ class _SlideScreenState extends State<SlideScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _StatItem(label: 'MOVES', value: '$_moves', color: NumbersColors.purple),
-                _StatItem(label: 'BEST', value: '${StorageService().getHighScore('slide_15')}', color: NumbersColors.textFaint),
+                _StatItem(label: 'BEST', value: '${StorageService().getHighScore('slide_15')}', color: context.textFaint),
               ],
             ),
           ),
@@ -105,7 +105,7 @@ class _SlideScreenState extends State<SlideScreen> {
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: NumbersColors.border.withOpacity(0.5),
+                  color: context.border.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: GridView.builder(
@@ -128,7 +128,7 @@ class _SlideScreenState extends State<SlideScreen> {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: NumbersColors.cardShadow.withOpacity(0.05),
+                              color: context.shadow.withOpacity(0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             )
@@ -140,7 +140,7 @@ class _SlideScreenState extends State<SlideScreen> {
                           style: GoogleFonts.outfit(
                             fontSize: 24,
                             fontWeight: FontWeight.w900,
-                            color: NumbersColors.textBody,
+                            color: context.onSurface,
                           ),
                         ),
                       ).animate(key: ValueKey('tile_$val')).fadeIn().scale(),
@@ -175,7 +175,7 @@ class _StatItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.textFaint, letterSpacing: 1.5)),
+        Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1.5)),
         Text(value, style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w900, color: color)),
       ],
     );

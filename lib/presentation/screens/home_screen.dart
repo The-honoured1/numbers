@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NumbersColors.backgroundOffWhite,
+      backgroundColor: context.surface,
       body: IndexedStack(
         index: _selectedIndex,
         children: [
@@ -76,12 +76,12 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: Container(
         margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         decoration: BoxDecoration(
-          color: NumbersColors.backgroundOffWhite,
+          color: context.surface,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: NumbersColors.border, width: 2.5),
-          boxShadow: const [
+          border: Border.all(color: context.border, width: 2.5),
+          boxShadow: [
             BoxShadow(
-              color: NumbersColors.cardShadow,
+              color: context.shadow,
               blurRadius: 0,
               offset: Offset(4, 4),
             )
@@ -92,10 +92,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: BottomNavigationBar(
             currentIndex: _selectedIndex,
             onTap: (index) => setState(() => _selectedIndex = index),
-            backgroundColor: NumbersColors.backgroundOffWhite,
+            backgroundColor: context.surface,
             elevation: 0,
             selectedItemColor: NumbersColors.blue,
-            unselectedItemColor: NumbersColors.textFaint,
+            unselectedItemColor: context.textFaint,
             selectedLabelStyle: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1),
             unselectedLabelStyle: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1),
             type: BottomNavigationBarType.fixed,
@@ -128,9 +128,9 @@ class _TodayView extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(Icons.blur_on, color: NumbersColors.textBody, size: 32),
-                Text('The Numbers Games', style: GoogleFonts.unifrakturMaguntia(fontSize: 26, fontWeight: FontWeight.w700, color: NumbersColors.textBody)),
-                const Icon(Icons.notifications_none_rounded, color: NumbersColors.textBody, size: 28),
+                Icon(Icons.blur_on, color: context.onSurface, size: 32),
+                Text('The Numbers Games', style: GoogleFonts.unifrakturMaguntia(fontSize: 26, fontWeight: FontWeight.w700, color: context.onSurface)),
+                Icon(Icons.notifications_none_rounded, color: context.onSurface, size: 28),
               ],
             ),
           ),
@@ -144,7 +144,7 @@ class _TodayView extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       date.toUpperCase(),
-                      style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w800, letterSpacing: 2, color: NumbersColors.textFaint),
+                      style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w800, letterSpacing: 2, color: context.textFaint),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -155,10 +155,10 @@ class _TodayView extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: dailyGame.accentColor,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: NumbersColors.border, width: 2.5),
+                        border: Border.all(color: context.border, width: 2.5),
                         boxShadow: const [
                           BoxShadow(
-                            color: NumbersColors.cardShadow,
+                            color: context.shadow,
                             blurRadius: 0,
                             offset: Offset(8, 8),
                           )
@@ -170,7 +170,7 @@ class _TodayView extends StatelessWidget {
                           Positioned(
                             right: -50,
                             top: -50,
-                            child: Icon(dailyGame.icon, size: 250, color: NumbersColors.textBody.withOpacity(0.1)),
+                            child: Icon(dailyGame.icon, size: 250, color: context.onSurface.withOpacity(0.1)),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(32),
@@ -182,43 +182,43 @@ class _TodayView extends StatelessWidget {
                                     Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                       decoration: BoxDecoration(
-                                        color: NumbersColors.backgroundOffWhite,
-                                        border: Border.all(color: NumbersColors.border, width: 2),
+                                        color: context.surface,
+                                        border: Border.all(color: context.border, width: 2),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
-                                      child: Text('DAILY PUZZLE', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w900, color: NumbersColors.textBody, letterSpacing: 1.5)),
+                                      child: Text('DAILY PUZZLE', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w900, color: context.onSurface, letterSpacing: 1.5)),
                                     ),
                                     const Spacer(),
                                     if (storage.isDailyCompleted(dailyGame.id))
                                       Container(
-                                        decoration: const BoxDecoration(shape: BoxShape.circle, color: NumbersColors.backgroundOffWhite),
-                                        child: const Icon(Icons.check_circle_rounded, color: NumbersColors.textBody, size: 32),
+                                        decoration: BoxDecoration(shape: BoxShape.circle, color: context.surface),
+                                        child: Icon(Icons.check_circle_rounded, color: context.onSurface, size: 32),
                                       ),
                                   ],
                                 ),
                                 const SizedBox(height: 60),
                                 Text(
                                   dailyGame.title,
-                                  style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, height: 1.0, color: NumbersColors.textBody, letterSpacing: -1),
+                                  style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, height: 1.0, color: context.onSurface, letterSpacing: -1),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   dailyGame.description.toUpperCase(),
-                                  style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700, color: NumbersColors.textBody.withOpacity(0.8), letterSpacing: 1.5),
+                                  style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700, color: context.onSurface.withOpacity(0.8), letterSpacing: 1.5),
                                 ),
                                 const SizedBox(height: 32),
                                 Container(
                                   width: double.infinity,
                                   padding: const EdgeInsets.symmetric(vertical: 20),
                                   decoration: BoxDecoration(
-                                    color: NumbersColors.backgroundOffWhite,
+                                    color: context.surface,
                                     borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: NumbersColors.border, width: 2.5),
+                                    border: Border.all(color: context.border, width: 2.5),
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
                                     storage.isDailyCompleted(dailyGame.id) ? 'REPLAY CHALLENGE' : 'PLAY NOW',
-                                    style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w900, color: NumbersColors.textBody, letterSpacing: 1),
+                                    style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w900, color: context.onSurface, letterSpacing: 1),
                                   ),
                                 ),
                               ],
@@ -243,12 +243,12 @@ class _TodayView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: NumbersColors.backgroundOffWhite,
+        color: context.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: NumbersColors.border, width: 2.5),
-        boxShadow: const [
+        border: Border.all(color: context.border, width: 2.5),
+        boxShadow: [
           BoxShadow(
-            color: NumbersColors.cardShadow,
+            color: context.shadow,
             blurRadius: 0,
             offset: Offset(4, 4),
           )
@@ -269,12 +269,12 @@ class _TodayView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("CURRENT STREAK", style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: NumbersColors.textFaint)),
-                Text("${storage.currentStreak} DAYS", style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.w900, color: NumbersColors.textBody)),
+                Text("CURRENT STREAK", style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint)),
+                Text("${storage.currentStreak} DAYS", style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.w900, color: context.onSurface)),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right_rounded, color: NumbersColors.textFaint),
+          const Icon(Icons.chevron_right_rounded, color: context.textFaint),
         ],
       ),
     );
@@ -299,9 +299,9 @@ class _HubView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('The Hub', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1, color: NumbersColors.textBody)),
+                  Text('The Hub', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1, color: context.onSurface)),
                   const SizedBox(height: 4),
-                  Text('CHOOSE YOUR DAILY BRAIN WORKOUT', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: NumbersColors.textBody.withOpacity(0.6))),
+                  Text('CHOOSE YOUR DAILY BRAIN WORKOUT', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.onSurface.withOpacity(0.6))),
                 ],
               ),
             ),
@@ -349,7 +349,7 @@ class _StatsView extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 24),
-              child: Text('Progress', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1, color: NumbersColors.textBody)),
+              child: Text('Progress', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1, color: context.onSurface)),
             ),
             
             // STREAK HERO
@@ -400,7 +400,7 @@ class _StatsView extends StatelessWidget {
             
             Align(
               alignment: Alignment.centerLeft,
-              child: Text('HIGHEST SCORES', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: NumbersColors.textFaint)),
+              child: Text('HIGHEST SCORES', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint)),
             ),
             const SizedBox(height: 16),
             _buildHighScoreList(),
@@ -409,7 +409,7 @@ class _StatsView extends StatelessWidget {
             
             Align(
               alignment: Alignment.centerLeft,
-              child: Text('KEY METRICS', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: NumbersColors.textFaint)),
+              child: Text('KEY METRICS', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint)),
             ),
             const SizedBox(height: 16),
             _buildMetricsTable(),
@@ -440,12 +440,12 @@ class _StatsView extends StatelessWidget {
             margin: const EdgeInsets.only(right: 16, bottom: 8),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             decoration: BoxDecoration(
-              color: NumbersColors.backgroundOffWhite,
+              color: context.surface,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: NumbersColors.border, width: 2.5),
+              border: Border.all(color: context.border, width: 2.5),
               boxShadow: const [
                 BoxShadow(
-                  color: NumbersColors.cardShadow,
+                  color: context.shadow,
                   blurRadius: 0,
                   offset: Offset(4, 4),
                 )
@@ -453,16 +453,16 @@ class _StatsView extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Text(game['name'] as String, style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: NumbersColors.textBody)),
+                Text(game['name'] as String, style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.onSurface)),
                 const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
                     color: game['color'] as Color,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: NumbersColors.border, width: 2),
+                    border: Border.all(color: context.border, width: 2),
                   ),
-                  child: Text('$score', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: NumbersColors.textBody)),
+                  child: Text('$score', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: context.onSurface)),
                 ),
               ],
             ),
@@ -486,22 +486,22 @@ class _StatsView extends StatelessWidget {
         
         return Column(
           children: [
-            Text(labels[date.weekday % 7], style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: NumbersColors.textBody.withOpacity(0.6))),
+            Text(labels[date.weekday % 7], style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.onSurface.withOpacity(0.6))),
             const SizedBox(height: 12),
             Container(
               width: 36,
               height: 46,
               decoration: BoxDecoration(
-                color: isCompleted ? NumbersColors.green : NumbersColors.backgroundOffWhite,
+                color: isCompleted ? NumbersColors.green : context.surface,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: NumbersColors.border, width: 2),
-                boxShadow: const [
-                  BoxShadow(color: NumbersColors.cardShadow, blurRadius: 0, offset: Offset(2, 2))
+                border: Border.all(color: context.border, width: 2),
+                boxShadow: [
+                  BoxShadow(color: context.shadow, blurRadius: 0, offset: Offset(2, 2))
                 ],
               ),
               child: isCompleted 
-                ? const Icon(Icons.check_rounded, color: NumbersColors.textBody, size: 24) 
-                : Center(child: Text('${date.day}', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: NumbersColors.textBody))),
+                ? Icon(Icons.check_rounded, color: context.onSurface, size: 24) 
+                : Center(child: Text('${date.day}', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.onSurface))),
             ),
           ],
         );
@@ -519,12 +519,12 @@ class _StatsView extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: NumbersColors.backgroundOffWhite,
-        border: Border.all(color: NumbersColors.border, width: 2.5),
+        color: context.surface,
+        border: Border.all(color: context.border, width: 2.5),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: NumbersColors.cardShadow,
+            color: context.shadow,
             blurRadius: 0,
             offset: Offset(4, 4),
           )
@@ -533,9 +533,9 @@ class _StatsView extends StatelessWidget {
       child: Column(
         children: [
           _metricRow("TOTAL PLAY TIME", StorageService.formatDuration(totalTime), NumbersColors.purple),
-          const Divider(height: 32, color: NumbersColors.border, thickness: 2.5),
+          const Divider(height: 32, color: context.border, thickness: 2.5),
           _metricRow("AVG SESSION", StorageService.formatDuration(avgSession), NumbersColors.blue),
-          const Divider(height: 32, color: NumbersColors.border, thickness: 2.5),
+          const Divider(height: 32, color: context.border, thickness: 2.5),
           _metricRow("FAVORITE GAME", favorite, NumbersColors.yellow),
         ],
       ),
@@ -554,7 +554,7 @@ class _StatsView extends StatelessWidget {
               Flexible(
                 child: Text(
                   label, 
-                  style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 1, color: NumbersColors.textFaint),
+                  style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 1, color: context.textFaint),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -562,7 +562,7 @@ class _StatsView extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 16),
-        Text(value, style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, color: NumbersColors.textBody)),
+        Text(value, style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, color: context.onSurface)),
       ],
     );
   }
@@ -581,12 +581,12 @@ class _InfoCard extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: NumbersColors.backgroundOffWhite,
-        border: Border.all(color: NumbersColors.border, width: 2.5),
+        color: context.surface,
+        border: Border.all(color: context.border, width: 2.5),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: NumbersColors.cardShadow,
+            color: context.shadow,
             blurRadius: 0,
             offset: Offset(4, 4),
           )
@@ -597,18 +597,18 @@ class _InfoCard extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10), border: Border.all(color: NumbersColors.border, width: 2)),
-            child: Icon(icon, color: NumbersColors.textBody, size: 24),
+            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10), border: Border.all(color: context.border, width: 2)),
+            child: Icon(icon, color: context.onSurface, size: 24),
           ),
           const SizedBox(height: 16),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
-            child: Text(value, style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.w900, color: NumbersColors.textBody)),
+            child: Text(value, style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.w900, color: context.onSurface)),
           ),
           Text(
             label, 
-            style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: NumbersColors.textFaint),
+            style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

@@ -140,7 +140,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _StatItem(label: 'DIFFICULTY', value: _difficulty.toUpperCase(), color: NumbersColors.yellow),
-                _StatItem(label: 'HIGH SCORE', value: '$hiScore', color: NumbersColors.textFaint),
+                _StatItem(label: 'HIGH SCORE', value: '$hiScore', color: context.textFaint),
               ],
             ),
           ),
@@ -151,7 +151,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
               aspectRatio: 1,
               child: Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: NumbersColors.textBody, width: 3),
+                  border: Border.all(color: context.onSurface, width: 3),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 clipBehavior: Clip.antiAlias,
@@ -180,11 +180,11 @@ class _SudokuScreenState extends State<SudokuScreen> {
                         decoration: BoxDecoration(
                           border: Border(
                             right: BorderSide(
-                              color: (c + 1) % 3 == 0 && c != 8 ? NumbersColors.textBody : NumbersColors.border,
+                              color: (c + 1) % 3 == 0 && c != 8 ? context.onSurface : context.border,
                               width: (c + 1) % 3 == 0 && c != 8 ? 2 : 0.5,
                             ),
                             bottom: BorderSide(
-                              color: (r + 1) % 3 == 0 && r != 8 ? NumbersColors.textBody : NumbersColors.border,
+                              color: (r + 1) % 3 == 0 && r != 8 ? context.onSurface : context.border,
                               width: (r + 1) % 3 == 0 && r != 8 ? 2 : 0.5,
                             ),
                           ),
@@ -197,7 +197,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                               style: GoogleFonts.outfit(
                                 fontSize: 22,
                                 fontWeight: isInitial ? FontWeight.w900 : FontWeight.w600,
-                                color: isInitial ? NumbersColors.textBody : (isError ? NumbersColors.coral : NumbersColors.yellow),
+                                color: isInitial ? context.onSurface : (isError ? NumbersColors.coral : NumbersColors.yellow),
                               ),
                             )
                           : _buildNotes(r, c),
@@ -226,11 +226,11 @@ class _SudokuScreenState extends State<SudokuScreen> {
                         height: 50,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          border: Border.all(color: NumbersColors.border, width: 1.5),
+                          border: Border.all(color: context.border, width: 1.5),
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color: NumbersColors.cardShadow.withOpacity(0.04),
+                              color: context.shadow.withOpacity(0.04),
                               blurRadius: 8,
                               offset: const Offset(0, 3),
                             )
@@ -238,7 +238,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                         ),
                         alignment: Alignment.center,
                         child: Text(num.toString(), 
-                          style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w800, color: NumbersColors.textBody)),
+                          style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w800, color: context.onSurface)),
                       ),
                     ),
                   ),
@@ -262,7 +262,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
         return Center(
           child: Text(
             _notes[r][c].contains(n) ? '$n' : '',
-            style: GoogleFonts.outfit(fontSize: 8, fontWeight: FontWeight.w800, color: NumbersColors.textFaint),
+            style: GoogleFonts.outfit(fontSize: 8, fontWeight: FontWeight.w800, color: context.textFaint),
           ),
         );
       }),
@@ -321,7 +321,7 @@ class _StatItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.textFaint, letterSpacing: 1.5)),
+        Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1.5)),
         Text(value, style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.w900, color: color)),
       ],
     );
@@ -346,9 +346,9 @@ class _ControlBtn extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
           children: [
-            Icon(icon, color: isActive ? NumbersColors.yellow : NumbersColors.textFaint, size: 28),
+            Icon(icon, color: isActive ? NumbersColors.yellow : context.textFaint, size: 28),
             const SizedBox(height: 4),
-            Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: isActive ? NumbersColors.yellow : NumbersColors.textFaint, letterSpacing: 1)),
+            Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: isActive ? NumbersColors.yellow : context.textFaint, letterSpacing: 1)),
           ],
         ),
       ),

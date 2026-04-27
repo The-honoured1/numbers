@@ -70,12 +70,12 @@ class _GameResultDialogState extends State<GameResultDialog> {
       child: Container(
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
-          color: NumbersColors.backgroundOffWhite,
+          color: context.surface,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: NumbersColors.border, width: 2.5),
-          boxShadow: const [
+          border: Border.all(color: context.border, width: 2.5),
+          boxShadow: [
             BoxShadow(
-              color: NumbersColors.cardShadow,
+              color: context.shadow,
               blurRadius: 0,
               offset: Offset(8, 8),
             )
@@ -89,16 +89,16 @@ class _GameResultDialogState extends State<GameResultDialog> {
               decoration: BoxDecoration(
                 color: widget.color, // Solid color, no gradient
                 shape: BoxShape.circle,
-                border: Border.all(color: NumbersColors.border, width: 2.5),
-                boxShadow: const [
+                border: Border.all(color: context.border, width: 2.5),
+                boxShadow: [
                   BoxShadow(
-                    color: NumbersColors.cardShadow,
+                    color: context.shadow,
                     blurRadius: 0,
                     offset: Offset(4, 4),
                   )
                 ],
               ),
-              child: Icon(widget.icon, color: NumbersColors.textBody, size: 48), // Dark icon
+              child: Icon(widget.icon, color: context.onSurface, size: 48), // Dark icon
             ).animate().scale(duration: 800.ms, curve: Curves.elasticOut),
             const SizedBox(height: 32),
             Text(
@@ -107,7 +107,7 @@ class _GameResultDialogState extends State<GameResultDialog> {
               style: GoogleFonts.playfairDisplay(
                 fontSize: 32,
                 fontWeight: FontWeight.w900,
-                color: NumbersColors.textBody,
+                color: context.onSurface,
                 letterSpacing: -1,
                 height: 1.1,
               ),
@@ -118,7 +118,7 @@ class _GameResultDialogState extends State<GameResultDialog> {
               textAlign: TextAlign.center,
               style: GoogleFonts.outfit(
                 fontSize: 15,
-                color: NumbersColors.textBody, // Darker text
+                color: context.onSurface, // Darker text
                 fontWeight: FontWeight.w600,
                 height: 1.5,
               ),
@@ -141,10 +141,10 @@ class _GameResultDialogState extends State<GameResultDialog> {
                         child: CircularProgressIndicator(
                           value: _secondsRemaining / 5,
                           strokeWidth: 3,
-                          color: NumbersColors.textBody.withOpacity(0.3),
+                          color: context.onSurface.withOpacity(0.3),
                         ),
                       ),
-                      Text('$_secondsRemaining', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w900, color: NumbersColors.textBody)),
+                      Text('$_secondsRemaining', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w900, color: context.onSurface)),
                     ],
                   ),
                   label: Text(
@@ -157,11 +157,11 @@ class _GameResultDialogState extends State<GameResultDialog> {
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: NumbersColors.yellow,
-                    foregroundColor: NumbersColors.textBody,
+                    foregroundColor: context.onSurface,
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
-                      side: const BorderSide(color: NumbersColors.border, width: 2.5),
+                      side: const BorderSide(color: context.border, width: 2.5),
                     ),
                     elevation: 0,
                   ),
@@ -174,9 +174,9 @@ class _GameResultDialogState extends State<GameResultDialog> {
               child: ElevatedButton( // Changed from OutlinedButton to conform to neobrutal flat style
                 onPressed: widget.onButtonPressed,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: NumbersColors.backgroundOffWhite,
-                  foregroundColor: NumbersColors.textBody,
-                  side: const BorderSide(color: NumbersColors.border, width: 2.5),
+                  backgroundColor: context.surface,
+                  foregroundColor: context.onSurface,
+                  side: const BorderSide(color: context.border, width: 2.5),
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -189,7 +189,7 @@ class _GameResultDialogState extends State<GameResultDialog> {
                     fontWeight: FontWeight.w800,
                     letterSpacing: 1.5,
                     fontSize: 13,
-                    color: NumbersColors.textBody,
+                    color: context.onSurface,
                   ),
                 ),
               ),

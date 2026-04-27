@@ -140,7 +140,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               child: LinearProgressIndicator(
                 minHeight: 12,
                 value: _timeLeft / 10,
-                backgroundColor: NumbersColors.border,
+                backgroundColor: context.border,
                 valueColor: AlwaysStoppedAnimation<Color>(
                   _timeLeft < 4 ? NumbersColors.coral : NumbersColors.green),
               ),
@@ -149,7 +149,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _StatDisplay(label: 'LEVEL', value: '$_level', color: NumbersColors.textFaint),
+                _StatDisplay(label: 'LEVEL', value: '$_level', color: context.textFaint),
                 _StatDisplay(label: 'BEST', value: '${StorageService().getHighScore('math_puzzle')}', color: NumbersColors.blue),
                 _StatDisplay(label: 'SCORE', value: '$_score', color: NumbersColors.green),
               ],
@@ -159,12 +159,12 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               padding: const EdgeInsets.symmetric(vertical: 40),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: NumbersColors.backgroundOffWhite,
+                color: context.surface,
                 borderRadius: BorderRadius.circular(32),
-                border: Border.all(color: NumbersColors.border, width: 2),
+                border: Border.all(color: context.border, width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: NumbersColors.cardShadow.withOpacity(0.05),
+                    color: context.shadow.withOpacity(0.05),
                     blurRadius: 30,
                     offset: const Offset(0, 15),
                   )
@@ -173,7 +173,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               child: Center(
                 child: Text(
                   _currentQuestion.text,
-                  style: GoogleFonts.outfit(fontSize: 56, fontWeight: FontWeight.w900, color: NumbersColors.textBody),
+                  style: GoogleFonts.outfit(fontSize: 56, fontWeight: FontWeight.w900, color: context.onSurface),
                 ).animate(key: ValueKey(_currentQuestion.text)).fadeIn().scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack),
               ),
             ),
@@ -189,8 +189,8 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                   onPressed: () => _checkAnswer(opt),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
-                    foregroundColor: NumbersColors.textBody,
-                    side: const BorderSide(color: NumbersColors.border, width: 1.5),
+                    foregroundColor: context.onSurface,
+                    side: const BorderSide(color: context.border, width: 1.5),
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   ),
@@ -217,7 +217,7 @@ class _StatDisplay extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w800, color: NumbersColors.textFaint, letterSpacing: 1.5)),
+        Text(label, style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1.5)),
         Text(value, style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w900, color: color)),
       ],
     );

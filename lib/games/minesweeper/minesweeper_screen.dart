@@ -188,7 +188,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('LEVEL', style: GoogleFonts.outfit(letterSpacing: 1, fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.textFaint)),
+                    Text('LEVEL', style: GoogleFonts.outfit(letterSpacing: 1, fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint)),
                     Text('$_currentLevel / 500', style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.w900)),
                   ],
                 ),
@@ -223,18 +223,18 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
-                      color: _flagMode ? NumbersColors.textBody : Colors.white,
+                      color: _flagMode ? context.onSurface : Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: NumbersColors.textBody, width: 2),
+                      border: Border.all(color: context.onSurface, width: 2),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.flag, color: _flagMode ? Colors.white : NumbersColors.textBody, size: 16),
+                        Icon(Icons.flag, color: _flagMode ? Colors.white : context.onSurface, size: 16),
                         const SizedBox(width: 6),
                         Text(
                           'FLAG',
                           style: GoogleFonts.outfit(
-                            color: _flagMode ? Colors.white : NumbersColors.textBody,
+                            color: _flagMode ? Colors.white : context.onSurface,
                             fontWeight: FontWeight.w900,
                             fontSize: 11,
                             letterSpacing: 1,
@@ -255,7 +255,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                   aspectRatio: _levelConfig.cols / _levelConfig.rows,
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: NumbersColors.border, width: 2),
+                      border: Border.all(color: context.border, width: 2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     clipBehavior: Clip.antiAlias,
@@ -277,7 +277,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                               color: cell.state == CellState.revealed 
                                   ? (cell.isMine ? Colors.red.withOpacity(0.1) : Colors.grey.shade100)
                                   : Colors.white,
-                              border: Border.all(color: NumbersColors.border, width: 0.5),
+                              border: Border.all(color: context.border, width: 0.5),
                             ),
                             alignment: Alignment.center,
                             child: _buildCellContent(cell),

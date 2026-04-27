@@ -120,10 +120,10 @@ class _SequenceScreenState extends State<SequenceScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(32),
-                border: Border.all(color: NumbersColors.border, width: 2),
+                border: Border.all(color: context.border, width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: NumbersColors.cardShadow.withOpacity(0.05),
+                    color: context.shadow.withOpacity(0.05),
                     blurRadius: 30,
                     offset: const Offset(0, 15),
                   )
@@ -134,7 +134,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
                 style: GoogleFonts.outfit(
                   fontSize: 48,
                   fontWeight: FontWeight.w900,
-                  color: NumbersColors.textBody,
+                  color: context.onSurface,
                   letterSpacing: 1,
                 ),
               ),
@@ -148,13 +148,13 @@ class _SequenceScreenState extends State<SequenceScreen> {
               style: GoogleFonts.outfit(fontSize: 40, fontWeight: FontWeight.w900, color: NumbersColors.purple),
               decoration: InputDecoration(
                 hintText: '?',
-                hintStyle: const TextStyle(color: NumbersColors.border),
+                hintStyle: const TextStyle(color: context.border),
                 filled: true,
                 fillColor: Colors.white,
                 contentPadding: const EdgeInsets.all(24),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
-                  borderSide: const BorderSide(color: NumbersColors.border, width: 2),
+                  borderSide: const BorderSide(color: context.border, width: 2),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
@@ -178,7 +178,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
               child: ElevatedButton(
                 onPressed: _check,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: NumbersColors.textBody,
+                  backgroundColor: context.onSurface,
                   foregroundColor: Colors.white,
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(vertical: 20),
@@ -204,7 +204,7 @@ class _StatTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(label, style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, color: NumbersColors.textFaint, letterSpacing: 1.5)),
+        Text(label, style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1.5)),
         const SizedBox(height: 4),
         Text(value, style: GoogleFonts.outfit(fontSize: 32, fontWeight: FontWeight.w900, color: color)),
       ],

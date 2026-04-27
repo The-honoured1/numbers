@@ -204,7 +204,7 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
             child: Text(
               'Connect identical numbers by drawing a path. Paths cannot cross.',
               textAlign: TextAlign.center,
-              style: GoogleFonts.inter(color: NumbersColors.textFaint, fontSize: 13),
+              style: GoogleFonts.inter(color: context.textFaint, fontSize: 13),
             ),
           ),
           Expanded(
@@ -275,7 +275,7 @@ class LinkPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final cellSize = size.width / gridSize;
     
-    final linePaint = Paint()..color = NumbersColors.border.withOpacity(0.5)..strokeWidth = 1;
+    final linePaint = Paint()..color = context.border.withOpacity(0.5)..strokeWidth = 1;
     for (int i = 0; i <= gridSize; i++) {
       canvas.drawLine(Offset(i * cellSize, 0), Offset(i * cellSize, size.height), linePaint);
       canvas.drawLine(Offset(0, i * cellSize), Offset(size.width, i * cellSize), linePaint);
