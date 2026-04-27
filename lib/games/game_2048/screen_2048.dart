@@ -112,13 +112,17 @@ class _Screen2048State extends State<Screen2048> {
               child: AspectRatio(
                 aspectRatio: 1,
                 child: GestureDetector(
-                  onVerticalDragEnd: (details) {
-                    if (details.primaryVelocity! < -100) _handleSwipe(MoveDirection.up);
-                    if (details.primaryVelocity! > 100) _handleSwipe(MoveDirection.down);
-                  },
-                  onHorizontalDragEnd: (details) {
-                    if (details.primaryVelocity! < -100) _handleSwipe(MoveDirection.left);
-                    if (details.primaryVelocity! > 100) _handleSwipe(MoveDirection.right);
+                  onPanEnd: (details) {
+                    final vel = details.velocity.pixelsPerSecond;
+                    if (vel.dx.abs() > vel.dy.abs()) {
+                      // Horizontal
+                      if (vel.dx > 200) _handleSwipe(MoveDirection.right);
+                      else if (vel.dx < -200) _handleSwipe(MoveDirection.left);
+                    } else {
+                      // Vertical
+                      if (vel.dy > 200) _handleSwipe(MoveDirection.down);
+                      else if (vel.dy < -200) _handleSwipe(MoveDirection.up);
+                    }
                   },
                   child: Container(
                     padding: const EdgeInsets.all(12),

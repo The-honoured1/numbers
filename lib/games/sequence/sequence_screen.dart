@@ -184,14 +184,20 @@ class _SequenceScreenState extends State<SequenceScreen> {
                 ],
               ),
               const SizedBox(height: 40),
-              SizedBox(
+              Container(
                 width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(color: context.shadow, offset: const Offset(6, 6)),
+                  ],
+                ),
                 child: ElevatedButton(
                   onPressed: _check,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: context.onSurface,
-                    foregroundColor: context.surface,
-                    elevation: 0,
+                    backgroundColor: NumbersColors.purple,
+                    foregroundColor: Colors.white,
+                    side: BorderSide(color: context.onSurface, width: 2.5),
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   ),

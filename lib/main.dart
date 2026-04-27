@@ -11,11 +11,9 @@ void main() async {
   final storage = StorageService();
   await storage.init();
 
-  final adService = AdService();
-  await adService.init();
-
-  final notificationService = NotificationService();
-  await notificationService.init();
+  // Initialize these in the background to prevent startup delays
+  AdService().init();
+  NotificationService().init();
   
   runApp(const NumbersApp());
 }

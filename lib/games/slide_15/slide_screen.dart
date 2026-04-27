@@ -110,7 +110,7 @@ class _SlideScreenState extends State<SlideScreen> {
               ],
             ),
           ),
-          const Spacer(),
+          const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: AspectRatio(
@@ -163,12 +163,27 @@ class _SlideScreenState extends State<SlideScreen> {
               ),
             ),
           ),
-          const Spacer(),
+          const SizedBox(height: 48),
           Padding(
-            padding: const EdgeInsets.only(bottom: 60),
-            child: TextButton(
-              onPressed: _startNewGame, 
-              child: Text('RESET GRID', style: GoogleFonts.outfit(color: NumbersColors.purple, fontWeight: FontWeight.w800, letterSpacing: 1.5))
+            padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 24),
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(color: context.shadow, offset: const Offset(4, 4)),
+                ],
+              ),
+              child: ElevatedButton(
+                onPressed: _startNewGame,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: context.surface,
+                  foregroundColor: NumbersColors.purple,
+                  side: BorderSide(color: context.onSurface, width: 2.5),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text('RESET GRID', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+              ),
             ),
           ),
         ],

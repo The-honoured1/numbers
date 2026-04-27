@@ -371,9 +371,19 @@ class _ControlBtn extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isActive ? NumbersColors.yellow.withOpacity(0.15) : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isActive ? NumbersColors.yellow : Colors.transparent,
+            width: 2,
+          ),
+        ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, color: isActive ? NumbersColors.yellow : context.textFaint, size: 28),
             const SizedBox(height: 4),

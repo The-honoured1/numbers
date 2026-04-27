@@ -156,10 +156,8 @@ class _AscendScreenState extends State<AscendScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.top,
-            child: Column(
-              children: [
+          child: Column(
+            children: [
           Padding(
             padding: const EdgeInsets.all(24.0),
             child: Row(
@@ -176,8 +174,9 @@ class _AscendScreenState extends State<AscendScreen> {
             style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 2),
           ),
           const SizedBox(height: 40),
-          Expanded(
-            child: GridView.builder(
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.symmetric(horizontal: 24),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
@@ -220,11 +219,9 @@ class _AscendScreenState extends State<AscendScreen> {
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-    ),
     ),
     );
   }
