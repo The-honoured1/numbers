@@ -1,6 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz_data;
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -10,12 +10,12 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin _notifications = FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
-    tz.initializeTimeZones();
+    tz_data.initializeTimeZones();
     
-    const AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const DarwinInitializationSettings iosSettings = DarwinInitializationSettings();
+    final AndroidInitializationSettings androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    final DarwinInitializationSettings iosSettings = DarwinInitializationSettings();
     
-    const InitializationSettings initSettings = InitializationSettings(
+    final InitializationSettings initSettings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
     );
@@ -28,7 +28,7 @@ class NotificationService {
     // Cancel existing to avoid duplicates
     await _notifications.cancelAll();
 
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    final AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'daily_reminder',
       'Daily Reminders',
       channelDescription: 'Reminders to play the game every 3 hours',
@@ -36,7 +36,7 @@ class NotificationService {
       priority: Priority.high,
     );
 
-    const NotificationDetails details = NotificationDetails(android: androidDetails);
+    final NotificationDetails details = NotificationDetails(android: androidDetails);
 
     // Schedule 3-hour interval (simplified: schedule multiple for the next 24h)
     for (int i = 1; i <= 8; i++) {
