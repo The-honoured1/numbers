@@ -273,7 +273,7 @@ class _TodayView extends StatelessWidget {
               color: NumbersColors.yellow.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.bolt_rounded, color: NumbersColors.yellow, size: 32),
+            child: Icon(Icons.bolt_rounded, color: NumbersColors.yellow, size: 32),
           ),
           const SizedBox(width: 20),
           Expanded(
@@ -285,7 +285,7 @@ class _TodayView extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(Icons.chevron_right_rounded, color: context.textFaint),
+          Icon(Icons.chevron_right_rounded, color: context.textFaint),
         ],
       ),
     );
@@ -384,7 +384,7 @@ class _StatsView extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  const Icon(Icons.bolt_rounded, color: context.surface, size: 80)
+                  Icon(Icons.bolt_rounded, color: context.surface, size: 80)
                     .animate(onPlay: (controller) => controller.repeat(reverse: true))
                     .scale(begin: const Offset(1,1), end: const Offset(1.1, 1.1), duration: 1000.ms),
                   const SizedBox(height: 16),
@@ -544,9 +544,9 @@ class _StatsView extends StatelessWidget {
       child: Column(
         children: [
           _metricRow("TOTAL PLAY TIME", StorageService.formatDuration(totalTime), NumbersColors.purple),
-          const Divider(height: 32, color: context.border, thickness: 2.5),
+          Divider(height: 32, color: context.border, thickness: 2.5),
           _metricRow("AVG SESSION", StorageService.formatDuration(avgSession), NumbersColors.blue),
-          const Divider(height: 32, color: context.border, thickness: 2.5),
+          Divider(height: 32, color: context.border, thickness: 2.5),
           _metricRow("FAVORITE GAME", favorite, NumbersColors.yellow),
         ],
       ),

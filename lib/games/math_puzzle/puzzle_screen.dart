@@ -202,7 +202,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: context.surface,
                     foregroundColor: context.onSurface,
-                    side: const BorderSide(color: context.border, width: 1.5),
+                    side: BorderSide(color: context.border, width: 1.5),
                     elevation: 0,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   ),

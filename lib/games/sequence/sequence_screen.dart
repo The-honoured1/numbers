@@ -163,17 +163,17 @@ class _SequenceScreenState extends State<SequenceScreen> {
               style: GoogleFonts.outfit(fontSize: 40, fontWeight: FontWeight.w900, color: NumbersColors.purple),
               decoration: InputDecoration(
                 hintText: '?',
-                hintStyle: const TextStyle(color: context.border),
+                hintStyle: TextStyle(color: context.border),
                 filled: true,
                 fillColor: context.surface,
                 contentPadding: const EdgeInsets.all(24),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
-                  borderSide: const BorderSide(color: context.border, width: 2),
+                  borderSide: BorderSide(color: context.border, width: 2),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
-                  borderSide: const BorderSide(color: NumbersColors.purple, width: 3),
+                  borderSide: BorderSide(color: NumbersColors.purple, width: 3),
                 ),
               ),
               onSubmitted: (_) => _check(),

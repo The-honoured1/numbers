@@ -168,11 +168,11 @@ class _CountdownScreenState extends State<CountdownScreen> {
             Container(
               padding: const EdgeInsets.all(32),
               decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(12)),
-              child: Text('${_game.target}', style: const TextStyle(color: context.surface, fontSize: 64, fontWeight: FontWeight.bold, letterSpacing: 8)),
+              child: Text('${_game.target}', style: TextStyle(color: context.surface, fontSize: 64, fontWeight: FontWeight.bold, letterSpacing: 8)),
             ),
             const SizedBox(height: 40),
-            Text('Current: $_currentValue', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            Text(_expression, style: const TextStyle(color: Colors.grey)),
+            Text('Current: $_currentValue', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            Text(_expression, style: TextStyle(color: Colors.grey)),
             const Spacer(),
             Wrap(
               spacing: 12,
@@ -181,7 +181,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
                 return ElevatedButton(
                   onPressed: () => _onNumberTap(e.value, e.key),
                   style: ElevatedButton.styleFrom(backgroundColor: NumbersColors.countdown, foregroundColor: Colors.white),
-                  child: Text('${e.value}', style: const TextStyle(fontSize: 20)),
+                  child: Text('${e.value}', style: TextStyle(fontSize: 20)),
                 );
               }).toList(),
             ),
@@ -193,7 +193,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: IconButton.filled(
                     onPressed: () => _onOpTap(op),
-                    icon: Text(op, style: const TextStyle(fontSize: 24, color: context.surface)),
+                    icon: Text(op, style: TextStyle(fontSize: 24, color: context.surface)),
                     style: IconButton.styleFrom(backgroundColor: Colors.grey.shade800),
                   ),
                 );

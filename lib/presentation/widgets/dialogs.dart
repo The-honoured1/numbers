@@ -161,7 +161,7 @@ class _GameResultDialogState extends State<GameResultDialog> {
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
-                      side: const BorderSide(color: context.border, width: 2.5),
+                      side: BorderSide(color: context.border, width: 2.5),
                     ),
                     elevation: 0,
                   ),
@@ -176,7 +176,7 @@ class _GameResultDialogState extends State<GameResultDialog> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.surface,
                   foregroundColor: context.onSurface,
-                  side: const BorderSide(color: context.border, width: 2.5),
+                  side: BorderSide(color: context.border, width: 2.5),
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
