@@ -158,4 +158,13 @@ class StorageService {
     await updateStreak();
     await incrementWins(gameId);
   }
+
+  // --- Tutorials ---
+  bool hasSeenTutorial(String gameId) {
+    return _prefs.getBool('tutorial_seen_$gameId') ?? false;
+  }
+
+  Future<void> setTutorialSeen(String gameId) async {
+    await _prefs.setBool('tutorial_seen_$gameId', true);
+  }
 }
