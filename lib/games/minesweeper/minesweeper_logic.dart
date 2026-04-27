@@ -103,6 +103,7 @@ class MinesweeperGame {
           int nr = r + dr, nc = c + dc;
           if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && board[nr][nc].state == CellState.hidden) {
             _revealInternal(nr, nc);
+            if (gameOver) return; // Exit if we hit a mine
           }
         }
       }
@@ -119,29 +120,51 @@ class MinesweeperGame {
     _recursiveReveal(r, c);
   }
 
-  void _moveMineAndRecompute(int r, int c) {
-    // Very simple first-move safety: clear a 3x3 area
+  void _moveMineAndRecompute(int firstR, int firstC) {
+    // Clear a 3x3 area around the first move for a better start
+    List<Point<int>> removedMines = [];
     for (int dr = -1; dr <= 1; dr++) {
       for (int dc = -1; dc <= 1; dc++) {
-        int nr = r + dr, nc = c + dc;
+        int nr = firstR + dr;
+        int nc = firstC + dc;
         if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
-          board[nr][nc].isMine = false;
+          if (board[nr][nc].isMine) {
+            board[nr][nc].isMine = false;
+            removedMines.add(Point(nc, nr));
+          }
         }
       }
     }
+
+    // Re-plant the removed mines in other empty locations
+    int needed = removedMines.length;
+    while (needed > 0) {
+      int r = Random().nextInt(rows);
+      int c = Random().nextInt(cols);
+      // Don't place in the 3x3 safe zone or where there's already a mine
+      bool inSafeZone = (r - firstR).abs() <= 1 && (c - firstC).abs() <= 1;
+      if (!inSafeZone && !board[r][c].isMine) {
+        board[r][c].isMine = true;
+        needed--;
+      }
+    }
+
     // Re-calculate all neighbors
-    for (int tr = 0; tr < rows; tr++) {
-      for (int tc = 0; tc < cols; tc++) {
-        if (!board[tr][tc].isMine) {
-          int count = 0;
+    for (int r = 0; r < rows; r++) {
+      for (int c = 0; c < cols; c++) {
+        int count = 0;
+        if (!board[r][c].isMine) {
           for (int dr = -1; dr <= 1; dr++) {
             for (int dc = -1; dc <= 1; dc++) {
-              int nr = tr + dr, nc = tc + dc;
-              if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && board[nr][nc].isMine) count++;
+              int nr = r + dr;
+              int nc = c + dc;
+              if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && board[nr][nc].isMine) {
+                count++;
+              }
             }
           }
-          board[tr][tc].neighborMines = count;
         }
+        board[r][c].neighborMines = count;
       }
     }
   }
@@ -166,13 +189,16 @@ class MinesweeperGame {
   }
 
   void _checkWin() {
+    if (gameOver) return;
     bool win = true;
     for (var row in board) {
       for (var cell in row) {
         if (!cell.isMine && cell.state != CellState.revealed) {
           win = false;
+          break;
         }
       }
+      if (!win) break;
     }
     gameWon = win;
   }

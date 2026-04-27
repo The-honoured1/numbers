@@ -169,25 +169,16 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
 
   Color _getNumberColor(int n) {
     switch (n) {
-      case 1: return const Color(0xFF2563EB); // Royal Blue
-      case 2: return const Color(0xFF16A34A); // Emerald Green
-      case 3: return const Color(0xFFDC2626); // Red
-      case 4: return const Color(0xFF7C3AED); // Purple
-      case 5: return const Color(0xFF991B1B); // Maroon
-      case 6: return const Color(0xFF0D9488); // Teal
-      case 7: return Colors.black;
-      case 8: return Colors.grey;
+      case 1: return const Color(0xFF0EA5E9); // Blue
+      case 2: return const Color(0xFF10B981); // Emerald
+      case 3: return const Color(0xFFF43F5E); // Rose
+      case 4: return const Color(0xFF8B5CF6); // Violet
+      case 5: return const Color(0xFFD97706); // Amber
+      case 6: return const Color(0xFF0891B2); // Cyan
+      case 7: return NumbersColors.textBody;
+      case 8: return NumbersColors.textFaint;
       default: return context.onSurface;
     }
-  }
-
-  Color _getCellBgColor(int n) {
-    return const Color(0xFFE2E8F0); // Light Slate for revealed
-  }
-
-  Color _getHiddenColor(int r, int c) {
-    bool isDark = (r + c) % 2 == 0;
-    return isDark ? const Color(0xFFCBD5E1) : const Color(0xFFD1D5DB);
   }
 
   @override
@@ -198,111 +189,102 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     return Scaffold(
       backgroundColor: context.surface,
       appBar: AppBar(
-        title: Text('MINESWEEPER', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 18, letterSpacing: 2)),
+        title: Text('MINESWEEPER', style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.w900, fontSize: 24, letterSpacing: 1.2)),
         actions: [
-          IconButton(onPressed: _startNewGame, icon: Icon(Icons.refresh)),
+          IconButton(onPressed: _startNewGame, icon: const Icon(Icons.refresh_rounded)),
+          const SizedBox(width: 8),
         ],
       ),
       body: Column(
         children: [
+          // Header Stats
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
             child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('LEVEL', style: GoogleFonts.outfit(letterSpacing: 1, fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint)),
-                        Text('$_currentLevel / 500', style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.w900)),
-                      ],
-                    ),
+                    _buildTopStat('LEVEL', '$_currentLevel/500', NumbersColors.blue),
+                    _buildTopStat('MINES', '$remaining', NumbersColors.coral),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: _levelConfig.difficultyColor.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: _levelConfig.difficultyColor.withOpacity(0.3), width: 1.5),
+                        color: _levelConfig.difficultyColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: _levelConfig.difficultyColor, width: 1.5),
                       ),
                       child: Text(
                         _levelConfig.difficulty,
-                        style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w900, color: _levelConfig.difficultyColor, letterSpacing: 1.5),
+                        style: GoogleFonts.outfit(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          color: _levelConfig.difficultyColor,
+                          letterSpacing: 1,
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(100),
                   child: LinearProgressIndicator(
                     value: _currentLevel / 500,
                     backgroundColor: context.gridBorder,
                     valueColor: AlwaysStoppedAnimation<Color>(_levelConfig.difficultyColor),
-                    minHeight: 6,
+                    minHeight: 8,
                   ),
                 ),
               ],
             ),
           ),
+
+          // Flag Toggle / Move Controls
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.brightness_7, color: NumbersColors.coral, size: 18),
-                    const SizedBox(width: 6),
-                    Text('$remaining', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w900)),
-                  ],
+                _buildModeButton(
+                  active: !_flagMode,
+                  onTap: () => setState(() => _flagMode = false),
+                  icon: Icons.ads_click_rounded,
+                  label: 'REVEAL',
+                  color: NumbersColors.blue,
                 ),
-                GestureDetector(
-                  onTap: () => setState(() => _flagMode = !_flagMode),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: _flagMode ? NumbersColors.coral : context.surface,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: context.onSurface, width: 3),
-                        boxShadow: [
-                          BoxShadow(
-                            color: context.shadow,
-                            offset: _flagMode ? const Offset(2, 2) : const Offset(6, 6),
-                          )
-                        ],
-                      ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.flag, color: _flagMode ? Colors.white : context.onSurface, size: 16),
-                        const SizedBox(width: 8),
-                        Text(
-                          'FLAG MODE',
-                          style: GoogleFonts.outfit(
-                            color: _flagMode ? Colors.white : context.onSurface,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 11,
-                            letterSpacing: 1.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                const SizedBox(width: 16),
+                _buildModeButton(
+                  active: _flagMode,
+                  onTap: () => setState(() => _flagMode = true),
+                  icon: Icons.flag_rounded,
+                  label: 'FLAG',
+                  color: NumbersColors.coral,
                 ),
               ],
             ),
           ),
+
+          const SizedBox(height: 24),
+
+          // The Board
           Expanded(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(20.0),
                 child: AspectRatio(
                   aspectRatio: _levelConfig.cols / _levelConfig.rows,
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: context.border, width: 1.5),
+                      color: context.border,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: context.border, width: 3),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.shadow,
+                          offset: const Offset(8, 8),
+                        )
+                      ],
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: GridView.builder(
@@ -310,6 +292,8 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: _levelConfig.cols,
                         childAspectRatio: 1,
+                        mainAxisSpacing: 2,
+                        crossAxisSpacing: 2,
                       ),
                       itemCount: _levelConfig.rows * _levelConfig.cols,
                       itemBuilder: (context, index) {
@@ -317,24 +301,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                         int c = index % _levelConfig.cols;
                         final cell = _game.board[r][c];
                         
-                        return GestureDetector(
-                          onTap: () => _handleCellTap(r, c),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            decoration: BoxDecoration(
-                              color: cell.state == CellState.revealed 
-                                  ? (cell.isMine ? const Color(0xFFFECACA) : _getCellBgColor(cell.neighborMines))
-                                  : _getHiddenColor(r, c),
-                              border: Border.all(
-                                color: context.border.withOpacity(0.2), 
-                                width: 0.5,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: _buildCellContent(cell),
-                          ).animate(target: cell.state == CellState.revealed ? 1 : 0)
-                            .shimmer(duration: 400.ms, color: Colors.white.withOpacity(0.1)),
-                        );
+                        return _buildCell(r, c, cell);
                       },
                     ),
                   ),
@@ -342,40 +309,123 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 40),
+          
+          const SizedBox(height: 32),
         ],
       ),
     );
   }
 
-  Widget _buildCellContent(MineCell cell) {
-    switch (cell.state) {
-      case CellState.hidden:
-        return const SizedBox.shrink();
-      case CellState.flagged:
-        return Icon(
-          Icons.flag_rounded, 
-          color: const Color(0xFFDC2626), 
-          size: 18,
-        ).animate().scale(duration: 200.ms, curve: Curves.easeOutBack);
-      case CellState.revealed:
-        if (cell.isMine) {
-          return Icon(
-            Icons.brightness_high_rounded, 
-            color: Colors.black, 
-            size: 20,
-          ).animate().shake();
-        }
-        if (cell.neighborMines == 0) return const SizedBox.shrink();
-        
-        return Text(
-          '${cell.neighborMines}',
-          style: GoogleFonts.outfit(
-            color: _getNumberColor(cell.neighborMines),
-            fontWeight: FontWeight.w900,
-            fontSize: 22,
+  Widget _buildTopStat(String label, String value, Color color) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1)),
+        Text(value, style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: color)),
+      ],
+    );
+  }
+
+  Widget _buildModeButton({required bool active, required VoidCallback onTap, required IconData icon, required String label, required Color color}) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: 200.ms,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: active ? color : context.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: context.border, width: 2.5),
+            boxShadow: [
+              if (active) BoxShadow(color: context.shadow, offset: const Offset(4, 4))
+            ],
           ),
-        ).animate().fadeIn(duration: 200.ms).scale(begin: const Offset(0.5, 0.5), curve: Curves.easeOutBack);
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: active ? Colors.white : context.onSurface, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: GoogleFonts.outfit(
+                  color: active ? Colors.white : context.onSurface,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 13,
+                  letterSpacing: 1,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCell(int r, int c, MineCell cell) {
+    final bool isRevealed = cell.state == CellState.revealed;
+    final bool isFlagged = cell.state == CellState.flagged;
+    
+    // NYT Style Checkered hidden board or clean grid
+    final bool isAlt = (r + c) % 2 == 0;
+    
+    Color cellColor;
+    if (isRevealed) {
+      if (cell.isMine) {
+        cellColor = NumbersColors.coral;
+      } else {
+        cellColor = context.surface;
+      }
+    } else {
+      // Hidden cells
+      cellColor = isAlt ? const Color(0xFFF3F4F6) : const Color(0xFFE5E7EB);
+      if (Theme.of(context).brightness == Brightness.dark) {
+        cellColor = isAlt ? const Color(0xFF27272A) : const Color(0xFF18181B);
+      }
     }
+
+    return GestureDetector(
+      onTap: () => _handleCellTap(r, c),
+      child: Container(
+        color: cellColor,
+        child: Center(
+          child: _buildCellContent(cell),
+        ),
+      ).animate(target: isRevealed ? 1 : 0)
+       .shimmer(duration: 400.ms, color: Colors.white.withOpacity(0.2), when: isRevealed),
+    );
+  }
+
+  Widget _buildCellContent(MineCell cell) {
+    if (cell.state == CellState.flagged) {
+      return Icon(
+        Icons.flag_rounded, 
+        color: NumbersColors.coral, 
+        size: 20,
+      ).animate().scale(duration: 200.ms, curve: Curves.easeOutBack).shake(hz: 4, amount: 0.1);
+    }
+    
+    if (cell.state == CellState.hidden) {
+      return const SizedBox.shrink();
+    }
+
+    if (cell.isMine) {
+      return const Icon(
+        Icons.brightness_7_rounded, 
+        color: Colors.white, 
+        size: 20,
+      ).animate().scale(duration: 300.ms, curve: Curves.elasticOut);
+    }
+
+    if (cell.neighborMines == 0) return const SizedBox.shrink();
+
+    return Text(
+      '${cell.neighborMines}',
+      style: GoogleFonts.playfairDisplay(
+        color: _getNumberColor(cell.neighborMines),
+        fontWeight: FontWeight.w900,
+        fontSize: 22,
+      ),
+    ).animate().fadeIn(duration: 200.ms).scale(begin: const Offset(0.5, 0.5), curve: Curves.backOut);
   }
 }
