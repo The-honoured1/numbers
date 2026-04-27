@@ -167,7 +167,7 @@ class _TodayView extends StatelessWidget {
                         color: dailyGame.accentColor,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: context.border, width: 2.5),
-                        boxShadow: const [
+                        boxShadow: [
                           BoxShadow(
                             color: context.shadow,
                             blurRadius: 0,
@@ -240,7 +240,7 @@ class _TodayView extends StatelessWidget {
                     ),
                   ).animate().fadeIn(duration: 800.ms).scale(begin: const Offset(0.9, 0.9), curve: Curves.easeOutBack),
                   const SizedBox(height: 32),
-                  _buildStreakCard(),
+                  _buildStreakCard(context),
                 ],
               ),
             ),
@@ -250,7 +250,7 @@ class _TodayView extends StatelessWidget {
     );
   }
 
-  Widget _buildStreakCard() {
+  Widget _buildStreakCard(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -391,7 +391,7 @@ class _StatsView extends StatelessWidget {
                   Text('${storage.currentStreak}', style: GoogleFonts.outfit(fontSize: 72, fontWeight: FontWeight.w900, height: 1, color: context.surface)),
                   Text('DAY STREAK', style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 3, color: context.surface.withOpacity(0.9))),
                   const SizedBox(height: 32),
-                  _buildWeeklyTrack(),
+                  _buildWeeklyTrack(context),
                 ],
               ),
             ),
@@ -414,7 +414,7 @@ class _StatsView extends StatelessWidget {
               child: Text('HIGHEST SCORES', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint)),
             ),
             const SizedBox(height: 16),
-            _buildHighScoreList(),
+            _buildHighScoreList(context),
             
             const SizedBox(height: 40),
             
@@ -423,7 +423,7 @@ class _StatsView extends StatelessWidget {
               child: Text('KEY METRICS', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint)),
             ),
             const SizedBox(height: 16),
-            _buildMetricsTable(),
+            _buildMetricsTable(context),
             const SizedBox(height: 60),
           ],
         ),
@@ -431,7 +431,7 @@ class _StatsView extends StatelessWidget {
     );
   }
 
-  Widget _buildHighScoreList() {
+  Widget _buildHighScoreList(BuildContext context) {
     final games = [
       {'id': 'sudoku', 'name': 'Sudoku', 'color': NumbersColors.yellow},
       {'id': '2048', 'name': '2048', 'color': NumbersColors.blue},
@@ -454,7 +454,7 @@ class _StatsView extends StatelessWidget {
               color: context.surface,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: context.border, width: 2.5),
-              boxShadow: const [
+              boxShadow: [
                 BoxShadow(
                   color: context.shadow,
                   blurRadius: 0,
@@ -483,7 +483,7 @@ class _StatsView extends StatelessWidget {
     );
   }
 
-  Widget _buildWeeklyTrack() {
+  Widget _buildWeeklyTrack(BuildContext context) {
     final now = DateTime.now();
     final weekDays = List.generate(7, (i) => now.subtract(Duration(days: 6 - i)));
     final labels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
@@ -520,7 +520,7 @@ class _StatsView extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricsTable() {
+  Widget _buildMetricsTable(BuildContext context) {
     final totalPlays = storage.gamesPlayed;
     final totalTime = storage.getTotalPlayTime();
     final avgSession = totalPlays > 0 ? (totalTime / totalPlays).round() : 0;
@@ -543,17 +543,17 @@ class _StatsView extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _metricRow("TOTAL PLAY TIME", StorageService.formatDuration(totalTime), NumbersColors.purple),
+          _metricRow(context, "TOTAL PLAY TIME", StorageService.formatDuration(totalTime), NumbersColors.purple),
           Divider(height: 32, color: context.border, thickness: 2.5),
-          _metricRow("AVG SESSION", StorageService.formatDuration(avgSession), NumbersColors.blue),
+          _metricRow(context, "AVG SESSION", StorageService.formatDuration(avgSession), NumbersColors.blue),
           Divider(height: 32, color: context.border, thickness: 2.5),
-          _metricRow("FAVORITE GAME", favorite, NumbersColors.yellow),
+          _metricRow(context, "FAVORITE GAME", favorite, NumbersColors.yellow),
         ],
       ),
     );
   }
 
-  Widget _metricRow(String label, String value, Color color) {
+  Widget _metricRow(BuildContext context, String label, String value, Color color) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

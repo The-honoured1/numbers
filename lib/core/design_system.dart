@@ -56,7 +56,7 @@ class NumbersTheme {
 
   static ThemeData _buildTheme(Brightness brightness) {
     final bool isDark = brightness == Brightness.dark;
-    final Color bgColor = isDark ? const Color(0xFF121212) : const Color(0xFFFFFFFF);
+    final Color bgColor = isDark ? const Color(0xFF141414) : const Color(0xFFFFFFFF);
     final Color textColor = isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
     final Color borderColor = textColor;
 

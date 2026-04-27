@@ -240,6 +240,8 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
                               numbers: _data.numbers,
                               paths: _paths,
                               valueColors: _valueColors,
+                              borderColor: context.border,
+                              surfaceColor: context.surface,
                             ),
                             size: Size.infinite,
                           ),
@@ -279,19 +281,23 @@ class LinkPainter extends CustomPainter {
   final Map<Point, int> numbers;
   final Map<int, List<Point>> paths;
   final List<Color> valueColors;
+  final Color borderColor;
+  final Color surfaceColor;
 
   LinkPainter({
     required this.gridSize,
     required this.numbers,
     required this.paths,
     required this.valueColors,
+    required this.borderColor,
+    required this.surfaceColor,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     final cellSize = size.width / gridSize;
     
-    final linePaint = Paint()..color = context.border.withOpacity(0.5)..strokeWidth = 1;
+    final linePaint = Paint()..color = borderColor.withOpacity(0.5)..strokeWidth = 1;
     for (int i = 0; i <= gridSize; i++) {
       canvas.drawLine(Offset(i * cellSize, 0), Offset(i * cellSize, size.height), linePaint);
       canvas.drawLine(Offset(0, i * cellSize), Offset(size.width, i * cellSize), linePaint);
@@ -343,7 +349,7 @@ class LinkPainter extends CustomPainter {
         text: TextSpan(
           text: '$val',
           style: GoogleFonts.inter(
-            color: context.surface,
+            color: surfaceColor,
             fontSize: cellSize * 0.4,
             fontWeight: FontWeight.w900,
           ),
