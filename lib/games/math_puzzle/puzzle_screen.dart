@@ -200,7 +200,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                 return ElevatedButton(
                   onPressed: () => _checkAnswer(opt),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
+                    backgroundColor: context.surface,
                     foregroundColor: context.onSurface,
                     side: const BorderSide(color: context.border, width: 1.5),
                     elevation: 0,

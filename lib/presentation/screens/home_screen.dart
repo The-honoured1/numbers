@@ -384,12 +384,12 @@ class _StatsView extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  const Icon(Icons.bolt_rounded, color: Colors.white, size: 80)
+                  const Icon(Icons.bolt_rounded, color: context.surface, size: 80)
                     .animate(onPlay: (controller) => controller.repeat(reverse: true))
                     .scale(begin: const Offset(1,1), end: const Offset(1.1, 1.1), duration: 1000.ms),
                   const SizedBox(height: 16),
-                  Text('${storage.currentStreak}', style: GoogleFonts.outfit(fontSize: 72, fontWeight: FontWeight.w900, height: 1, color: Colors.white)),
-                  Text('DAY STREAK', style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 3, color: Colors.white.withOpacity(0.9))),
+                  Text('${storage.currentStreak}', style: GoogleFonts.outfit(fontSize: 72, fontWeight: FontWeight.w900, height: 1, color: context.surface)),
+                  Text('DAY STREAK', style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 3, color: context.surface.withOpacity(0.9))),
                   const SizedBox(height: 32),
                   _buildWeeklyTrack(),
                 ],

@@ -105,7 +105,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NumbersColors.background,
+      backgroundColor: context.surface,
       appBar: AppBar(
         title: Text('SEQUENCE', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),
@@ -133,7 +133,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
             Container(
               padding: const EdgeInsets.all(32),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.surface,
                 borderRadius: BorderRadius.circular(32),
                 border: Border.all(color: context.border, width: 2),
                 boxShadow: [
@@ -165,7 +165,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
                 hintText: '?',
                 hintStyle: const TextStyle(color: context.border),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: context.surface,
                 contentPadding: const EdgeInsets.all(24),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),

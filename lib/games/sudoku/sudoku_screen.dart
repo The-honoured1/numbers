@@ -238,7 +238,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                       child: Container(
                         height: 50,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: context.surface,
                           border: Border.all(color: context.border, width: 1.5),
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [

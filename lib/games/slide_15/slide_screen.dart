@@ -93,7 +93,7 @@ class _SlideScreenState extends State<SlideScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NumbersColors.background,
+      backgroundColor: context.surface,
       appBar: AppBar(
         title: Text('SLIDE 15', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),
@@ -136,7 +136,7 @@ class _SlideScreenState extends State<SlideScreen> {
                       onTap: () => _moveTile(index),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: context.surface,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(

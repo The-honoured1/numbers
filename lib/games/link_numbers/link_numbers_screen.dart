@@ -206,7 +206,7 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.surface,
       appBar: AppBar(
         title: Text('LEVEL ${_currentLevel + 1}'),
       ),
@@ -343,7 +343,7 @@ class LinkPainter extends CustomPainter {
         text: TextSpan(
           text: '$val',
           style: GoogleFonts.inter(
-            color: Colors.white,
+            color: context.surface,
             fontSize: cellSize * 0.4,
             fontWeight: FontWeight.w900,
           ),

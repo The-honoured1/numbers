@@ -184,7 +184,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     final remaining = _levelConfig.mines - flagCount;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.surface,
       appBar: AppBar(
         title: Text('MINESWEEPER', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 18, letterSpacing: 2)),
         actions: [

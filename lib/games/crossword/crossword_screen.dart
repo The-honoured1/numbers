@@ -134,7 +134,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: context.surface,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: context.border, width: 2),
                         boxShadow: [
@@ -287,7 +287,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 40),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surface,
         border: Border(top: BorderSide(color: context.border)),
       ),
       child: Wrap(
@@ -309,7 +309,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
         width: 60,
         height: 60,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: context.surface,
           border: Border.all(color: context.border),
           borderRadius: BorderRadius.circular(8),
           boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 4, offset: const Offset(0, 2))],

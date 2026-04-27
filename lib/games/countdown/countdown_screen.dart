@@ -168,7 +168,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
             Container(
               padding: const EdgeInsets.all(32),
               decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(12)),
-              child: Text('${_game.target}', style: const TextStyle(color: Colors.white, fontSize: 64, fontWeight: FontWeight.bold, letterSpacing: 8)),
+              child: Text('${_game.target}', style: const TextStyle(color: context.surface, fontSize: 64, fontWeight: FontWeight.bold, letterSpacing: 8)),
             ),
             const SizedBox(height: 40),
             Text('Current: $_currentValue', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
@@ -193,7 +193,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: IconButton.filled(
                     onPressed: () => _onOpTap(op),
-                    icon: Text(op, style: const TextStyle(fontSize: 24, color: Colors.white)),
+                    icon: Text(op, style: const TextStyle(fontSize: 24, color: context.surface)),
                     style: IconButton.styleFrom(backgroundColor: Colors.grey.shade800),
                   ),
                 );

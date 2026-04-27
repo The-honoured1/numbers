@@ -152,7 +152,7 @@ class _AscendScreenState extends State<AscendScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NumbersColors.background,
+      backgroundColor: context.surface,
       appBar: AppBar(
         title: Text('ZEN ASCEND', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),
