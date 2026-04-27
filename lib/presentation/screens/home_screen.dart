@@ -135,132 +135,133 @@ class _TodayView extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(Icons.blur_on, color: context.onSurface, size: 32),
-                Text('The Numbers Games', style: GoogleFonts.unifrakturMaguntia(fontSize: 26, fontWeight: FontWeight.w700, color: context.onSurface)),
-                IconButton(
-                  icon: Icon(
-                    StorageService().themeNotifier.value == ThemeMode.dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                    color: context.onSurface,
-                    size: 28,
-                  ),
-                  onPressed: () {
-                    final current = StorageService().themeNotifier.value;
-                    if (current == ThemeMode.dark) {
-                      StorageService().setThemeMode(ThemeMode.light);
-                    } else {
-                      StorageService().setThemeMode(ThemeMode.dark);
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-              child: Column(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      date.toUpperCase(),
-                      style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w800, letterSpacing: 2, color: context.textFaint),
+                  Icon(Icons.blur_on, color: context.onSurface, size: 32),
+                  Text('The Numbers Games', style: GoogleFonts.unifrakturMaguntia(fontSize: 26, fontWeight: FontWeight.w700, color: context.onSurface)),
+                  IconButton(
+                    icon: Icon(
+                      StorageService().themeNotifier.value == ThemeMode.dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                      color: context.onSurface,
+                      size: 28,
                     ),
+                    onPressed: () {
+                      final current = StorageService().themeNotifier.value;
+                      if (current == ThemeMode.dark) {
+                        StorageService().setThemeMode(ThemeMode.light);
+                      } else {
+                        StorageService().setThemeMode(ThemeMode.dark);
+                      }
+                    },
                   ),
-                  const SizedBox(height: 24),
-                  GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => dailyGame.screen!)),
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: dailyGame.accentColor,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: context.border, width: 2.5),
-                        boxShadow: [
-                          BoxShadow(
-                            color: context.shadow,
-                            blurRadius: 0,
-                            offset: Offset(8, 8),
-                          )
-                        ],
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            right: -50,
-                            top: -50,
-                            child: Icon(dailyGame.icon, size: 250, color: context.onSurface.withOpacity(0.1)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(32),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        color: context.surface,
-                                        border: Border.all(color: context.border, width: 2),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Text('DAILY PUZZLE', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w900, color: context.onSurface, letterSpacing: 1.5)),
-                                    ),
-                                    const Spacer(),
-                                    if (storage.isDailyCompleted(dailyGame.id))
-                                      Container(
-                                        decoration: BoxDecoration(shape: BoxShape.circle, color: context.surface),
-                                        child: Icon(Icons.check_circle_rounded, color: context.onSurface, size: 32),
-                                      ),
-                                  ],
-                                ),
-                                const SizedBox(height: 60),
-                                Text(
-                                  dailyGame.title,
-                                  style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, height: 1.0, color: context.onSurface, letterSpacing: -1),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  dailyGame.description.toUpperCase(),
-                                  style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700, color: context.onSurface.withOpacity(0.8), letterSpacing: 1.5),
-                                ),
-                                const SizedBox(height: 32),
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(vertical: 20),
-                                  decoration: BoxDecoration(
-                                    color: context.surface,
-                                    borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: context.border, width: 2.5),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    storage.isDailyCompleted(dailyGame.id) ? 'REPLAY CHALLENGE' : 'PLAY NOW',
-                                    style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w900, color: context.onSurface, letterSpacing: 1),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ).animate().fadeIn(duration: 800.ms).scale(begin: const Offset(0.9, 0.9), curve: Curves.easeOutBack),
-                  const SizedBox(height: 32),
-                  _buildStreakCard(context),
                 ],
               ),
             ),
-          ),
-        ],
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        date.toUpperCase(),
+                        style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w800, letterSpacing: 2, color: context.textFaint),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    GestureDetector(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => dailyGame.screen!)),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: dailyGame.accentColor,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: context.border, width: 2.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: context.shadow,
+                              blurRadius: 0,
+                              offset: Offset(8, 8),
+                            )
+                          ],
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              right: -50,
+                              top: -50,
+                              child: Icon(dailyGame.icon, size: 250, color: context.onSurface.withOpacity(0.1)),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(32),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: context.surface,
+                                          border: Border.all(color: context.border, width: 2),
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: Text('DAILY PUZZLE', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w900, color: context.onSurface, letterSpacing: 1.5)),
+                                      ),
+                                      const Spacer(),
+                                      if (storage.isDailyCompleted(dailyGame.id))
+                                        Container(
+                                          decoration: BoxDecoration(shape: BoxShape.circle, color: context.surface),
+                                          child: Icon(Icons.check_circle_rounded, color: context.onSurface, size: 32),
+                                        ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 60),
+                                  Text(
+                                    dailyGame.title,
+                                    style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, height: 1.0, color: context.onSurface, letterSpacing: -1),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    dailyGame.description.toUpperCase(),
+                                    style: GoogleFonts.outfit(fontSize: 13, fontWeight: FontWeight.w700, color: context.onSurface.withOpacity(0.8), letterSpacing: 1.5),
+                                  ),
+                                  const SizedBox(height: 32),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(vertical: 20),
+                                    decoration: BoxDecoration(
+                                      color: context.surface,
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(color: context.border, width: 2.5),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      storage.isDailyCompleted(dailyGame.id) ? 'REPLAY CHALLENGE' : 'PLAY NOW',
+                                      style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w900, color: context.onSurface, letterSpacing: 1),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ).animate().fadeIn(duration: 800.ms).scale(begin: const Offset(0.9, 0.9), curve: Curves.easeOutBack),
+                    const SizedBox(height: 32),
+                    _buildStreakCard(context),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -318,45 +319,46 @@ class _HubView extends StatelessWidget {
     return RepaintBoundary(
       child: SafeArea(
         child: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('The Hub', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1, color: context.onSurface)),
-                  const SizedBox(height: 4),
-                  Text('CHOOSE YOUR DAILY BRAIN WORKOUT', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.onSurface.withOpacity(0.6))),
-                ],
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('The Hub', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1, color: context.onSurface)),
+                    const SizedBox(height: 4),
+                    Text('CHOOSE YOUR DAILY BRAIN WORKOUT', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.onSurface.withOpacity(0.6))),
+                  ],
+                ),
               ),
             ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 20,
-                crossAxisSpacing: 20,
-                childAspectRatio: 0.82,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final game = games[index];
-                  return GameCard(
-                    game: game,
-                    isDailyDone: storage.isDailyCompleted(game.id),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => game.screen!)),
-                  );
-                },
-                childCount: games.length,
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 20,
+                  crossAxisSpacing: 20,
+                  childAspectRatio: 0.82,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final game = games[index];
+                    return GameCard(
+                      game: game,
+                      isDailyDone: storage.isDailyCompleted(game.id),
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => game.screen!)),
+                    );
+                  },
+                  childCount: games.length,
+                ),
               ),
             ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
-        ],
+            const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          ],
+        ),
       ),
     );
   }
@@ -371,78 +373,77 @@ class _StatsView extends StatelessWidget {
     return RepaintBoundary(
       child: SafeArea(
         child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24),
-              child: Text('Progress', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1, color: context.onSurface)),
-            ),
-            
-            // STREAK HERO
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [NumbersColors.yellow, Color(0xFFFFB319)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: Text('Progress', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1, color: context.onSurface)),
+              ),
+              
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(32),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [NumbersColors.yellow, Color(0xFFFFB319)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(32),
+                  boxShadow: [
+                    BoxShadow(
+                      color: NumbersColors.yellow.withOpacity(0.3),
+                      blurRadius: 30,
+                      offset: const Offset(0, 15),
+                    )
+                  ],
                 ),
-                borderRadius: BorderRadius.circular(32),
-                boxShadow: [
-                  BoxShadow(
-                    color: NumbersColors.yellow.withOpacity(0.3),
-                    blurRadius: 30,
-                    offset: const Offset(0, 15),
-                  )
-                ],
+                child: Column(
+                  children: [
+                    Icon(Icons.bolt_rounded, color: context.surface, size: 80)
+                      .animate()
+                      .scale(begin: const Offset(1,1), end: const Offset(1.1, 1.1), duration: 1000.ms, curve: Curves.easeInOut),
+                    const SizedBox(height: 16),
+                    Text('${storage.currentStreak}', style: GoogleFonts.outfit(fontSize: 72, fontWeight: FontWeight.w900, height: 1, color: context.surface)),
+                    Text('DAY STREAK', style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 3, color: context.surface.withOpacity(0.9))),
+                    const SizedBox(height: 32),
+                    _buildWeeklyTrack(context),
+                  ],
+                ),
               ),
-              child: Column(
+              
+              const SizedBox(height: 32),
+              
+              Row(
                 children: [
-                  Icon(Icons.bolt_rounded, color: context.surface, size: 80)
-                    .animate()
-                    .scale(begin: const Offset(1,1), end: const Offset(1.1, 1.1), duration: 1000.ms, curve: Curves.easeInOut),
-                  const SizedBox(height: 16),
-                  Text('${storage.currentStreak}', style: GoogleFonts.outfit(fontSize: 72, fontWeight: FontWeight.w900, height: 1, color: context.surface)),
-                  Text('DAY STREAK', style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 3, color: context.surface.withOpacity(0.9))),
-                  const SizedBox(height: 32),
-                  _buildWeeklyTrack(context),
+                  Expanded(child: _InfoCard(label: 'ALL TIME', value: '${storage.maxStreak}', icon: Icons.emoji_events_rounded, color: NumbersColors.yellow)),
+                  const SizedBox(width: 16),
+                  Expanded(child: _InfoCard(label: 'GAMES', value: '${storage.gamesPlayed}', icon: Icons.sports_esports_rounded, color: NumbersColors.blue)),
                 ],
               ),
-            ),
-            
-            const SizedBox(height: 32),
-            
-            // MILESTONES
-            Row(
-              children: [
-                Expanded(child: _InfoCard(label: 'ALL TIME', value: '${storage.maxStreak}', icon: Icons.emoji_events_rounded, color: NumbersColors.yellow)),
-                const SizedBox(width: 16),
-                Expanded(child: _InfoCard(label: 'GAMES', value: '${storage.gamesPlayed}', icon: Icons.sports_esports_rounded, color: NumbersColors.blue)),
-              ],
-            ),
-            
-            const SizedBox(height: 40),
-            
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text('HIGHEST SCORES', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint)),
-            ),
-            const SizedBox(height: 16),
-            _buildHighScoreList(context),
-            
-            const SizedBox(height: 40),
-            
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text('KEY METRICS', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint)),
-            ),
-            const SizedBox(height: 16),
-            _buildMetricsTable(context),
-            const SizedBox(height: 60),
-          ],
+              
+              const SizedBox(height: 40),
+              
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text('HIGHEST SCORES', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint)),
+              ),
+              const SizedBox(height: 16),
+              _buildHighScoreList(context),
+              
+              const SizedBox(height: 40),
+              
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text('KEY METRICS', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint)),
+              ),
+              const SizedBox(height: 16),
+              _buildMetricsTable(context),
+              const SizedBox(height: 60),
+            ],
+          ),
         ),
       ),
     );
@@ -510,7 +511,6 @@ class _StatsView extends StatelessWidget {
       children: weekDays.asMap().entries.map((e) {
         final date = e.value;
         final isCompleted = storage.anyDailyCompleted(date);
-        final isToday = date.day == now.day && date.month == now.month && date.year == now.year;
         
         return Expanded(
           child: Column(

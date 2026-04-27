@@ -26,6 +26,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
   int _level = 1;
   Timer? _timer;
   final Stopwatch _sessionTimer = Stopwatch();
+  String? _pendingOp;
   
   @override
   void initState() {
