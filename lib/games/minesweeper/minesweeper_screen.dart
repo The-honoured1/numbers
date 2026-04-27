@@ -279,17 +279,6 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
       ),
     );
   }
-          
-          const SizedBox(height: 32),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCompactModeButton({required bool active, required VoidCallback onTap, required IconData icon, required String label, required Color color}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
 
 
   Widget _buildCell(int r, int c, MineCell cell) {
