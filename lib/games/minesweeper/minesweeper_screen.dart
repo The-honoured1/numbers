@@ -56,8 +56,11 @@ class MinesweeperLevel {
   }
 }
 
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
+
 class MinesweeperScreen extends StatefulWidget {
-  const MinesweeperScreen({super.key});
+  final int initialLevel;
+  const MinesweeperScreen({super.key, this.initialLevel = 1});
 
   @override
   State<MinesweeperScreen> createState() => _MinesweeperScreenState();
@@ -73,10 +76,20 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
   @override
   void initState() {
     super.initState();
-    _currentLevel = StorageService().getHighScore('minesweeper_level');
+    _currentLevel = widget.initialLevel;
     if (_currentLevel < 1) _currentLevel = 1;
     _sessionTimer.start();
     _startNewGame();
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await TutorialDialog.checkAndShow(
+        context: context,
+        gameId: 'minesweeper',
+        title: 'Minesweeper',
+        description: 'Clear the board without hitting any hidden mines! The numbers reveal how many mines are hiding in the adjacent eight squares. Tap FLAG to mark suspected mines.',
+        icon: Icons.brightness_7_rounded,
+      );
+    });
   }
 
   @override
@@ -275,9 +288,9 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: cell.state == CellState.revealed 
-                                  ? (cell.isMine ? Colors.red.withOpacity(0.1) : Colors.grey.shade100)
-                                  : Colors.white,
-                              border: Border.all(color: context.border, width: 0.5),
+                                  ? (cell.isMine ? NumbersColors.coral : context.surface)
+                                  : context.textFaint.withOpacity(0.1),
+                              border: Border.all(color: context.border, width: 2.5),
                             ),
                             alignment: Alignment.center,
                             child: _buildCellContent(cell),

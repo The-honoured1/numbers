@@ -15,6 +15,7 @@ import 'package:numbers/games/link_numbers/link_numbers_screen.dart';
 import 'package:numbers/games/minesweeper/minesweeper_screen.dart';
 
 
+import 'package:numbers/presentation/screens/level_select_screen.dart';
 import 'package:numbers/games/slide_15/slide_screen.dart';
 import 'package:numbers/games/ascend/ascend_screen.dart';
 
@@ -39,18 +40,28 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<GameModel> _getGames() {
-    return [
-      GameModel(id: 'sudoku', title: 'Number Grid', description: 'Classic Sudoku Challenge', icon: Icons.grid_4x4_rounded, accentColor: NumbersColors.yellow, screen: SudokuScreen(difficulty: 'Medium')),
-      GameModel(id: '2048', title: '2048', description: 'Merge Tiles to Win', icon: Icons.dashboard_rounded, accentColor: NumbersColors.blue, screen: Screen2048()),
-      GameModel(id: 'math_puzzle', title: 'Math Puzzle', description: 'Quick Mental Math', icon: Icons.calculate_rounded, accentColor: NumbersColors.green, screen: PuzzleScreen()),
-      GameModel(id: 'sequence', title: 'Sequence', description: 'Find Missing Patterns', icon: Icons.trending_up_rounded, accentColor: NumbersColors.purple, screen: SequenceScreen()),
-      GameModel(id: 'countdown', title: 'Countdown', description: 'Reach the Target Number', icon: Icons.timer_rounded, accentColor: NumbersColors.countdown, screen: CountdownScreen()),
+    final cw = GameModel(id: 'crossword', title: 'Math Cross', description: 'Cross-Equation Solver', icon: Icons.grid_goldenratio_rounded, accentColor: NumbersColors.crossword);
+    final lk = GameModel(id: 'link', title: 'Number Link', description: 'Connect Matching Dots', icon: Icons.link_rounded, accentColor: NumbersColors.linkNumbers);
+    final ms = GameModel(id: 'minesweeper', title: 'Minesweeper', description: 'Navigate the Minefield', icon: Icons.brightness_7_rounded, accentColor: NumbersColors.minesweeper);
 
-      GameModel(id: 'slide_15', title: 'Slide 15', description: 'Classic 15 Puzzle', icon: Icons.filter_4_rounded, accentColor: NumbersColors.purple, screen: SlideScreen()),
-      GameModel(id: 'zen_ascend', title: 'Zen Ascend', description: 'Speed Ascending Tap', icon: Icons.keyboard_double_arrow_up_rounded, accentColor: NumbersColors.green, screen: AscendScreen()),
-      GameModel(id: 'crossword', title: 'Math Cross', description: 'Cross-Equation Solver', icon: Icons.grid_goldenratio_rounded, accentColor: NumbersColors.crossword, screen: CrosswordScreen()),
-      GameModel(id: 'link', title: 'Number Link', description: 'Connect Matching Dots', icon: Icons.link_rounded, accentColor: NumbersColors.linkNumbers, screen: LinkNumbersScreen()),
-      GameModel(id: 'minesweeper', title: 'Minesweeper', description: 'Navigate the Minefield', icon: Icons.brightness_7_rounded, accentColor: NumbersColors.minesweeper, screen: MinesweeperScreen()),
+    return [
+      GameModel(id: 'sudoku', title: 'Number Grid', description: 'Classic Sudoku Challenge', icon: Icons.grid_4x4_rounded, accentColor: NumbersColors.yellow, screen: const SudokuScreen(difficulty: 'Medium')),
+      GameModel(id: '2048', title: '2048', description: 'Merge Tiles to Win', icon: Icons.dashboard_rounded, accentColor: NumbersColors.blue, screen: const Screen2048()),
+      GameModel(id: 'math_puzzle', title: 'Math Puzzle', description: 'Quick Mental Math', icon: Icons.calculate_rounded, accentColor: NumbersColors.green, screen: const PuzzleScreen()),
+      GameModel(id: 'sequence', title: 'Sequence', description: 'Find Missing Patterns', icon: Icons.trending_up_rounded, accentColor: NumbersColors.purple, screen: const SequenceScreen()),
+      GameModel(id: 'countdown', title: 'Countdown', description: 'Reach the Target Number', icon: Icons.timer_rounded, accentColor: NumbersColors.countdown, screen: const CountdownScreen()),
+
+      GameModel(id: 'slide_15', title: 'Slide 15', description: 'Classic 15 Puzzle', icon: Icons.filter_4_rounded, accentColor: NumbersColors.purple, screen: const SlideScreen()),
+      GameModel(id: 'zen_ascend', title: 'Zen Ascend', description: 'Speed Ascending Tap', icon: Icons.keyboard_double_arrow_up_rounded, accentColor: NumbersColors.green, screen: const AscendScreen()),
+      
+      GameModel(id: cw.id, title: cw.title, description: cw.description, icon: cw.icon, accentColor: cw.accentColor, screen: LevelSelectScreen(
+        game: cw, screenBuilder: (l) => CrosswordScreen(initialLevel: l), maxUnlockedResolver: (s) => s.getHighScore('crossword_level'), totalLevels: 100)),
+      
+      GameModel(id: lk.id, title: lk.title, description: lk.description, icon: lk.icon, accentColor: lk.accentColor, screen: LevelSelectScreen(
+        game: lk, screenBuilder: (l) => LinkNumbersScreen(initialLevel: l), maxUnlockedResolver: (s) => s.getHighScore('link_level'), totalLevels: 100)),
+      
+      GameModel(id: ms.id, title: ms.title, description: ms.description, icon: ms.icon, accentColor: ms.accentColor, screen: LevelSelectScreen(
+        game: ms, screenBuilder: (l) => MinesweeperScreen(initialLevel: l + 1), maxUnlockedResolver: (s) => s.getHighScore('minesweeper_level') - 1, totalLevels: 500)),
     ];
   }
 

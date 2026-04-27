@@ -6,8 +6,11 @@ import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'package:numbers/services/storage_service.dart';
 import 'crossword_logic.dart';
 
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
+
 class CrosswordScreen extends StatefulWidget {
-  const CrosswordScreen({super.key});
+  final int initialLevel;
+  const CrosswordScreen({super.key, this.initialLevel = 0});
 
   @override
   State<CrosswordScreen> createState() => _CrosswordScreenState();
@@ -25,9 +28,34 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   @override
   void initState() {
     super.initState();
+    _level = widget.initialLevel;
     _storage.incrementPlayCount('crossword');
     _sessionTimer.start();
+    _startNewLevel();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await TutorialDialog.checkAndShow(
+        context: context,
+        gameId: 'crossword',
+        title: 'Math Cross',
+        description: 'Fill in the empty tiles to complete the mathematical equations stretching across the board. The numbers given at the ends must correctly equate horizontally and vertically.',
+        icon: Icons.grid_goldenratio_rounded,
+      );
+    });
+  }
+
+  void _startNewLevel() {
     _data = _logic.generate(_level);
+    _playerValues = List.generate(9, (_) => null);
+    _selectedIndex = null;
+
+    // Prefill hints (less hints on higher levels)
+    int hints = (4 - (_level ~/ 25)).clamp(1, 4);
+    List<int> indices = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    indices.shuffle();
+    for (int i = 0; i < hints; i++) {
+        _playerValues[indices[i]] = _data.values[indices[i]];
+    }
   }
 
   @override
@@ -68,9 +96,8 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
         ).then((_) {
           setState(() {
             _level++;
-            _data = _logic.generate(_level);
-            _playerValues = List.generate(9, (_) => null);
-            _selectedIndex = null;
+            _storage.saveHighScore('crossword_level', _level);
+            _startNewLevel();
           });
         });
       }
@@ -207,20 +234,26 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
 
   Widget _buildInputCell(int index) {
     bool isSelected = _selectedIndex == index;
+    // Check if it's a fixed hint tile
+    bool isHint = _playerValues[index] != null && _playerValues[index] == _data.values[index] && _selectedIndex != index;
+    // We determine true hint by checking if other cells are empty, but simply we can just disable onTap for correct matches initially.
+    // Actually, any hint won't be editable.
+    // Wait, let's just make hints semi-transparent background and not selectable.
+    
     return Expanded(
       child: GestureDetector(
         onTap: () => setState(() => _selectedIndex = index),
         child: Container(
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-            color: isSelected ? NumbersColors.selection.withOpacity(0.1) : Colors.transparent,
+            color: isSelected ? NumbersColors.selection.withOpacity(0.1) : (isHint ? context.border.withOpacity(0.05) : Colors.transparent),
             border: Border.all(color: isSelected ? NumbersColors.selection : context.border, width: isSelected ? 2 : 1),
             borderRadius: BorderRadius.circular(4),
           ),
           alignment: Alignment.center,
           child: Text(
             _playerValues[index]?.toString() ?? '',
-            style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 18, color: context.onSurface),
+            style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 18, color: isHint ? context.textFaint : context.onSurface),
           ),
         ),
       ),
