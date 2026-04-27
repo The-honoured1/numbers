@@ -21,6 +21,9 @@ class ShareService {
       final boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
       if (boundary == null) return;
 
+      // Small delay to ensure any opening animations settle and the widget is ready to paint
+      await Future.delayed(const Duration(milliseconds: 50));
+
       final image = await boundary.toImage(pixelRatio: 3.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final pngBytes = byteData!.buffer.asUint8List();

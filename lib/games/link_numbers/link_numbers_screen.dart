@@ -209,7 +209,8 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     return Scaffold(
       backgroundColor: context.surface,
       appBar: AppBar(
-        title: Text('LEVEL ${_currentLevel + 1}'),
+        title: Text('LEVEL ${_currentLevel + 1}', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 18, letterSpacing: 2)),
+        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -255,20 +256,39 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 60),
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 60),
             child: Row(
-               mainAxisAlignment: MainAxisAlignment.center,
-               children: [
-                 TextButton(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
                     onPressed: () => _loadLevel(_currentLevel),
-                    child: const Text('RESET'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: context.surface,
+                      foregroundColor: context.onSurface,
+                      side: BorderSide(color: context.border, width: 2.5),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    ),
+                    child: Text('RESET', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, letterSpacing: 1.5)),
                   ),
-                  const SizedBox(width: 20),
-                  TextButton(
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('EXIT'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: context.surface,
+                      foregroundColor: context.onSurface,
+                      side: BorderSide(color: context.border, width: 2.5),
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    ),
+                    child: Text('EXIT', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, letterSpacing: 1.5)),
                   ),
-               ],
+                ),
+              ],
             ),
           ),
         ],

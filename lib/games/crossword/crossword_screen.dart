@@ -5,7 +5,6 @@ import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'package:numbers/services/storage_service.dart';
 import 'crossword_logic.dart';
-
 import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 import 'package:numbers/services/ad_service.dart';
 
@@ -138,15 +137,15 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
 
       bool win = true;
       
-      // Horizontal Rows
-      if (_logic.calculate(_logic.calculate(p[0]!, p[1]!, o[0]), p[2]!, o[1]) != r[0]) win = false;
-      if (_logic.calculate(_logic.calculate(p[3]!, p[4]!, o[5]), p[5]!, o[6]) != r[1]) win = false;
-      if (_logic.calculate(_logic.calculate(p[6]!, p[7]!, o[10]), p[8]!, o[11]) != r[2]) win = false;
+      // Horizontal Rows using the new BODMAS evaluate method
+      if (_logic.evaluate(p[0]!, o[0], p[1]!, o[1], p[2]!) != r[0]) win = false;
+      if (_logic.evaluate(p[3]!, o[5], p[4]!, o[6], p[5]!) != r[1]) win = false;
+      if (_logic.evaluate(p[6]!, o[10], p[7]!, o[11], p[8]!) != r[2]) win = false;
 
       // Vertical Columns
-      if (_logic.calculate(_logic.calculate(p[0]!, p[3]!, o[2]), p[6]!, o[7]) != r[3]) win = false;
-      if (_logic.calculate(_logic.calculate(p[1]!, p[4]!, o[3]), p[7]!, o[8]) != r[4]) win = false;
-      if (_logic.calculate(_logic.calculate(p[2]!, p[5]!, o[4]), p[8]!, o[9]) != r[5]) win = false;
+      if (_logic.evaluate(p[0]!, o[2], p[3]!, o[7], p[6]!) != r[3]) win = false;
+      if (_logic.evaluate(p[1]!, o[3], p[4]!, o[8], p[7]!) != r[4]) win = false;
+      if (_logic.evaluate(p[2]!, o[4], p[5]!, o[9], p[8]!) != r[5]) win = false;
 
       if (win) {
         _storage.markDailyCompleted('crossword');
@@ -212,23 +211,24 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
               color: _isWrong ? NumbersColors.coral.withOpacity(0.1) : Colors.transparent,
               child: Center(
                 child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: context.surface,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: context.border, width: 2),
-                        boxShadow: [
-                          BoxShadow(color: context.onSurface.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
-                        ],
-                      ),
-                      child: _buildGrid(),
-                    ).animate().fadeIn(duration: 800.ms).moveY(begin: 20, end: 0),
+                  physics: const BouncingScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: context.surface,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: context.border, width: 2),
+                          boxShadow: [
+                            BoxShadow(color: context.onSurface.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+                          ],
+                        ),
+                        child: _buildGrid(),
+                      ).animate().fadeIn(duration: 800.ms).moveY(begin: 20, end: 0),
+                    ),
                   ),
                 ),
               ),
