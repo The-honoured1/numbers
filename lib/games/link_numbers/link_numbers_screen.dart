@@ -77,8 +77,18 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     if (_currentLevel < _logic.totalLevels - 1) {
       _loadLevel(_currentLevel + 1);
     } else {
-        _loadLevel(0); 
+      _loadLevel(0);
     }
+  }
+
+  void _resetCurrentLevel() {
+    setState(() {
+      _paths = {};
+      for (var val in _data.values) {
+        _paths[val] = [];
+      }
+      _activeValue = null;
+    });
   }
 
   void _handlePanStart(DragStartDetails details, BoxConstraints constraints) {
@@ -261,7 +271,7 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => _loadLevel(_currentLevel),
+                    onPressed: _resetCurrentLevel,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.surface,
                       foregroundColor: context.onSurface,

@@ -56,17 +56,18 @@ class LinkNumbersLogic {
       pairCount = 10;
     }
 
+    final seededRand = Random(levelIndex + 2024); // Seed with level index for determinism
+    
     // Attempt to generate a puzzle that fills the maximum amount of the board
-    // A 100% full board is the standard for Flow-style puzzles with unique solutions.
     for (int attempt = 0; attempt < 500; attempt++) {
-      final result = _tryGenerateFullBoard(gridSize, pairCount);
+      final result = _tryGenerateFullBoard(gridSize, pairCount, seededRand);
       if (result != null) return result;
     }
 
     return _fallbackPuzzle(gridSize, pairCount);
   }
 
-  LinkNumbersData? _tryGenerateFullBoard(int gridSize, int pairCount) {
+  LinkNumbersData? _tryGenerateFullBoard(int gridSize, int pairCount, Random rand) {
     List<List<int?>> grid = List.generate(gridSize, (_) => List.filled(gridSize, null));
     Map<Point, int> endpoints = {};
     List<int> values = [];
@@ -74,7 +75,7 @@ class LinkNumbersLogic {
     int currentId = 1;
     
     while (currentId <= pairCount) {
-      Point? start = _findFreeCell(grid, gridSize);
+      Point? start = _findFreeCell(grid, gridSize, rand);
       if (start == null) break;
 
       List<Point> path = [start];
@@ -83,7 +84,7 @@ class LinkNumbersLogic {
       // Try to grow the path
       bool growing = true;
       while (growing) {
-        var shDirs = List.from(_dirs)..shuffle();
+        var shDirs = List.from(_dirs)..shuffle(rand);
         growing = false;
         for (var d in shDirs) {
           Point next = path.last.move(d[0], d[1]);
@@ -131,7 +132,7 @@ class LinkNumbersLogic {
     );
   }
 
-  Point? _findFreeCell(List<List<int?>> grid, int gridSize) {
+  Point? _findFreeCell(List<List<int?>> grid, int gridSize, Random rand) {
     List<Point> free = [];
     for (int y = 0; y < gridSize; y++) {
       for (int x = 0; x < gridSize; x++) {
@@ -139,7 +140,7 @@ class LinkNumbersLogic {
       }
     }
     if (free.isEmpty) return null;
-    return free[_rand.nextInt(free.length)];
+    return free[rand.nextInt(free.length)];
   }
 
   bool _isValid(Point p, int gridSize, List<List<int?>> grid) {

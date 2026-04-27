@@ -8,6 +8,7 @@ import 'package:numbers/services/storage_service.dart';
 import 'package:numbers/services/ad_service.dart';
 import 'ascend_logic.dart';
 import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
+import 'package:numbers/presentation/widgets/full_screen_result.dart';
 
 class AscendScreen extends StatefulWidget {
   const AscendScreen({super.key});
@@ -113,34 +114,29 @@ class _AscendScreenState extends State<AscendScreen> {
     _timer?.cancel();
     StorageService().saveHighScore('ascend', _score);
     StorageService().markDailyCompleted('ascend');
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => GameResultDialog(
-        title: 'Time Expired',
-        message: 'You reached an ascending score of $_score!',
-        buttonText: 'TRY AGAIN',
-        color: NumbersColors.green,
-        icon: Icons.timer_off_rounded,
-        onRevive: _revivesUsed < 2 ? () {
-          AdService().showRewardedAd(() {
+    
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FullScreenResult(
+          won: _score > 100, // Consider >100 as a major win
+          gameId: 'zen_ascend',
+          title: _score > 100 ? 'Ascended!' : 'Time Up',
+          score: '$_score',
+          message: _score > 100 
+              ? 'You have reached the peak of the sequence. Your focus is absolute.' 
+              : 'The climb was steep, but your speed is improving. Keep ascending.',
+          actionLabel: 'CLIMB AGAIN',
+          onAction: () {
             Navigator.pop(context);
             setState(() {
-              _revivesUsed++;
-              _timeLeft = 10; // Give some time back
+              _score = 0;
+              _round = 1;
+              _revivesUsed = 0;
             });
-            _startTimer();
-          });
-        } : null,
-        onButtonPressed: () {
-          Navigator.pop(context);
-          setState(() {
-            _score = 0;
-            _round = 1;
-            _revivesUsed = 0;
-          });
-          _startNewRound();
-        },
+            _startNewRound();
+          },
+        ),
       ),
     );
   }

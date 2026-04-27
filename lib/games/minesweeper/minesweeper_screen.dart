@@ -7,6 +7,7 @@ import 'package:numbers/services/storage_service.dart';
 import 'package:numbers/services/ad_service.dart';
 import 'minesweeper_logic.dart';
 import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
+import 'package:numbers/presentation/widgets/full_screen_result.dart';
 
 /// Level config: returns (rows, cols, mines) for a given level 1–500
 class MinesweeperLevel {
@@ -132,37 +133,28 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
   void _showResult(bool won, {int? r, int? c}) {
     if (won && (_currentLevel + 1) % 3 == 0) AdService().showInterstitialAd();
     
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => GameResultDialog(
-        title: won ? 'Level $_currentLevel Cleared!' : 'Kaboom!',
-        message: won 
-            ? 'You cleared a ${_levelConfig.difficulty} minefield. Onward to level ${_currentLevel + 1}!' 
-            : 'You hit a mine on level $_currentLevel. Try again!',
-        buttonText: won ? 'NEXT LEVEL' : 'RETRY LEVEL',
-        color: won ? NumbersColors.crossCorrect : NumbersColors.countdown,
-        icon: won ? Icons.shield_outlined : Icons.brightness_7_outlined,
-        onRevive: won ? null : () {
-          AdService().showRewardedAd(() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FullScreenResult(
+          won: won,
+          gameId: 'minesweeper',
+          title: won ? 'Victory!' : 'Kaboom!',
+          score: 'LVL $_currentLevel',
+          message: won 
+              ? 'You mastered a ${_levelConfig.difficulty} minefield. Your precision is unmatched.' 
+              : 'You hit a mine on level $_currentLevel. The field remains dangerous.',
+          actionLabel: won ? 'NEXT LEVEL' : 'RETRY LEVEL',
+          onAction: () {
             Navigator.pop(context);
-            if (r != null && c != null) {
-              setState(() {
-                _game.revive(r, c);
-              });
+            if (won) {
+              _currentLevel++;
+              if (_currentLevel > 500) _currentLevel = 500;
+              StorageService().saveHighScore('minesweeper_level', _currentLevel);
             }
-          });
-        },
-        onButtonPressed: () {
-          Navigator.pop(context);
-          if (won) {
-            _currentLevel++;
-            if (_currentLevel > 500) _currentLevel = 500;
-            // Save progress
-            StorageService().saveHighScore('minesweeper_level', _currentLevel);
-          }
-          _startNewGame();
-        },
+            _startNewGame();
+          },
+        ),
       ),
     );
   }
@@ -392,7 +384,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
           child: _buildCellContent(cell),
         ),
       ).animate(target: isRevealed ? 1 : 0)
-       .shimmer(duration: 400.ms, color: Colors.white.withOpacity(0.2), when: isRevealed),
+       .shimmer(duration: 400.ms, color: Colors.white.withOpacity(0.2)),
     );
   }
 
@@ -402,7 +394,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
         Icons.flag_rounded, 
         color: NumbersColors.coral, 
         size: 20,
-      ).animate().scale(duration: 200.ms, curve: Curves.easeOutBack).shake(hz: 4, amount: 0.1);
+      ).animate().scale(duration: 200.ms, curve: Curves.easeOutBack).shake(hz: 4);
     }
     
     if (cell.state == CellState.hidden) {
@@ -426,6 +418,6 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
         fontWeight: FontWeight.w900,
         fontSize: 22,
       ),
-    ).animate().fadeIn(duration: 200.ms).scale(begin: const Offset(0.5, 0.5), curve: Curves.backOut);
+    ).animate().fadeIn(duration: 200.ms).scale(begin: const Offset(0.5, 0.5), curve: Curves.easeOutBack);
   }
 }

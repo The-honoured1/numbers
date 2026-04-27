@@ -177,7 +177,12 @@ class _TodayView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Icon(Icons.blur_on, color: context.onSurface, size: 32),
-                  Text('The Numbers Games', style: GoogleFonts.unifrakturMaguntia(fontSize: 26, fontWeight: FontWeight.w700, color: context.onSurface)),
+                  Expanded(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text('The Numbers Games', style: GoogleFonts.unifrakturMaguntia(fontSize: 26, fontWeight: FontWeight.w700, color: context.onSurface)),
+                    ),
+                  ),
                   const SizedBox(width: 32),
                 ],
               ),
@@ -392,74 +397,81 @@ class _StatsView extends StatelessWidget {
       child: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                child: Text('Progress', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1, color: context.onSurface)),
-              ),
-              
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [NumbersColors.yellow, Color(0xFFFFB319)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(32),
-                  boxShadow: [
-                    BoxShadow(
-                      color: NumbersColors.yellow.withOpacity(0.3),
-                      blurRadius: 30,
-                      offset: const Offset(0, 15),
-                    )
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Icon(Icons.bolt_rounded, color: context.surface, size: 80)
-                      .animate()
-                      .scale(begin: const Offset(1,1), end: const Offset(1.1, 1.1), duration: 1000.ms, curve: Curves.easeInOut),
-                    const SizedBox(height: 16),
-                    Text('${storage.currentStreak}', style: GoogleFonts.outfit(fontSize: 72, fontWeight: FontWeight.w900, height: 1, color: context.surface)),
-                    Text('DAY STREAK', style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 3, color: context.surface.withOpacity(0.9))),
-                    const SizedBox(height: 32),
-                    _buildWeeklyTrack(context),
-                  ],
-                ),
-              ),
+              const SizedBox(height: 40),
+              Text('The Archives', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1.2, color: context.onSurface, height: 1)),
+              const SizedBox(height: 8),
+              Text('YOUR JOURNEY THROUGH THE NUMBERS', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 2, color: context.textFaint)),
               
               const SizedBox(height: 32),
               
+              // Key Stats Dashboard
               Row(
                 children: [
-                  Expanded(child: _InfoCard(label: 'ALL TIME', value: '${storage.maxStreak}', icon: Icons.emoji_events_rounded, color: NumbersColors.yellow)),
-                  const SizedBox(width: 16),
-                  Expanded(child: _InfoCard(label: 'GAMES', value: '${storage.gamesPlayed}', icon: Icons.sports_esports_rounded, color: NumbersColors.blue)),
+                   Expanded(
+                     child: _StatDashboardCard(
+                       label: 'STREAK', 
+                       value: '${storage.currentStreak}', 
+                       subValue: 'DAYS',
+                       icon: Icons.bolt_rounded,
+                       color: NumbersColors.yellow,
+                     ),
+                   ),
+                   const SizedBox(width: 16),
+                   Expanded(
+                     child: _StatDashboardCard(
+                       label: 'SOLVED', 
+                       value: '${storage.getTotalWins()}', 
+                       subValue: 'PUZZLES',
+                       icon: Icons.check_circle_rounded,
+                       color: NumbersColors.green,
+                     ),
+                   ),
                 ],
               ),
-              
-              const SizedBox(height: 40),
-              
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('HIGHEST SCORES', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint)),
-              ),
               const SizedBox(height: 16),
-              _buildHighScoreList(context),
-              
-              const SizedBox(height: 40),
-              
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text('KEY METRICS', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint)),
+              Row(
+                children: [
+                   Expanded(
+                     child: _StatDashboardCard(
+                       label: 'PLAY TIME', 
+                       value: StorageService.formatDuration(storage.getTotalPlayTime()), 
+                       subValue: 'TOTAL',
+                       icon: Icons.timer_rounded,
+                       color: NumbersColors.blue,
+                     ),
+                   ),
+                   const SizedBox(width: 16),
+                   Expanded(
+                     child: _StatDashboardCard(
+                       label: 'MAX STREAK', 
+                       value: '${storage.maxStreak}', 
+                       subValue: 'BEST',
+                       icon: Icons.emoji_events_rounded,
+                       color: NumbersColors.purple,
+                     ),
+                   ),
+                ],
               ),
+
+              const SizedBox(height: 48),
+              
+              // Activity Section
+              _SectionHeader(title: 'LAST 7 DAYS', subtitle: 'DAILY CHALLENGE COMPLETION'),
               const SizedBox(height: 16),
-              _buildMetricsTable(context),
-              const SizedBox(height: 60),
+              _buildWeeklyTrack(context),
+              
+              const SizedBox(height: 48),
+
+              // Game Breakdown
+              _SectionHeader(title: 'GAME BREAKDOWN', subtitle: 'TAPPING INTO YOUR DATA'),
+              const SizedBox(height: 16),
+              _buildDetailedGameList(context),
+              
+              const SizedBox(height: 100),
             ],
           ),
         ),
@@ -467,88 +479,119 @@ class _StatsView extends StatelessWidget {
     );
   }
 
-  Widget _buildHighScoreList(BuildContext context) {
-    final games = [
-      {'id': 'sudoku', 'name': 'Sudoku', 'color': NumbersColors.yellow},
-      {'id': '2048', 'name': '2048', 'color': NumbersColors.blue},
-      {'id': 'math_puzzle', 'name': 'Math', 'color': NumbersColors.green},
-      {'id': 'sequence', 'name': 'Sequence', 'color': NumbersColors.purple},
-      {'id': 'countdown', 'name': 'Count', 'color': NumbersColors.countdown},
-      {'id': 'crossword', 'name': 'Cross', 'color': NumbersColors.crossword},
-    ];
+  Widget _buildWeeklyTrack(BuildContext context) {
+    final now = DateTime.now();
+    final weekDays = List.generate(7, (i) => now.subtract(Duration(days: 6 - i)));
+    final labels = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      physics: const BouncingScrollPhysics(),
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: context.border, width: 2.5),
+        boxShadow: [
+          BoxShadow(color: context.shadow, offset: const Offset(4, 4))
+        ],
+      ),
       child: Row(
-        children: games.map((game) {
-          final score = storage.getHighScore(game['id'] as String);
-          return Container(
-            margin: const EdgeInsets.only(right: 16, bottom: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            decoration: BoxDecoration(
-              color: context.surface,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: context.border, width: 2.5),
-              boxShadow: [
-                BoxShadow(
-                  color: context.shadow,
-                  blurRadius: 0,
-                  offset: Offset(4, 4),
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: weekDays.asMap().entries.map((e) {
+          final date = e.value;
+          final isCompleted = storage.anyDailyCompleted(date);
+          final isToday = date.day == now.day && date.month == now.month && date.year == now.year;
+          
+          return Column(
+            children: [
+              Text(
+                labels[date.weekday % 7], 
+                style: GoogleFonts.outfit(
+                  fontSize: 9, 
+                  fontWeight: FontWeight.w800, 
+                  color: isToday ? NumbersColors.blue : context.textFaint,
+                  letterSpacing: 0.5,
                 )
-              ],
-            ),
-            child: Column(
-              children: [
-                Text(game['name'] as String, style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.onSurface)),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: game['color'] as Color,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: context.border, width: 2),
-                  ),
-                  child: Text('$score', style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: context.onSurface)),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: isCompleted ? NumbersColors.green : (isToday ? context.surface : context.surface.withOpacity(0.5)),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: context.border, width: 2),
                 ),
-              ],
-            ),
+                child: isCompleted 
+                  ? Icon(Icons.check_rounded, color: context.onSurface, size: 18) 
+                  : Center(
+                      child: Text(
+                        '${date.day}', 
+                        style: GoogleFonts.outfit(
+                          fontSize: 10, 
+                          fontWeight: FontWeight.w900, 
+                          color: isToday ? NumbersColors.blue : context.textFaint.withOpacity(0.5)
+                        )
+                      )
+                    ),
+              ),
+            ],
           );
         }).toList(),
       ),
     );
   }
 
-  Widget _buildWeeklyTrack(BuildContext context) {
-    final now = DateTime.now();
-    final weekDays = List.generate(7, (i) => now.subtract(Duration(days: 6 - i)));
-    final labels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  Widget _buildDetailedGameList(BuildContext context) {
+    // Collect all unique games from StorageService or a static list
+    final gameIds = StorageService.allGameIds;
+    const gameNames = {
+      'sudoku': 'Number Grid', '2048': '2048', 'math_puzzle': 'Math Puzzle',
+      'sequence': 'Sequence', 'countdown': 'Countdown', 'crossword': 'Math Cross',
+      'link': 'Number Link', 'minesweeper': 'Minesweeper', 'slide_15': 'Slide 15',
+      'zen_ascend': 'Zen Ascend',
+    };
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: weekDays.asMap().entries.map((e) {
-        final date = e.value;
-        final isCompleted = storage.anyDailyCompleted(date);
-        
-        return Expanded(
+    return Column(
+      children: gameIds.map((id) {
+        final score = storage.getHighScore(id);
+        final wins = storage.getWins(id);
+        final time = storage.getPlayTime(id);
+        final plays = storage.getPlayCount(id);
+
+        if (plays == 0) return const SizedBox.shrink();
+
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: context.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: context.border, width: 2.5),
+            boxShadow: [
+              BoxShadow(color: context.shadow, offset: const Offset(4, 4))
+            ],
+          ),
           child: Column(
             children: [
-              FittedBox(child: Text(labels[date.weekday % 7], style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.onSurface.withOpacity(0.6)))),
-              const SizedBox(height: 12),
-              Container(
-                width: 36,
-                height: 46,
-                decoration: BoxDecoration(
-                  color: isCompleted ? NumbersColors.green : context.surface,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: context.border, width: 2),
-                  boxShadow: [
-                    BoxShadow(color: context.shadow, blurRadius: 0, offset: Offset(2, 2))
-                  ],
-                ),
-                child: isCompleted 
-                  ? Icon(Icons.check_rounded, color: context.onSurface, size: 24) 
-                  : Center(child: Text('${date.day}', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.onSurface))),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(gameNames[id]?.toUpperCase() ?? id.toUpperCase(), style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 1)),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(color: context.onSurface.withOpacity(0.05), borderRadius: BorderRadius.circular(6)),
+                    child: Text('WINS: $wins', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.green)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _miniStat('BEST SCORE', score == 0 ? '-' : '$score'),
+                  _miniStat('PLAYS', '$plays'),
+                  _miniStat('TIME', StorageService.formatDuration(time)),
+                ],
               ),
             ],
           ),
@@ -557,112 +600,76 @@ class _StatsView extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricsTable(BuildContext context) {
-    final totalPlays = storage.gamesPlayed;
-    final totalTime = storage.getTotalPlayTime();
-    final avgSession = totalPlays > 0 ? (totalTime / totalPlays).round() : 0;
-    final favorite = storage.getFavoriteGame();
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: context.surface,
-        border: Border.all(color: context.border, width: 2.5),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: context.shadow,
-            blurRadius: 0,
-            offset: Offset(4, 4),
-          )
-        ],
-      ),
-      child: Column(
-        children: [
-          _metricRow(context, "TOTAL PLAY TIME", StorageService.formatDuration(totalTime), NumbersColors.purple),
-          Divider(height: 32, color: context.border, thickness: 2.5),
-          _metricRow(context, "AVG SESSION", StorageService.formatDuration(avgSession), NumbersColors.blue),
-          Divider(height: 32, color: context.border, thickness: 2.5),
-          _metricRow(context, "FAVORITE GAME", favorite, NumbersColors.yellow),
-        ],
-      ),
-    );
-  }
-
-  Widget _metricRow(BuildContext context, String label, String value, Color color) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              label, 
-              style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 1, color: context.textFaint),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          const SizedBox(width: 16),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(value, style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, color: context.onSurface)),
-          ),
-        ],
-      ),
+  Widget _miniStat(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: GoogleFonts.outfit(fontSize: 9, fontWeight: FontWeight.w800, color: Colors.grey.shade500, letterSpacing: 0.5)),
+        Text(value, style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w900)),
+      ],
     );
   }
 }
 
-class _InfoCard extends StatelessWidget {
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  const _SectionHeader({required this.title, required this.subtitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: GoogleFonts.playfairDisplay(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5)),
+        const SizedBox(height: 2),
+        Text(subtitle, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1)),
+      ],
+    );
+  }
+}
+
+class _StatDashboardCard extends StatelessWidget {
   final String label;
   final String value;
+  final String subValue;
   final IconData icon;
   final Color color;
-  const _InfoCard({required this.label, required this.value, required this.icon, required this.color});
+
+  const _StatDashboardCard({
+    required this.label, 
+    required this.value, 
+    required this.subValue, 
+    required this.icon, 
+    required this.color
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: context.surface,
-        border: Border.all(color: context.border, width: 2),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: context.border, width: 2.5),
         boxShadow: [
-          BoxShadow(
-            color: context.shadow,
-            blurRadius: 0,
-            offset: Offset(4, 4),
-          )
+          BoxShadow(color: context.shadow, offset: const Offset(4, 4))
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10), border: Border.all(color: context.border, width: 1.5)),
-            child: Icon(icon, color: context.onSurface, size: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+               Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1)),
+               Icon(icon, color: color, size: 20),
+            ],
           ),
-          const SizedBox(height: 12),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(value, style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w900, color: context.onSurface)),
-          ),
+          const SizedBox(height: 16),
+          Text(value, style: GoogleFonts.playfairDisplay(fontSize: 32, fontWeight: FontWeight.w900, height: 1)),
           const SizedBox(height: 4),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              label, 
-              style: GoogleFonts.outfit(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 1.2, color: context.textFaint),
-            ),
-          ),
+          Text(subValue, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w900, color: color, letterSpacing: 1)),
         ],
       ),
     );
