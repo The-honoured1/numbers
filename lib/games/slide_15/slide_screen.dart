@@ -28,7 +28,7 @@ class _SlideScreenState extends State<SlideScreen> {
     _sessionTimer.start();
     
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await TutorialDialog.checkAndShow(
+      await TutorialScreen.checkAndShow(
         context: context,
         gameId: 'slide_15',
         title: 'Slide 15',

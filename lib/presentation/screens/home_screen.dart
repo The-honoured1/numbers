@@ -74,16 +74,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.surface,
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: [
-          _TodayView(dailyGame: _dailyGame, storage: _storage, date: _formattedDate),
-          _HubView(games: _games, storage: _storage),
-          _StatsView(storage: _storage),
-        ],
-      ),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+        final shouldPop = await _showExitConfirmation(context);
+        if (shouldPop && context.mounted) {
+          // System request to exit
+          Navigator.of(context).pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: context.surface,
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: [
+            _TodayView(dailyGame: _dailyGame, storage: _storage, date: _formattedDate),
+            _HubView(games: _games, storage: _storage),
+            _StatsView(storage: _storage),
+          ],
+        ),
       bottomNavigationBar: Container(
         margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         decoration: BoxDecoration(
@@ -119,6 +129,31 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Future<bool> _showExitConfirmation(BuildContext context) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: context.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: context.border, width: 2),
+        ),
+        title: Text('Leave so soon?', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, color: context.onSurface)),
+        content: Text('Are you sure you want to exit the game? Your daily streak is waiting!', style: GoogleFonts.outfit(color: context.onSurface)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('STAY', style: GoogleFonts.outfit(fontWeight: FontWeight.w800, color: NumbersColors.green)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('EXIT', style: GoogleFonts.outfit(fontWeight: FontWeight.w800, color: context.textFaint)),
+          ),
+        ],
+      ),
+    ) ?? false;
   }
 }
 

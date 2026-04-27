@@ -31,7 +31,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
     _sessionTimer.start();
     
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await TutorialDialog.checkAndShow(
+      await TutorialScreen.checkAndShow(
         context: context,
         gameId: 'sequence',
         title: 'Sequence',
@@ -131,12 +131,11 @@ class _SequenceScreenState extends State<SequenceScreen> {
               decoration: BoxDecoration(
                 color: context.surface,
                 borderRadius: BorderRadius.circular(32),
-                border: Border.all(color: context.border, width: 2),
+                border: Border.all(color: context.border, width: 2.5),
                 boxShadow: [
                   BoxShadow(
-                    color: context.shadow.withOpacity(0.05),
-                    blurRadius: 30,
-                    offset: const Offset(0, 15),
+                    color: context.shadow,
+                    offset: const Offset(8, 8),
                   )
                 ],
               ),

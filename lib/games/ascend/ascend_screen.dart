@@ -37,7 +37,7 @@ class _AscendScreenState extends State<AscendScreen> {
     _sessionTimer.start();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await TutorialDialog.checkAndShow(
+      await TutorialScreen.checkAndShow(
         context: context,
         gameId: 'zen_ascend',
         title: 'Zen Ascend',

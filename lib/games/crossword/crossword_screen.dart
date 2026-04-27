@@ -36,7 +36,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
     _startNewLevel();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await TutorialDialog.checkAndShow(
+      await TutorialScreen.checkAndShow(
         context: context,
         gameId: 'crossword',
         title: 'Math Cross',

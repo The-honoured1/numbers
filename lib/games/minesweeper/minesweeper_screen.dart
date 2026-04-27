@@ -82,7 +82,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     _startNewGame();
     
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await TutorialDialog.checkAndShow(
+      await TutorialScreen.checkAndShow(
         context: context,
         gameId: 'minesweeper',
         title: 'Minesweeper',

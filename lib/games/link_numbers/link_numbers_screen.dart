@@ -43,7 +43,7 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     _loadLevel(widget.initialLevel);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await TutorialDialog.checkAndShow(
+      await TutorialScreen.checkAndShow(
         context: context,
         gameId: 'link',
         title: 'Number Link',

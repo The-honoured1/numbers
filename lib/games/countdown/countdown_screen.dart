@@ -38,7 +38,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
     _startTimer();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await TutorialDialog.checkAndShow(
+      await TutorialScreen.checkAndShow(
         context: context,
         gameId: 'countdown',
         title: 'Countdown',

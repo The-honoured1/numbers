@@ -35,7 +35,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     _nextQuestion();
     
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await TutorialDialog.checkAndShow(
+      await TutorialScreen.checkAndShow(
         context: context,
         gameId: 'math_puzzle',
         title: 'Math Puzzle',

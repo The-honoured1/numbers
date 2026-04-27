@@ -36,7 +36,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
     _sessionTimer.start();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await TutorialDialog.checkAndShow(
+      await TutorialScreen.checkAndShow(
         context: context,
         gameId: 'sudoku',
         title: 'Number Grid',
