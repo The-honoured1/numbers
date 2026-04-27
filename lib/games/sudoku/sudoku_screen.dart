@@ -25,6 +25,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   int? _selectedRow;
   int? _selectedCol;
   bool _notesMode = false;
+  bool _autoCheck = true;
   final Stopwatch _sessionTimer = Stopwatch();
 
 
@@ -132,14 +133,29 @@ class _SudokuScreenState extends State<SudokuScreen> {
           PopupMenuButton<String>(
             icon: Icon(Icons.settings_outlined),
             onSelected: (val) {
+              if (val == 'toggle_check') {
+                setState(() => _autoCheck = !_autoCheck);
+                return;
+              }
               setState(() {
                 _difficulty = val;
                 _startNewGame();
               });
             },
             itemBuilder: (context) => [
-              'Easy', 'Medium', 'Hard', 'Expert'
-            ].map((d) => PopupMenuItem(value: d, child: Text(d))).toList(),
+              ...['Easy', 'Medium', 'Hard', 'Expert'].map((d) => PopupMenuItem(value: d, child: Text(d))),
+              const PopupMenuDivider(),
+              PopupMenuItem(
+                value: 'toggle_check',
+                child: Row(
+                  children: [
+                    Icon(_autoCheck ? Icons.check_box_rounded : Icons.check_box_outline_blank_rounded, color: NumbersColors.yellow),
+                    const SizedBox(width: 12),
+                    const Text('Auto-Check Errors'),
+                  ],
+                ),
+              ),
+            ],
           )
         ],
       ),
@@ -182,8 +198,10 @@ class _SudokuScreenState extends State<SudokuScreen> {
                     
                     // Error highlighting: if row/col/box has same number
                     bool isError = false;
-                    if (val != 0 && !isInitial) {
+                    if (_autoCheck && val != 0 && !isInitial) {
+                      _currentGrid[r][c] = 0;
                       isError = !_logic.isValid(_currentGrid, r, c, val);
+                      _currentGrid[r][c] = val;
                     }
 
                     return GestureDetector(
@@ -235,22 +253,21 @@ class _SudokuScreenState extends State<SudokuScreen> {
                       onTap: () => _onNumberTap(num),
                       borderRadius: BorderRadius.circular(10),
                       child: Container(
-                        height: 50,
+                        height: 55,
                         decoration: BoxDecoration(
                           color: context.surface,
-                          border: Border.all(color: context.border, width: 1.5),
-                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: context.border, width: 2.5),
+                          borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: context.shadow.withOpacity(0.04),
-                              blurRadius: 8,
-                              offset: const Offset(0, 3),
+                              color: context.shadow,
+                              offset: const Offset(4, 4),
                             )
                           ],
                         ),
                         alignment: Alignment.center,
                         child: Text(num.toString(), 
-                          style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w800, color: context.onSurface)),
+                          style: GoogleFonts.outfit(fontSize: 22, fontWeight: FontWeight.w900, color: context.onSurface)),
                       ),
                     ),
                   ),

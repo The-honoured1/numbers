@@ -128,6 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+    ),
     );
   }
 
@@ -138,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: context.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: context.border, width: 2),
+          side: BorderSide(color: context.border, width: 2),
         ),
         title: Text('Leave so soon?', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, color: context.onSurface)),
         content: Text('Are you sure you want to exit the game? Your daily streak is waiting!', style: GoogleFonts.outfit(color: context.onSurface)),

@@ -169,11 +169,11 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
 
   Color _getNumberColor(int n) {
     switch (n) {
-      case 1: return const Color(0xFF2196F3);
-      case 2: return const Color(0xFF4CAF50);
-      case 3: return const Color(0xFFF44336);
-      case 4: return const Color(0xFF3F51B5);
-      case 5: return const Color(0xFF795548);
+      case 1: return NumbersColors.blue;
+      case 2: return NumbersColors.green;
+      case 3: return NumbersColors.coral;
+      case 4: return NumbersColors.purple;
+      case 5: return NumbersColors.countdown;
       case 6: return const Color(0xFF009688);
       case 7: return Colors.black;
       case 8: return Colors.grey;
@@ -236,24 +236,31 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                 ),
                 GestureDetector(
                   onTap: () => setState(() => _flagMode = !_flagMode),
-                  child: Container(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
-                      color: _flagMode ? context.onSurface : context.surface,
+                      color: _flagMode ? NumbersColors.coral : context.surface,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: context.onSurface, width: 2),
+                      border: Border.all(color: context.onSurface, width: 2.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.shadow,
+                          offset: _flagMode ? const Offset(0, 0) : const Offset(4, 4),
+                        )
+                      ],
                     ),
                     child: Row(
                       children: [
                         Icon(Icons.flag, color: _flagMode ? Colors.white : context.onSurface, size: 16),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 8),
                         Text(
-                          'FLAG',
+                          'FLAG MODE',
                           style: GoogleFonts.outfit(
-                            color: _flagMode ? context.surface : context.onSurface,
+                            color: _flagMode ? Colors.white : context.onSurface,
                             fontWeight: FontWeight.w900,
                             fontSize: 11,
-                            letterSpacing: 1,
+                            letterSpacing: 1.5,
                           ),
                         ),
                       ],
@@ -288,17 +295,18 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                         
                         return GestureDetector(
                           onTap: () => _handleCellTap(r, c),
-                          child: Container(
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
                             decoration: BoxDecoration(
                               color: cell.state == CellState.revealed 
-                                  ? (cell.isMine ? NumbersColors.coral : context.surface)
-                                  : NumbersColors.blue.withOpacity(0.1),
+                                  ? (cell.isMine ? NumbersColors.coral.withOpacity(0.2) : context.surface)
+                                  : Colors.white,
                               border: Border.all(
                                 color: context.onSurface, 
-                                width: cell.state == CellState.revealed ? 0.5 : 2,
+                                width: cell.state == CellState.revealed ? 1 : 2.5,
                               ),
                               boxShadow: cell.state == CellState.revealed ? [] : [
-                                BoxShadow(color: context.shadow, offset: const Offset(2, 2)),
+                                BoxShadow(color: context.shadow, offset: const Offset(3, 3)),
                               ],
                             ),
                             alignment: Alignment.center,
@@ -326,7 +334,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     
     if (cell.state == CellState.revealed) {
       if (cell.isMine) {
-        return Icon(Icons.brightness_7_outlined, color: Colors.orange, size: 18);
+        return Icon(Icons.brightness_7, color: NumbersColors.coral, size: 20);
       }
       if (cell.neighborMines > 0) {
         return Text(

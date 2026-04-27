@@ -2,121 +2,179 @@ import 'dart:math';
 
 enum MoveDirection { up, down, left, right }
 
+class Tile2048 {
+  final int id;
+  final int value;
+  final int row;
+  final int col;
+  final int? fromRow;
+  final int? fromCol;
+  final bool isNew;
+  final bool isMerged;
+
+  Tile2048({
+    required this.id,
+    required this.value,
+    required this.row,
+    required this.col,
+    this.fromRow,
+    this.fromCol,
+    this.isNew = false,
+    this.isMerged = false,
+  });
+
+  Tile2048 copyWith({int? value, int? row, int? col, int? fromRow, int? fromCol, bool? isNew, bool? isMerged}) {
+    return Tile2048(
+      id: id,
+      value: value ?? this.value,
+      row: row ?? this.row,
+      col: col ?? this.col,
+      fromRow: fromRow ?? this.fromRow,
+      fromCol: fromCol ?? this.fromCol,
+      isNew: isNew ?? this.isNew,
+      isMerged: isMerged ?? this.isMerged,
+    );
+  }
+}
+
 class Logic2048 {
   static const int size = 4;
-  List<List<int>> grid = List.generate(size, (_) => List.filled(size, 0));
+  List<Tile2048> tiles = [];
   int score = 0;
   bool won = false;
   bool over = false;
+  int _nextId = 0;
 
   void reset() {
-    grid = List.generate(size, (_) => List.filled(size, 0));
+    tiles = [];
     score = 0;
     won = false;
     over = false;
+    _nextId = 0;
     addRandomTile();
     addRandomTile();
   }
 
   void addRandomTile() {
+    List<Point<int>> filledPositions = tiles.map((t) => Point(t.row, t.col)).toList();
     List<Point<int>> emptyCells = [];
     for (int r = 0; r < size; r++) {
       for (int c = 0; c < size; c++) {
-        if (grid[r][c] == 0) emptyCells.add(Point(r, c));
+        if (!filledPositions.contains(Point(r, c))) {
+          emptyCells.add(Point(r, c));
+        }
       }
     }
+    
     if (emptyCells.isNotEmpty) {
       Random rand = Random();
       Point<int> cell = emptyCells[rand.nextInt(emptyCells.length)];
-      grid[cell.x][cell.y] = rand.nextDouble() < 0.9 ? 2 : 4;
+      tiles.add(Tile2048(
+        id: _nextId++,
+        value: rand.nextDouble() < 0.9 ? 2 : 4,
+        row: cell.x,
+        col: cell.y,
+        isNew: true,
+      ));
     }
   }
 
   bool move(MoveDirection dir) {
-    bool moved = false;
-    List<List<int>> newGrid = List.generate(size, (r) => List.from(grid[r]));
+    if (over) return false;
 
+    // Reset state for new move
+    tiles = tiles.map((t) => t.copyWith(isNew: false, isMerged: false, fromRow: t.row, fromCol: t.col)).toList();
+
+    bool moved = false;
+    List<Tile2048> nextTiles = [];
+    
+    List<int> r_indices = [0, 1, 2, 3];
+    List<int> c_indices = [0, 1, 2, 3];
+
+    if (dir == MoveDirection.right) c_indices = c_indices.reversed.toList();
+    if (dir == MoveDirection.down) r_indices = r_indices.reversed.toList();
+
+    // Map to track what's at each position
+    Map<Point<int>, Tile2048> grid = {
+      for (var t in tiles) Point(t.row, t.col): t
+    };
+
+    // To handle merges correctly, we process row by row or col by col
     if (dir == MoveDirection.left || dir == MoveDirection.right) {
       for (int r = 0; r < size; r++) {
-        List<int> row = newGrid[r];
-        if (dir == MoveDirection.right) row = row.reversed.toList();
-        List<int> merged = _merge(row);
-        if (dir == MoveDirection.right) merged = merged.reversed.toList();
-        if (!_listsEqual(newGrid[r], merged)) {
-          newGrid[r] = merged;
-          moved = true;
+        List<Tile2048?> row = c_indices.map((c) => grid[Point(r, c)]).toList();
+        var result = _processLine(row);
+        for (int i = 0; i < result.length; i++) {
+          var t = result[i];
+          if (t != null) {
+            int targetCol = c_indices[i];
+            if (t.col != targetCol) moved = true;
+            nextTiles.add(t.copyWith(row: r, col: targetCol));
+          }
         }
       }
     } else {
       for (int c = 0; c < size; c++) {
-        List<int> col = [newGrid[0][c], newGrid[1][c], newGrid[2][c], newGrid[3][c]];
-        if (dir == MoveDirection.down) col = col.reversed.toList();
-        List<int> merged = _merge(col);
-        if (dir == MoveDirection.down) merged = merged.reversed.toList();
-        for (int r = 0; r < size; r++) {
-          if (newGrid[r][c] != merged[r]) {
-            newGrid[r][c] = merged[r];
-            moved = true;
+        List<Tile2048?> col = r_indices.map((r) => grid[Point(r, c)]).toList();
+        var result = _processLine(col);
+        for (int i = 0; i < result.length; i++) {
+          var t = result[i];
+          if (t != null) {
+            int targetRow = r_indices[i];
+            if (t.row != targetRow) moved = true;
+            nextTiles.add(t.copyWith(row: targetRow, col: c));
           }
         }
       }
     }
 
     if (moved) {
-      grid = newGrid;
+      tiles = nextTiles;
       addRandomTile();
       _checkGameState();
     }
+
     return moved;
   }
 
-  List<int> _merge(List<int> line) {
-    List<int> nonZero = line.where((x) => x != 0).toList();
-    List<int> result = [];
-    for (int i = 0; i < nonZero.length; i++) {
-      if (i + 1 < nonZero.length && nonZero[i] == nonZero[i + 1]) {
-        int newVal = nonZero[i] * 2;
-        result.add(newVal);
+  List<Tile2048?> _processLine(List<Tile2048?> line) {
+    List<Tile2048> filtered = line.whereType<Tile2048>().toList();
+    List<Tile2048?> result = List.filled(size, null);
+    
+    int target = 0;
+    for (int i = 0; i < filtered.length; i++) {
+      if (i + 1 < filtered.length && filtered[i].value == filtered[i+1].value) {
+        // Merge
+        int newVal = filtered[i].value * 2;
         score += newVal;
         if (newVal == 2048) won = true;
+        
+        // We take the ID of the first tile and mark it as merged
+        result[target] = filtered[i].copyWith(value: newVal, isMerged: true);
+        target++;
         i++;
       } else {
-        result.add(nonZero[i]);
+        result[target] = filtered[i];
+        target++;
       }
-    }
-    while (result.length < size) {
-      result.add(0);
     }
     return result;
   }
 
-  bool _listsEqual(List<int> a, List<int> b) {
-    for (int i = 0; i < a.length; i++) {
-      if (a[i] != b[i]) return false;
-    }
-    return true;
-  }
-
   void _checkGameState() {
-    bool canMove = false;
+    if (tiles.length < size * size) return;
+    
+    Map<Point<int>, int> grid = {
+        for (var t in tiles) Point(t.row, t.col): t.value
+    };
+
     for (int r = 0; r < size; r++) {
       for (int c = 0; c < size; c++) {
-        if (grid[r][c] == 0) return;
-        if (r + 1 < size && grid[r][c] == grid[r + 1][c]) return;
-        if (c + 1 < size && grid[r][c] == grid[r][c + 1]) return;
+        int val = grid[Point(r, c)]!;
+        if (r + 1 < size && val == grid[Point(r + 1, c)]) return;
+        if (c + 1 < size && val == grid[Point(r, c + 1)]) return;
       }
     }
     over = true;
-  }
-
-  void revive() {
-    for (int r = 0; r < size; r++) {
-      for (int c = 0; c < size; c++) {
-        if (grid[r][c] == 2 || grid[r][c] == 4) {
-          grid[r][c] = 0;
-        }
-      }
-    }
-    over = false;
   }
 }

@@ -46,158 +46,121 @@ class _Screen2048State extends State<Screen2048> {
 
   void _handleSwipe(MoveDirection dir) {
     setState(() {
-      _logic.move(dir);
+      final moved = _logic.move(dir);
+      if (moved) {
+        if (_logic.won) _showResult(true);
+        else if (_logic.over) _showResult(false);
+      }
     });
-    StorageService().saveHighScore('2048', _logic.score);
-    if (_logic.over) _showGameOver();
-    if (_logic.won) _showWinDialog();
   }
 
-  void _showWinDialog() {
-    AdService().showInterstitialAd();
+  void _showResult(bool won) {
+    if (won) AdService().showInterstitialAd();
+    
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => GameResultDialog(
-        title: 'Legendary!',
-        message: 'You reached the 2048 tile. A master of the grid!',
-        buttonText: 'CONTINUE PLAYING',
-        onButtonPressed: () {
-          Navigator.pop(context);
-        },
-      ),
-    );
-  }
-
-  void _showGameOver() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => GameResultDialog(
-        title: 'Game Over',
-        message: 'No moves left! Your final score: ${_logic.score}',
-        buttonText: 'TRY AGAIN',
-        color: NumbersColors.countdown,
-        icon: Icons.grid_off_outlined,
-        onRevive: _revivesUsed < 2 ? () {
+        title: won ? 'Legendary!' : 'No More Moves',
+        message: won ? 'You merged your way to the 2048 tile!' : 'The grid is locked. Final Score: ${_logic.score}',
+        buttonText: won ? 'PLAY AGAIN' : 'TRY AGAIN',
+        color: NumbersColors.blue,
+        icon: won ? Icons.emoji_events_rounded : Icons.lock_rounded,
+        onRevive: won ? null : () {
           AdService().showRewardedAd(() {
             Navigator.pop(context);
             setState(() {
               _revivesUsed++;
-              _logic.revive();
+              // Simplified revive for 2048 - clear small tiles
+              _logic.tiles = _logic.tiles.where((t) => t.value > 4).toList();
+              _logic.over = false;
+              _logic.addRandomTile();
             });
           });
-        } : null,
+        },
         onButtonPressed: () {
           Navigator.pop(context);
-          setState(() {
-            _revivesUsed = 0;
-            _logic.reset();
-          });
+          setState(() => _logic.reset());
         },
       ),
     );
-  }
-
-  Color _getTileColor(int value) {
-    switch (value) {
-      case 2: return const Color(0xFFEEE4DA);
-      case 4: return const Color(0xFFEDE0C8);
-      case 8: return const Color(0xFFF2B179);
-      case 16: return const Color(0xFFF59563);
-      case 32: return const Color(0xFFF67C5F);
-      case 64: return const Color(0xFFF65E3B);
-      case 128: return const Color(0xFFEDCF72);
-      case 256: return const Color(0xFFEDCC61);
-      case 512: return const Color(0xFFEDC850);
-      case 1024: return const Color(0xFFEDC53F);
-      case 2048: return const Color(0xFFEDC22E);
-      default: return const Color(0xFFCDC1B4);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: context.surface,
       appBar: AppBar(
-        title: const Text('2048', style: TextStyle(fontWeight: FontWeight.bold)),
-        actions: [
-          IconButton(onPressed: () => setState(() {
-            _revivesUsed = 0;
-            _logic.reset();
-          }), icon: Icon(Icons.refresh)),
-        ],
+        title: Text('2048', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('SCORE', style: GoogleFonts.outfit(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12, letterSpacing: 1.5)),
-                    Text('${_logic.score}', style: GoogleFonts.outfit(fontSize: 32, fontWeight: FontWeight.w900)),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text('BEST', style: GoogleFonts.outfit(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12, letterSpacing: 1.5)),
-                    Text('${StorageService().getHighScore('2048')}', style: GoogleFonts.outfit(fontSize: 32, fontWeight: FontWeight.w900, color: NumbersColors.blue)),
-                  ],
-                ),
-              ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _StatBox(label: 'SCORE', value: '${_logic.score}', color: NumbersColors.blue),
+                  _StatBox(label: 'BEST', value: '${StorageService().getHighScore('2048')}', color: context.textFaint),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: Center(
-              child: GestureDetector(
-                onVerticalDragEnd: (details) {
-                  if (details.primaryVelocity! < -100) _handleSwipe(MoveDirection.up);
-                  if (details.primaryVelocity! > 100) _handleSwipe(MoveDirection.down);
-                },
-                onHorizontalDragEnd: (details) {
-                  if (details.primaryVelocity! < -100) _handleSwipe(MoveDirection.left);
-                  if (details.primaryVelocity! > 100) _handleSwipe(MoveDirection.right);
-                },
-                child: AspectRatio(
-                  aspectRatio: 1,
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: GestureDetector(
+                  onVerticalDragEnd: (details) {
+                    if (details.primaryVelocity! < -100) _handleSwipe(MoveDirection.up);
+                    if (details.primaryVelocity! > 100) _handleSwipe(MoveDirection.down);
+                  },
+                  onHorizontalDragEnd: (details) {
+                    if (details.primaryVelocity! < -100) _handleSwipe(MoveDirection.left);
+                    if (details.primaryVelocity! > 100) _handleSwipe(MoveDirection.right);
+                  },
                   child: Container(
-                    margin: const EdgeInsets.all(16),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFBBADA0),
-                      borderRadius: BorderRadius.circular(8),
+                      color: context.surface,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: context.border, width: 3),
+                      boxShadow: [
+                        BoxShadow(color: context.shadow, offset: const Offset(8, 8)),
+                      ],
                     ),
-                    child: GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        mainAxisSpacing: 12,
-                        crossAxisSpacing: 12,
-                      ),
-                      itemCount: 16,
-                      itemBuilder: (context, index) {
-                        int r = index ~/ 4;
-                        int c = index % 4;
-                        int val = _logic.grid[r][c];
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: _getTileColor(val),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            val == 0 ? '' : '$val',
-                            style: TextStyle(
-                              fontSize: val > 100 ? 20 : 28,
-                              fontWeight: FontWeight.bold,
-                              color: val <= 4 ? const Color(0xFF776E65) : Colors.white,
-                            ),
-                          ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final cellSize = (constraints.maxWidth - (3 * 12)) / 4;
+                        return Stack(
+                          children: [
+                            // Background Grid
+                            for (int i = 0; i < 16; i++)
+                              Positioned(
+                                left: (i % 4) * (cellSize + 12),
+                                top: (i ~/ 4) * (cellSize + 12),
+                                child: Container(
+                                  width: cellSize,
+                                  height: cellSize,
+                                  decoration: BoxDecoration(
+                                    color: context.border.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            // Animated Tiles
+                            ..._logic.tiles.map((tile) {
+                              return AnimatedPositioned(
+                                key: ValueKey(tile.id),
+                                duration: const Duration(milliseconds: 150),
+                                curve: Curves.easeInOut,
+                                left: tile.col * (cellSize + 12),
+                                top: tile.row * (cellSize + 12),
+                                child: _TileWidget(tile: tile, size: cellSize),
+                              );
+                            }),
+                          ],
                         );
                       },
                     ),
@@ -205,12 +168,101 @@ class _Screen2048State extends State<Screen2048> {
                 ),
               ),
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(32.0),
-            child: Text('Swipe to move tiles and merge same numbers!', 
-              textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
-          ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Text(
+                'SWIPE TO MERGE TILES',
+                style: GoogleFonts.outfit(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  color: context.textFaint,
+                  letterSpacing: 2,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TileWidget extends StatelessWidget {
+  final Tile2048 tile;
+  final double size;
+
+  const _TileWidget({required this.tile, required this.size});
+
+  Color _getTileColor(int value) {
+    switch (value) {
+      case 2: return const Color(0xFFE2E8F0);
+      case 4: return const Color(0xFFCBD5E1);
+      case 8: return const Color(0xFF94A3B8);
+      case 16: return const Color(0xFF64748B);
+      case 32: return const Color(0xFF475569);
+      case 64: return const Color(0xFF334155);
+      case 128: return const Color(0xFF1E293B);
+      case 256: return const Color(0xFF0F172A);
+      case 512: return const Color(0xFF020617);
+      case 1024: return const Color(0xFFEAB308);
+      case 2048: return const Color(0xFFFACC15);
+      default: return Colors.black;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _getTileColor(tile.value);
+    final isDark = tile.value > 8;
+
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.black, width: 2),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.2), offset: const Offset(2, 2)),
+        ],
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        '${tile.value}',
+        style: GoogleFonts.outfit(
+          fontSize: size * 0.4,
+          fontWeight: FontWeight.w900,
+          color: isDark ? Colors.white : Colors.black,
+        ),
+      ),
+    ).animate(target: tile.isMerged ? 1 : 0).scale(begin: const Offset(1, 1), end: const Offset(1.15, 1.15), duration: 100.ms, curve: Curves.easeOut).then().scale(begin: const Offset(1.15, 1.15), end: const Offset(1, 1), duration: 100.ms);
+  }
+}
+
+class _StatBox extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+  const _StatBox({required this.label, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      decoration: BoxDecoration(
+        color: context.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: context.border, width: 2.5),
+        boxShadow: [
+          BoxShadow(color: context.shadow, offset: const Offset(4, 4)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1.5)),
+          Text(value, style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: color)),
         ],
       ),
     );
