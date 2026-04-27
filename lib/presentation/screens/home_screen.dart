@@ -142,21 +142,7 @@ class _TodayView extends StatelessWidget {
                 children: [
                   Icon(Icons.blur_on, color: context.onSurface, size: 32),
                   Text('The Numbers Games', style: GoogleFonts.unifrakturMaguntia(fontSize: 26, fontWeight: FontWeight.w700, color: context.onSurface)),
-                  IconButton(
-                    icon: Icon(
-                      StorageService().themeNotifier.value == ThemeMode.dark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-                      color: context.onSurface,
-                      size: 28,
-                    ),
-                    onPressed: () {
-                      final current = StorageService().themeNotifier.value;
-                      if (current == ThemeMode.dark) {
-                        StorageService().setThemeMode(ThemeMode.light);
-                      } else {
-                        StorageService().setThemeMode(ThemeMode.dark);
-                      }
-                    },
-                  ),
+                  const SizedBox(width: 32),
                 ],
               ),
             ),

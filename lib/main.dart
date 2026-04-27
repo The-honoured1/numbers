@@ -21,18 +21,12 @@ class NumbersApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: StorageService().themeNotifier,
-      builder: (context, mode, _) {
-        return MaterialApp(
-          title: 'Numbers',
-          debugShowCheckedModeBanner: false,
-          theme: NumbersTheme.lightTheme,
-          darkTheme: NumbersTheme.darkTheme,
-          themeMode: mode,
-          home: const HomeScreen(),
-        );
-      },
+    return MaterialApp(
+      title: 'Numbers',
+      debugShowCheckedModeBanner: false,
+      theme: NumbersTheme.lightTheme,
+      themeMode: ThemeMode.light,
+      home: const HomeScreen(),
     );
   }
 }
