@@ -130,7 +130,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
   }
 
   void _showResult(bool won, {int? r, int? c}) {
-    if (won && (_currentLevel + 1) % 5 == 0) AdService().showInterstitialAd();
+    if (won && (_currentLevel + 1) % 3 == 0) AdService().showInterstitialAd();
     
     showDialog(
       context: context,
@@ -169,12 +169,12 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
 
   Color _getNumberColor(int n) {
     switch (n) {
-      case 1: return NumbersColors.blue;
-      case 2: return NumbersColors.green;
-      case 3: return NumbersColors.coral;
-      case 4: return NumbersColors.purple;
-      case 5: return NumbersColors.countdown;
-      case 6: return const Color(0xFF009688);
+      case 1: return const Color(0xFF2563EB); // Royal Blue
+      case 2: return const Color(0xFF16A34A); // Emerald Green
+      case 3: return const Color(0xFFDC2626); // Red
+      case 4: return const Color(0xFF7C3AED); // Purple
+      case 5: return const Color(0xFF991B1B); // Maroon
+      case 6: return const Color(0xFF0D9488); // Teal
       case 7: return Colors.black;
       case 8: return Colors.grey;
       default: return context.onSurface;
@@ -182,14 +182,12 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
   }
 
   Color _getCellBgColor(int n) {
-    if (n == 0) return Colors.white;
-    return _getNumberColor(n).withOpacity(0.05);
+    return const Color(0xFFE2E8F0); // Light Slate for revealed
   }
 
   Color _getHiddenColor(int r, int c) {
-    // A nice Zinc/Slate pattern
     bool isDark = (r + c) % 2 == 0;
-    return isDark ? const Color(0xFFF8FAFC) : Colors.white;
+    return isDark ? const Color(0xFFCBD5E1) : const Color(0xFFD1D5DB);
   }
 
   @override
@@ -304,14 +302,14 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                   aspectRatio: _levelConfig.cols / _levelConfig.rows,
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: context.border, width: 2),
-                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: context.border, width: 1.5),
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: _levelConfig.cols,
+                        childAspectRatio: 1,
                       ),
                       itemCount: _levelConfig.rows * _levelConfig.cols,
                       itemBuilder: (context, index) {
@@ -322,27 +320,20 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                         return GestureDetector(
                           onTap: () => _handleCellTap(r, c),
                           child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.fastOutSlowIn,
+                            duration: const Duration(milliseconds: 200),
                             decoration: BoxDecoration(
                               color: cell.state == CellState.revealed 
-                                  ? (cell.isMine ? NumbersColors.coral.withOpacity(0.4) : _getCellBgColor(cell.neighborMines))
+                                  ? (cell.isMine ? const Color(0xFFFECACA) : _getCellBgColor(cell.neighborMines))
                                   : _getHiddenColor(r, c),
                               border: Border.all(
-                                color: context.onSurface, 
-                                width: cell.state == CellState.revealed ? 1.5 : 3,
+                                color: context.border.withOpacity(0.2), 
+                                width: 0.5,
                               ),
-                              boxShadow: cell.state == CellState.revealed ? [] : [
-                                BoxShadow(color: context.shadow, offset: const Offset(4, 4)),
-                              ],
                             ),
                             alignment: Alignment.center,
                             child: _buildCellContent(cell),
                           ).animate(target: cell.state == CellState.revealed ? 1 : 0)
-                            .scale(begin: const Offset(1, 1), end: const Offset(1.1, 1.1), duration: 150.ms)
-                            .then()
-                            .scale(begin: const Offset(1.1, 1.1), end: const Offset(1, 1), duration: 150.ms)
-                            .shimmer(duration: 400.ms, color: Colors.white.withOpacity(0.2)),
+                            .shimmer(duration: 400.ms, color: Colors.white.withOpacity(0.1)),
                         );
                       },
                     ),
@@ -364,15 +355,15 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
       case CellState.flagged:
         return Icon(
           Icons.flag_rounded, 
-          color: NumbersColors.coral, 
-          size: 22,
+          color: const Color(0xFFDC2626), 
+          size: 18,
         ).animate().scale(duration: 200.ms, curve: Curves.easeOutBack);
       case CellState.revealed:
         if (cell.isMine) {
           return Icon(
-            Icons.brightness_7_rounded, 
-            color: context.onSurface, 
-            size: 24,
+            Icons.brightness_high_rounded, 
+            color: Colors.black, 
+            size: 20,
           ).animate().shake();
         }
         if (cell.neighborMines == 0) return const SizedBox.shrink();
@@ -382,14 +373,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
           style: GoogleFonts.outfit(
             color: _getNumberColor(cell.neighborMines),
             fontWeight: FontWeight.w900,
-            fontSize: 24,
-            shadows: [
-              Shadow(
-                color: _getNumberColor(cell.neighborMines).withOpacity(0.3),
-                offset: const Offset(1.5, 1.5),
-                blurRadius: 4,
-              ),
-            ],
+            fontSize: 22,
           ),
         ).animate().fadeIn(duration: 200.ms).scale(begin: const Offset(0.5, 0.5), curve: Curves.easeOutBack);
     }

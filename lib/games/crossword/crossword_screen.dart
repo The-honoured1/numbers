@@ -161,7 +161,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
             icon: Icons.auto_awesome,
             onButtonPressed: () {
               Navigator.pop(context);
-              if ((_level + 1) % 5 == 0) AdService().showInterstitialAd();
+              if ((_level + 1) % 3 == 0) AdService().showInterstitialAd();
             },
           ),
         ).then((_) {
@@ -187,20 +187,51 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'FILL THE GRID TO SATISFY ALL EQUATIONS',
-                  style: GoogleFonts.inter(letterSpacing: 1.5, fontSize: 9, fontWeight: FontWeight.w800, color: context.textFaint),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'LEVEL ${_level + 1}',
+                      style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.textFaint),
+                    ),
+                    Text(
+                      'MATH CROSS',
+                      style: GoogleFonts.playfairDisplay(fontSize: 24, fontWeight: FontWeight.w900, letterSpacing: -0.5),
+                    ),
+                  ],
                 ),
-                Row(
-                  children: List.generate(3, (i) => Icon(
-                    i < _lives ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                    color: NumbersColors.coral,
-                    size: 18,
-                  )),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: context.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: context.border, width: 2.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: context.shadow,
+                        blurRadius: 0,
+                        offset: const Offset(4, 4),
+                      )
+                    ],
+                  ),
+                  child: Row(
+                    children: List.generate(3, (i) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
+                      child: Icon(
+                        i < _lives ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                        color: i < _lives ? NumbersColors.coral : context.textFaint.withOpacity(0.3),
+                        size: 20,
+                      ).animate(target: i == _lives && _isWrong ? 1 : 0)
+                        .shake(duration: 500.ms, curve: Curves.easeInOut)
+                        .scale(begin: const Offset(1, 1), end: const Offset(1.3, 1.3), duration: 200.ms, curve: Curves.easeOutBack)
+                        .then()
+                        .scale(begin: const Offset(1.3, 1.3), end: const Offset(1, 1), duration: 200.ms),
+                    )),
+                  ),
                 ),
               ],
             ),
@@ -220,14 +251,23 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: context.surface,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: context.border, width: 2),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: _isWrong ? NumbersColors.coral : context.border, 
+                            width: _isWrong ? 4 : 2.5,
+                          ),
                           boxShadow: [
-                            BoxShadow(color: context.onSurface.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+                            BoxShadow(
+                              color: _isWrong ? NumbersColors.coral.withOpacity(0.2) : context.shadow, 
+                              blurRadius: _isWrong ? 20 : 0, 
+                              offset: _isWrong ? Offset.zero : const Offset(8, 8),
+                            ),
                           ],
                         ),
                         child: _buildGrid(),
-                      ).animate().fadeIn(duration: 800.ms).moveY(begin: 20, end: 0),
+                      ).animate(target: _isWrong ? 1 : 0)
+                        .shake(duration: 400.ms, hz: 6)
+                        .shimmer(duration: 400.ms, color: NumbersColors.coral.withOpacity(0.2)),
                     ),
                   ),
                 ),

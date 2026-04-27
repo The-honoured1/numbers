@@ -28,7 +28,7 @@ class _AscendScreenState extends State<AscendScreen> {
   Timer? _timer;
   final Stopwatch _sessionTimer = Stopwatch();
   int _revivesUsed = 0;
-  bool _isWrong = false;
+  int? _wrongNum;
 
   @override
   void initState() {
@@ -98,15 +98,14 @@ class _AscendScreenState extends State<AscendScreen> {
         }
       }
     } else {
-      // Wrong tap feedback
-      _showWrongFeedback();
+      _showWrongFeedback(num);
     }
   }
 
-  void _showWrongFeedback() {
-    setState(() => _isWrong = true);
-    Future.delayed(const Duration(milliseconds: 200), () {
-      if (mounted) setState(() => _isWrong = false);
+  void _showWrongFeedback(int num) {
+    setState(() => _wrongNum = num);
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (mounted) setState(() => _wrongNum = null);
     });
   }
 
@@ -161,9 +160,8 @@ class _AscendScreenState extends State<AscendScreen> {
       appBar: AppBar(
         title: Text('ZEN ASCEND', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),
-      body: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        color: _isWrong ? NumbersColors.coral.withOpacity(0.1) : context.surface,
+      body: Container(
+        color: context.surface,
         child: SafeArea(
           child: SingleChildScrollView(
             child: Column(
@@ -203,11 +201,15 @@ class _AscendScreenState extends State<AscendScreen> {
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     decoration: BoxDecoration(
-                      color: isSolved ? NumbersColors.green.withOpacity(0.15) : context.surface,
+                      color: isSolved 
+                          ? NumbersColors.green.withOpacity(0.15) 
+                          : (num == _wrongNum ? NumbersColors.coral.withOpacity(0.15) : context.surface),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: isSolved ? NumbersColors.green : context.border,
-                        width: 2.5,
+                        color: isSolved 
+                            ? NumbersColors.green 
+                            : (num == _wrongNum ? NumbersColors.coral : context.border),
+                        width: (isSolved || num == _wrongNum) ? 3.5 : 2.5,
                       ),
                       boxShadow: [
                         BoxShadow(
@@ -222,10 +224,13 @@ class _AscendScreenState extends State<AscendScreen> {
                       style: GoogleFonts.outfit(
                         fontSize: 28,
                         fontWeight: FontWeight.w900,
-                        color: isSolved ? NumbersColors.green : context.onSurface,
+                        color: isSolved 
+                            ? NumbersColors.green 
+                            : (num == _wrongNum ? NumbersColors.coral : context.onSurface),
                       ),
                     ),
-                  ).animate(key: ValueKey('tile_$num')).fadeIn().scale(),
+                  ).animate(target: num == _wrongNum ? 1 : 0)
+                    .shake(duration: 400.ms, hz: 6),
                 );
               },
             ),

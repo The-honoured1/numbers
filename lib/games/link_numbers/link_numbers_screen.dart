@@ -185,7 +185,7 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
     if (allValuesLinked) {
       _storage.markDailyCompleted('link');
       _storage.saveHighScore('link_level', _currentLevel + 1);
-      if ((_currentLevel + 1) % 5 == 0) AdService().showInterstitialAd();
+      if ((_currentLevel + 1) % 3 == 0) AdService().showInterstitialAd();
       showDialog(
         context: context,
         barrierDismissible: false,
