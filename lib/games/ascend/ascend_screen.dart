@@ -25,12 +25,16 @@ class _AscendScreenState extends State<AscendScreen> {
   int _timeLeft = 10;
   Timer? _timer;
   final Stopwatch _sessionTimer = Stopwatch();
+  int _revivesUsed = 0;
 
   @override
   void initState() {
     super.initState();
     _sessionTimer.start();
-    _startNewRound();
+    // Intercept game start with an ad
+    AdService().showInterstitialAd(onClosed: () {
+      if (mounted) _startNewRound();
+    });
   }
 
   void _startNewRound() {
@@ -72,7 +76,15 @@ class _AscendScreenState extends State<AscendScreen> {
       if (_nextIdx == _sorted.length) {
         _timer?.cancel();
         _round++;
-        _startNewRound();
+        
+        // Show interstitial ad every 3 level milestones, delaying next round
+        if (_round > 1 && (_round - 1) % 3 == 0) {
+          AdService().showInterstitialAd(onClosed: () {
+            if (mounted) _startNewRound();
+          });
+        } else {
+          _startNewRound();
+        }
       }
     } else {
       setState(() {
@@ -85,7 +97,6 @@ class _AscendScreenState extends State<AscendScreen> {
     _timer?.cancel();
     StorageService().saveHighScore('ascend', _score);
     StorageService().markDailyCompleted('ascend');
-    AdService().showInterstitialAd();
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -95,9 +106,23 @@ class _AscendScreenState extends State<AscendScreen> {
         buttonText: 'TRY AGAIN',
         color: NumbersColors.green,
         icon: Icons.timer_off_rounded,
+        onRevive: _revivesUsed < 2 ? () {
+          AdService().showRewardedAd(() {
+            Navigator.pop(context);
+            setState(() {
+              _revivesUsed++;
+              _timeLeft = 10; // Give some time back
+            });
+            _startTimer();
+          });
+        } : null,
         onButtonPressed: () {
           Navigator.pop(context);
-          setState(() => _score = 0);
+          setState(() {
+            _score = 0;
+            _round = 1;
+            _revivesUsed = 0;
+          });
           _startNewRound();
         },
       ),

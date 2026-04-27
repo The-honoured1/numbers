@@ -1,6 +1,7 @@
 import 'dart:math';
 
 class SlideLogic {
+
   /// Generate a solvable 15-puzzle by shuffling from the solved state.
   /// This guarantees the puzzle is always solvable.
   List<int> generate() {

@@ -23,13 +23,17 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   int _timeLeft = 10;
   Timer? _timer;
   final Stopwatch _sessionTimer = Stopwatch();
+  int _revivesUsed = 0;
 
   @override
   void initState() {
     super.initState();
     StorageService().incrementPlayCount('math_puzzle');
     _sessionTimer.start();
-    _nextQuestion();
+    // Intercept game start with an ad
+    AdService().showInterstitialAd(onClosed: () {
+      if (mounted) _nextQuestion();
+    });
   }
 
   @override
@@ -68,14 +72,17 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
       setState(() {
         _score += 10 + _timeLeft;
         _level++;
-
-        // Show interstitial ad every 5 level milestones
-        if (_level > 1 && (_level - 1) % 5 == 0) {
-          AdService().showInterstitialAd();
-        }
       });
       StorageService().saveHighScore('math_puzzle', _score);
-      _nextQuestion();
+      
+      // Show interstitial ad every 3 level milestones, delaying next question
+      if (_level > 1 && (_level - 1) % 3 == 0) {
+        AdService().showInterstitialAd(onClosed: () {
+          if (mounted) _nextQuestion();
+        });
+      } else {
+        _nextQuestion();
+      }
     } else {
       StorageService().markDailyCompleted('math_puzzle');
       _timer?.cancel();
@@ -93,17 +100,21 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         buttonText: 'RESTART GAME',
         color: NumbersColors.green,
         icon: Icons.error_outline,
-        onRevive: () {
+        onRevive: _revivesUsed < 2 ? () {
           AdService().showRewardedAd(() {
             Navigator.pop(context);
+            setState(() {
+              _revivesUsed++;
+            });
             _nextQuestion(); // Continue from where they left off
           });
-        },
+        } : null,
         onButtonPressed: () {
           Navigator.pop(context);
           setState(() {
             _score = 0;
             _level = 1;
+            _revivesUsed = 0;
           });
           _nextQuestion();
         },

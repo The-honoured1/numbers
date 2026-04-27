@@ -17,6 +17,7 @@ class Screen2048 extends StatefulWidget {
 class _Screen2048State extends State<Screen2048> {
   final Logic2048 _logic = Logic2048();
   final Stopwatch _sessionTimer = Stopwatch();
+  int _revivesUsed = 0;
 
   @override
   void initState() {
@@ -68,17 +69,21 @@ class _Screen2048State extends State<Screen2048> {
         buttonText: 'TRY AGAIN',
         color: NumbersColors.countdown,
         icon: Icons.grid_off_outlined,
-        onRevive: () {
+        onRevive: _revivesUsed < 2 ? () {
           AdService().showRewardedAd(() {
             Navigator.pop(context);
             setState(() {
+              _revivesUsed++;
               _logic.revive();
             });
           });
-        },
+        } : null,
         onButtonPressed: () {
           Navigator.pop(context);
-          setState(() => _logic.reset());
+          setState(() {
+            _revivesUsed = 0;
+            _logic.reset();
+          });
         },
       ),
     );
@@ -107,7 +112,10 @@ class _Screen2048State extends State<Screen2048> {
       appBar: AppBar(
         title: const Text('2048', style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
-          IconButton(onPressed: () => setState(() => _logic.reset()), icon: const Icon(Icons.refresh)),
+          IconButton(onPressed: () => setState(() {
+            _revivesUsed = 0;
+            _logic.reset();
+          }), icon: const Icon(Icons.refresh)),
         ],
       ),
       body: Column(

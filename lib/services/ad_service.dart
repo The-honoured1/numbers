@@ -70,8 +70,9 @@ class AdService {
     );
   }
 
-  void showInterstitialAd() {
+  void showInterstitialAd({VoidCallback? onClosed}) {
     if (_interstitialAd == null) {
+      if (onClosed != null) onClosed();
       _loadInterstitialAd();
       return;
     }
@@ -80,11 +81,13 @@ class AdService {
       onAdDismissedFullScreenContent: (ad) {
         ad.dispose();
         _interstitialAd = null;
+        if (onClosed != null) onClosed();
         _loadInterstitialAd();
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
         ad.dispose();
         _interstitialAd = null;
+        if (onClosed != null) onClosed();
         _loadInterstitialAd();
       },
     );
