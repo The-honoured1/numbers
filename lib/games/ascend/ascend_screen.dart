@@ -24,7 +24,7 @@ class _AscendScreenState extends State<AscendScreen> {
   int _nextIdx = 0;
   int _score = 0;
   int _round = 1;
-  int _timeLeft = 10;
+  int _timeLeft = 15;
   Timer? _timer;
   final Stopwatch _sessionTimer = Stopwatch();
   int _revivesUsed = 0;
@@ -44,6 +44,7 @@ class _AscendScreenState extends State<AscendScreen> {
         description: 'Tap the sequence of numbers in strictly ascending order as fast as you can. Incorrect taps incur a time penalty.',
         icon: Icons.keyboard_double_arrow_up_rounded,
       );
+      _startNewRound();
     });
   }
 
@@ -53,7 +54,7 @@ class _AscendScreenState extends State<AscendScreen> {
       _numbers = _logic.generate(12, 100 * _round)..shuffle();
       _sorted = List.from(_numbers)..sort();
       _nextIdx = 0;
-      _timeLeft = 10;
+      _timeLeft = 15;
     });
     _startTimer();
   }

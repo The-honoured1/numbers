@@ -181,6 +181,10 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     }
   }
 
+  Color _getHiddenColor(int r, int c) {
+    return (r + c) % 2 == 0 ? Colors.white : const Color(0xFFF1F5F9);
+  }
+
   @override
   Widget build(BuildContext context) {
     final flagCount = _game.board.expand((r) => r).where((c) => c.state == CellState.flagged).length;
@@ -296,11 +300,12 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                         return GestureDetector(
                           onTap: () => _handleCellTap(r, c),
                           child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 150),
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.easeInOut,
                             decoration: BoxDecoration(
                               color: cell.state == CellState.revealed 
-                                  ? (cell.isMine ? NumbersColors.coral.withOpacity(0.2) : context.surface)
-                                  : Colors.white,
+                                  ? (cell.isMine ? NumbersColors.coral.withOpacity(0.3) : Colors.white)
+                                  : _getHiddenColor(r, c),
                               border: Border.all(
                                 color: context.onSurface, 
                                 width: cell.state == CellState.revealed ? 1 : 2.5,
@@ -311,7 +316,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                             ),
                             alignment: Alignment.center,
                             child: _buildCellContent(cell),
-                          ),
+                          ).animate(target: cell.state == CellState.revealed ? 1 : 0).scale(begin: const Offset(1, 1), end: const Offset(1.05, 1.05), duration: 100.ms).then().scale(begin: const Offset(1.05, 1.05), end: const Offset(1, 1), duration: 100.ms),
                         );
                       },
                     ),
@@ -327,27 +332,36 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
   }
 
   Widget _buildCellContent(MineCell cell) {
-    if (cell.state == CellState.flagged) {
-      return Icon(Icons.flag, color: NumbersColors.countdown, size: 16)
-          .animate().scale(duration: 200.ms, curve: Curves.easeOutBack);
-    }
-    
-    if (cell.state == CellState.revealed) {
-      if (cell.isMine) {
-        return Icon(Icons.brightness_7, color: NumbersColors.coral, size: 20);
-      }
-      if (cell.neighborMines > 0) {
+    switch (cell.state) {
+      case CellState.hidden:
+        return const SizedBox.shrink();
+      case CellState.flagged:
+        return Icon(
+          Icons.flag_rounded, 
+          color: NumbersColors.coral, 
+          size: 22,
+        ).animate().scale(duration: 200.ms, curve: Curves.backOut);
+      case CellState.revealed:
+        if (cell.isMine) {
+          return Icon(
+            Icons.brightness_7_rounded, 
+            color: NumbersColors.onSurface, 
+            size: 24,
+          ).animate().shake();
+        }
+        if (cell.neighborMines == 0) return const SizedBox.shrink();
+        
         return Text(
           '${cell.neighborMines}',
           style: GoogleFonts.outfit(
-            fontWeight: FontWeight.w900,
-            fontSize: 16,
             color: _getNumberColor(cell.neighborMines),
+            fontWeight: FontWeight.w900,
+            fontSize: 22,
+            shadows: [
+              if (Theme.of(context).brightness == Brightness.light)
+                Shadow(color: _getNumberColor(cell.neighborMines).withOpacity(0.2), offset: const Offset(1, 1), blurRadius: 2),
+            ],
           ),
         );
-      }
-    }
-    
-    return const SizedBox.shrink();
   }
 }

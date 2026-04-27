@@ -48,6 +48,9 @@ class _Screen2048State extends State<Screen2048> {
     setState(() {
       final moved = _logic.move(dir);
       if (moved) {
+        if (_logic.score > StorageService().getHighScore('2048')) {
+          StorageService().saveHighScore('2048', _logic.score);
+        }
         if (_logic.won) _showResult(true);
         else if (_logic.over) _showResult(false);
       }
