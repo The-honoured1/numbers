@@ -7,6 +7,7 @@ import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'package:numbers/services/storage_service.dart';
 import 'package:numbers/services/ad_service.dart';
 import 'ascend_logic.dart';
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 
 class AscendScreen extends StatefulWidget {
   const AscendScreen({super.key});
@@ -15,7 +16,6 @@ class AscendScreen extends StatefulWidget {
   State<AscendScreen> createState() => _AscendScreenState();
 }
 
-import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 
 class _AscendScreenState extends State<AscendScreen> {
   final AscendLogic _logic = AscendLogic();

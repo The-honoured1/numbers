@@ -7,6 +7,7 @@ import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'package:numbers/services/storage_service.dart';
 import 'package:numbers/services/ad_service.dart';
 import 'puzzle_logic.dart';
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 
 class PuzzleScreen extends StatefulWidget {
   const PuzzleScreen({super.key});
@@ -15,7 +16,6 @@ class PuzzleScreen extends StatefulWidget {
   State<PuzzleScreen> createState() => _PuzzleScreenState();
 }
 
-import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 
 class _PuzzleScreenState extends State<PuzzleScreen> {
   final MathPuzzleLogic _logic = MathPuzzleLogic();

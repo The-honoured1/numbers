@@ -6,6 +6,7 @@ import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'package:numbers/services/storage_service.dart';
 import 'package:numbers/services/ad_service.dart';
 import 'minesweeper_logic.dart';
+import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 
 /// Level config: returns (rows, cols, mines) for a given level 1–500
 class MinesweeperLevel {
@@ -56,7 +57,6 @@ class MinesweeperLevel {
   }
 }
 
-import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 
 class MinesweeperScreen extends StatefulWidget {
   final int initialLevel;
