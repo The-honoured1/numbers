@@ -193,15 +193,15 @@ class _SudokuScreenState extends State<SudokuScreen> {
                         decoration: BoxDecoration(
                           border: Border(
                             right: BorderSide(
-                              color: (c + 1) % 3 == 0 && c != 8 ? context.onSurface : context.border,
+                              color: (c + 1) % 3 == 0 && c != 8 ? context.onSurface : context.gridBorder,
                               width: (c + 1) % 3 == 0 && c != 8 ? 2 : 0.5,
                             ),
                             bottom: BorderSide(
-                              color: (r + 1) % 3 == 0 && r != 8 ? context.onSurface : context.border,
+                              color: (r + 1) % 3 == 0 && r != 8 ? context.onSurface : context.gridBorder,
                               width: (r + 1) % 3 == 0 && r != 8 ? 2 : 0.5,
                             ),
                           ),
-                          color: isSelected ? NumbersColors.yellow.withOpacity(0.2) : Colors.white,
+                          color: isSelected ? NumbersColors.yellow.withOpacity(0.2) : context.surface,
                         ),
                         alignment: Alignment.center,
                         child: val != 0 

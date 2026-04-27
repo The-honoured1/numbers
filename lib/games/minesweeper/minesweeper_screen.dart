@@ -236,7 +236,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
-                      color: _flagMode ? context.onSurface : Colors.white,
+                      color: _flagMode ? context.onSurface : context.surface,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: context.onSurface, width: 2),
                     ),
@@ -247,7 +247,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                         Text(
                           'FLAG',
                           style: GoogleFonts.outfit(
-                            color: _flagMode ? Colors.white : context.onSurface,
+                            color: _flagMode ? context.surface : context.onSurface,
                             fontWeight: FontWeight.w900,
                             fontSize: 11,
                             letterSpacing: 1,
@@ -288,9 +288,9 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: cell.state == CellState.revealed 
-                                  ? (cell.isMine ? NumbersColors.coral : context.surface)
+                                  ? (cell.isMine ? NumbersColors.coral : context.surface.withOpacity(0.5))
                                   : context.textFaint.withOpacity(0.1),
-                              border: Border.all(color: context.border, width: 2.5),
+                              border: Border.all(color: context.gridBorder, width: 1.5),
                             ),
                             alignment: Alignment.center,
                             child: _buildCellContent(cell),

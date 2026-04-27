@@ -38,9 +38,12 @@ extension ThemeColorsExt on BuildContext {
   Color get surface => Theme.of(this).colorScheme.surface;
   Color get onSurface => Theme.of(this).colorScheme.onSurface;
   Color get border => Theme.of(this).colorScheme.onSurface; 
+  Color get gridBorder => Theme.of(this).brightness == Brightness.dark 
+      ? Theme.of(this).colorScheme.onSurface.withOpacity(0.15)
+      : Theme.of(this).colorScheme.onSurface.withOpacity(0.1);
   Color get shadow => Theme.of(this).colorScheme.onSurface; 
   Color get textFaint => Theme.of(this).brightness == Brightness.dark 
-      ? const Color(0xFF888888) 
+      ? const Color(0xFF8B949E) 
       : const Color(0xFF555555);
 }
 
@@ -58,9 +61,9 @@ class NumbersTheme {
 
   static ThemeData _buildTheme(Brightness brightness) {
     final bool isDark = brightness == Brightness.dark;
-    final Color bgColor = isDark ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
-    final Color cardColor = isDark ? const Color(0xFF111111) : const Color(0xFFFFFFFF);
-    final Color textColor = isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
+    final Color bgColor = isDark ? const Color(0xFF0D1117) : const Color(0xFFFFFFFF);
+    final Color cardColor = isDark ? const Color(0xFF161B22) : const Color(0xFFFFFFFF);
+    final Color textColor = isDark ? const Color(0xFFC9D1D9) : const Color(0xFF000000);
     final Color borderColor = textColor;
 
     return ThemeData(

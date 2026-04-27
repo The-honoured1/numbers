@@ -246,8 +246,8 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
         child: Container(
           margin: const EdgeInsets.all(2),
           decoration: BoxDecoration(
-            color: isSelected ? NumbersColors.selection.withOpacity(0.1) : (isHint ? context.border.withOpacity(0.05) : Colors.transparent),
-            border: Border.all(color: isSelected ? NumbersColors.selection : context.border, width: isSelected ? 2 : 1),
+            color: isSelected ? NumbersColors.selection.withOpacity(0.1) : (isHint ? context.gridBorder.withOpacity(0.5) : Colors.transparent),
+            border: Border.all(color: isSelected ? NumbersColors.selection : context.gridBorder, width: isSelected ? 2 : 1),
             borderRadius: BorderRadius.circular(4),
           ),
           alignment: Alignment.center,
