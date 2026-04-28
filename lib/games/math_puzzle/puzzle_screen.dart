@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:numbers/presentation/widgets/banner_ad_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -226,7 +227,9 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                 );
               }).toList(),
             ),
-            const SizedBox(height: 60),
+            const SizedBox(height: 32),
+            const BannerAdWidget(),
+            const SizedBox(height: 24),
           ],
         ),
       ),

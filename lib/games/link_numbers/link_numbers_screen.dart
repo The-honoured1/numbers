@@ -1,3 +1,4 @@
+import 'package:numbers/presentation/widgets/banner_ad_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
@@ -301,6 +302,9 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
               ],
             ),
           ),
+          const SizedBox(height: 16),
+          const BannerAdWidget(),
+          const SizedBox(height: 16),
         ],
       ),
     );

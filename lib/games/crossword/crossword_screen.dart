@@ -1,3 +1,4 @@
+import 'package:numbers/presentation/widgets/banner_ad_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -275,6 +276,9 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
             ),
           ),
           _buildKeypad(),
+          const SizedBox(height: 8),
+          const BannerAdWidget(),
+          const SizedBox(height: 8),
         ],
       ),
     );

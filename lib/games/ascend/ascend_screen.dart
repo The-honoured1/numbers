@@ -253,10 +253,12 @@ class _AscendScreenState extends State<AscendScreen> {
                     .shake(duration: 400.ms, hz: 6),
                 );
               },
-            ),
-          ],
+              const SizedBox(height: 32),
+              const BannerAdWidget(),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
-      ),
     ),
   ),
 );
