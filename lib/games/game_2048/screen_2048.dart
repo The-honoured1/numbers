@@ -72,18 +72,6 @@ class _Screen2048State extends State<Screen2048> {
         buttonText: won ? 'PLAY AGAIN' : 'TRY AGAIN',
         color: NumbersColors.blue,
         icon: won ? Icons.emoji_events_rounded : Icons.lock_rounded,
-        onRevive: won ? null : () {
-          AdService().showRewardedAd(() {
-            Navigator.pop(context);
-            setState(() {
-              _revivesUsed++;
-              // Simplified revive for 2048 - clear small tiles
-              _logic.tiles = _logic.tiles.where((t) => t.value > 4).toList();
-              _logic.over = false;
-              _logic.addRandomTile();
-            });
-          });
-        },
         onButtonPressed: () {
           Navigator.pop(context);
           setState(() => _logic.reset());

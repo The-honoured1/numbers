@@ -9,7 +9,6 @@ import 'package:numbers/services/ad_service.dart';
 import 'ascend_logic.dart';
 import 'package:numbers/presentation/widgets/banner_ad_widget.dart';
 import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
-import 'package:numbers/presentation/widgets/full_screen_result.dart';
 
 class AscendScreen extends StatefulWidget {
   const AscendScreen({super.key});
@@ -113,56 +112,30 @@ class _AscendScreenState extends State<AscendScreen> {
 
   void _endGame() {
     _timer?.cancel();
-    StorageService().saveHighScore('ascend', _score);
     StorageService().markDailyCompleted('ascend');
     
-    final isHighScorer = _score > 100;
-    
-    if (isHighScorer) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => FullScreenResult(
-            won: true,
-            gameId: 'zen_ascend',
-            title: 'Ascended!',
-            score: '$_score',
-            message: 'You have reached the peak of the sequence. Your focus is absolute.',
-            actionLabel: 'CLIMB AGAIN',
-            onAction: () {
-              Navigator.pop(context);
-              setState(() {
-                _score = 0;
-                _round = 1;
-                _revivesUsed = 0;
-              });
-              _startNewRound();
-            },
-          ),
-        ),
-      );
-    } else {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => GameResultDialog(
-          title: 'Time Up',
-          message: 'The climb was steep, but your speed is improving. Final Score: $_score',
-          buttonText: 'TRY AGAIN',
-          color: NumbersColors.green,
-          icon: Icons.timer_off_rounded,
-          onButtonPressed: () {
-            Navigator.pop(context);
-            setState(() {
-              _score = 0;
-              _round = 1;
-              _revivesUsed = 0;
-            });
-            _startNewRound();
-          },
-        ),
-      );
-    }
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => GameResultDialog(
+        title: _timeLeft == 0 ? 'Time Up!' : 'Ascended!',
+        message: _timeLeft == 0 
+            ? 'The climb was steep, but your speed is improving. Final Score: $_score'
+            : 'You have reached the peak of the sequence. Your focus is absolute.',
+        buttonText: 'PLAY AGAIN',
+        color: NumbersColors.green,
+        icon: _timeLeft == 0 ? Icons.timer_off_rounded : Icons.keyboard_double_arrow_up_rounded,
+        onButtonPressed: () {
+          Navigator.pop(context);
+          setState(() {
+            _score = 0;
+            _round = 1;
+            _revivesUsed = 0;
+          });
+          _startNewRound();
+        },
+      ),
+    );
   }
 
   @override
@@ -180,89 +153,87 @@ class _AscendScreenState extends State<AscendScreen> {
       appBar: AppBar(
         title: Text('ZEN ASCEND', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),
-      body: Container(
-        color: context.surface,
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _StatItem(label: 'TIME', value: '${_timeLeft}s', color: _timeLeft < 4 ? NumbersColors.coral : NumbersColors.green),
-                _StatItem(label: 'SCORE', value: '$_score', color: context.onSurface),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'TAP NUMBERS IN ASCENDING ORDER',
-            style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 2),
-          ),
-          const SizedBox(height: 40),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _StatItem(label: 'TIME', value: '${_timeLeft}s', color: _timeLeft < 4 ? NumbersColors.coral : NumbersColors.green),
+                    _StatItem(label: 'SCORE', value: '$_score', color: context.onSurface),
+                  ],
+                ),
               ),
-              itemCount: _numbers.length,
-              itemBuilder: (context, index) {
-                final num = _numbers[index];
-                final isSolved = _sorted.indexOf(num) < _nextIdx;
-                
-                return GestureDetector(
-                  onTap: isSolved ? null : () => _onTap(num),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    decoration: BoxDecoration(
-                      color: isSolved 
-                          ? NumbersColors.green.withOpacity(0.15) 
-                          : (num == _wrongNum ? NumbersColors.coral.withOpacity(0.15) : context.surface),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
+              const SizedBox(height: 20),
+              Text(
+                'TAP NUMBERS IN ASCENDING ORDER',
+                style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 2),
+              ),
+              const SizedBox(height: 40),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                ),
+                itemCount: _numbers.length,
+                itemBuilder: (context, index) {
+                  final num = _numbers[index];
+                  final isSolved = _sorted.indexOf(num) < _nextIdx;
+                  
+                  return GestureDetector(
+                    onTap: isSolved ? null : () => _onTap(num),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      decoration: BoxDecoration(
                         color: isSolved 
-                            ? NumbersColors.green 
-                            : (num == _wrongNum ? NumbersColors.coral : context.border),
-                        width: (isSolved || num == _wrongNum) ? 3.5 : 2.5,
+                            ? NumbersColors.green.withOpacity(0.15) 
+                            : (num == _wrongNum ? NumbersColors.coral.withOpacity(0.15) : context.surface),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: isSolved 
+                              ? NumbersColors.green 
+                              : (num == _wrongNum ? NumbersColors.coral : context.border),
+                          width: (isSolved || num == _wrongNum) ? 3.5 : 2.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: context.shadow,
+                            offset: const Offset(4, 4),
+                          )
+                        ],
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.shadow,
-                          offset: const Offset(4, 4),
-                        )
-                      ],
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      '$num',
-                      style: GoogleFonts.outfit(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w900,
-                        color: isSolved 
-                            ? NumbersColors.green 
-                            : (num == _wrongNum ? NumbersColors.coral : context.onSurface),
+                      alignment: Alignment.center,
+                      child: Text(
+                        '$num',
+                        style: GoogleFonts.outfit(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w900,
+                          color: isSolved 
+                              ? NumbersColors.green 
+                              : (num == _wrongNum ? NumbersColors.coral : context.onSurface),
+                        ),
                       ),
-                    ),
-                  ).animate(target: num == _wrongNum ? 1 : 0)
-                    .shake(duration: 400.ms, hz: 6),
-                );
-              },
+                    ).animate(target: num == _wrongNum ? 1 : 0)
+                      .shake(duration: 400.ms, hz: 6),
+                  );
+                },
+              ),
               const SizedBox(height: 32),
               const BannerAdWidget(),
               const SizedBox(height: 24),
             ],
           ),
         ),
-    ),
-  ),
-);
-}
+      ),
+    );
+  }
 }
 
 class _StatItem extends StatelessWidget {

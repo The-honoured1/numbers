@@ -136,15 +136,6 @@ class _CountdownScreenState extends State<CountdownScreen> {
         buttonText: 'TRY AGAIN',
         color: NumbersColors.countdown,
         icon: Icons.timer_off_outlined,
-        onRevive: () {
-          AdService().showRewardedAd(() {
-            Navigator.pop(context);
-            setState(() {
-              _timeLeft = 30; // Give 30 more seconds
-              _startTimer();
-            });
-          });
-        },
         onButtonPressed: () => Navigator.pop(context),
       ),
     ).then((_) {

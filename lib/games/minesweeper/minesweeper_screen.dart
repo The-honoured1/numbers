@@ -118,16 +118,6 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
         buttonText: won ? 'NEXT LEVEL' : 'RETRY LEVEL',
         color: won ? NumbersColors.crossCorrect : NumbersColors.countdown,
         icon: won ? Icons.shield_outlined : Icons.brightness_7_outlined,
-        onRevive: won ? null : () {
-          AdService().showRewardedAd(() {
-            Navigator.pop(context);
-            if (r != null && c != null) {
-              setState(() {
-                _game.revive(r, c);
-              });
-            }
-          });
-        },
         onButtonPressed: () {
           Navigator.pop(context);
           if (won) {

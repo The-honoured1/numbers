@@ -73,15 +73,6 @@ class _SequenceScreenState extends State<SequenceScreen> {
           buttonText: 'TRY ANOTHER',
           color: NumbersColors.countdown,
           icon: Icons.close,
-          onRevive: () {
-            AdService().showRewardedAd(() {
-              Navigator.pop(context);
-              setState(() {
-                // Keep the streak and current score, just generate a new question
-                _question = _logic.generate(_streak);
-              });
-            });
-          },
           onButtonPressed: () {
             Navigator.pop(context);
             setState(() {

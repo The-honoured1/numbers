@@ -113,15 +113,6 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
         buttonText: 'RETRY LEVEL',
         color: NumbersColors.countdown,
         icon: Icons.favorite_border_rounded,
-        onRevive: _revivesUsed < 1 ? () {
-          AdService().showRewardedAd(() {
-            Navigator.pop(context);
-            setState(() {
-              _lives = 3;
-              _revivesUsed++;
-            });
-          });
-        } : null,
         onButtonPressed: () {
           Navigator.pop(context);
           setState(() => _startNewLevel());
