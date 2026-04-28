@@ -142,12 +142,13 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
 
   Color _getNumberColor(int n) {
     switch (n) {
-      case 1: return Colors.blue;
-      case 2: return Colors.green;
-      case 3: return Colors.red;
-      case 4: return Colors.purple;
-      case 5: return Colors.orange;
-      default: return Colors.black;
+      case 1: return NumbersColors.blue;
+      case 2: return NumbersColors.green;
+      case 3: return NumbersColors.coral;
+      case 4: return NumbersColors.purple;
+      case 5: return NumbersColors.orange;
+      case 6: return NumbersColors.yellow;
+      default: return context.onSurface;
     }
   }
 
@@ -157,7 +158,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     final remaining = _levelConfig.mines - flagCount;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F5),
+      backgroundColor: context.surface,
       appBar: AppBar(
         title: const Text('MINESWEEPER'),
         actions: [
@@ -213,23 +214,21 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                 child: AspectRatio(
                   aspectRatio: _levelConfig.cols / _levelConfig.rows,
                   child: Container(
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1A1A1A),
-                      border: Border.all(color: Colors.black, width: 3),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black,
-                          offset: Offset(6, 6),
-                        ),
+                      color: context.surface,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: context.border, width: 3),
+                      boxShadow: [
+                        BoxShadow(color: context.shadow, offset: const Offset(8, 8)),
                       ],
                     ),
-                    padding: const EdgeInsets.all(3),
                     child: GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: _levelConfig.cols,
-                        mainAxisSpacing: 2,
-                        crossAxisSpacing: 2,
+                        mainAxisSpacing: 4,
+                        crossAxisSpacing: 4,
                       ),
                       itemCount: _levelConfig.rows * _levelConfig.cols,
                       itemBuilder: (context, index) {
@@ -242,12 +241,10 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                         Color tileColor;
                         if (isRevealed) {
                           tileColor = cell.isMine
-                              ? const Color(0xFFEB3D54)
-                              : const Color(0xFFF8F8F5);
-                        } else if (isFlagged) {
-                          tileColor = const Color(0xFF2D2D2D);
+                              ? NumbersColors.coral
+                              : (Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.05) : const Color(0xFFF1F5F9));
                         } else {
-                          tileColor = const Color(0xFF3A3A3A);
+                          tileColor = NumbersColors.minesweeper;
                         }
 
                         return GestureDetector(
@@ -255,12 +252,14 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: tileColor,
-                              border: isRevealed
-                                  ? null
-                                  : Border.all(
-                                      color: Colors.white.withOpacity(0.06),
-                                      width: 1,
-                                    ),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: isRevealed ? context.border.withOpacity(0.2) : context.border, 
+                                width: isRevealed ? 1 : 2
+                              ),
+                              boxShadow: isRevealed ? [] : [
+                                BoxShadow(color: context.shadow, offset: const Offset(2, 2)),
+                              ],
                             ),
                             alignment: Alignment.center,
                             child: _buildCellContent(cell),
@@ -281,20 +280,20 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
 
   Widget _buildCellContent(MineCell cell) {
     if (cell.state == CellState.flagged) {
-      return const Icon(Icons.flag, color: NumbersColors.countdown, size: 16)
+      return const Icon(Icons.flag_rounded, color: NumbersColors.yellow, size: 20)
           .animate().scale(duration: 200.ms, curve: Curves.easeOutBack);
     }
 
     if (cell.state == CellState.revealed) {
       if (cell.isMine) {
-        return const Icon(Icons.brightness_7_outlined, color: Colors.orange, size: 18);
+        return const Icon(Icons.close_rounded, color: Colors.white, size: 22);
       }
       if (cell.neighborMines > 0) {
         return Text(
           '${cell.neighborMines}',
-          style: GoogleFonts.inter(
+          style: GoogleFonts.outfit(
             fontWeight: FontWeight.w900,
-            fontSize: 16,
+            fontSize: 18,
             color: _getNumberColor(cell.neighborMines),
           ),
         );

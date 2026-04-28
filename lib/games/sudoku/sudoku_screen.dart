@@ -163,26 +163,45 @@ class _SudokuScreenState extends State<SudokuScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _StatItem(label: 'DIFFICULTY', value: _difficulty.toUpperCase(), color: NumbersColors.yellow),
-                    _StatItem(label: 'HIGH SCORE', value: '$hiScore', color: context.textFaint),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: NumbersColors.yellow.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: NumbersColors.yellow, width: 2),
+                      ),
+                      child: Text(
+                        _difficulty.toUpperCase(),
+                        style: GoogleFonts.outfit(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                          color: NumbersColors.yellow,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                    ),
+                    _StatItem(label: 'BEST', value: '$hiScore', color: context.textFaint),
                   ],
                 ),
               ),
               const SizedBox(height: 8),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                 child: AspectRatio(
                   aspectRatio: 1,
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: context.onSurface, width: 3),
-                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: NumbersColors.yellow, width: 3),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(color: context.shadow, offset: const Offset(8, 8)),
+                      ],
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: GridView.builder(
@@ -196,6 +215,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
                         int c = index % 9;
                         bool isInitial = _initialGrid[r][c] != 0;
                         bool isSelected = _selectedRow == r && _selectedCol == c;
+                        bool isSameBox = _selectedRow != null &&
+                            (r ~/ 3 == _selectedRow! ~/ 3 && c ~/ 3 == _selectedCol! ~/ 3);
                         final val = _currentGrid[r][c];
                         
                         bool isError = false;
@@ -203,6 +224,19 @@ class _SudokuScreenState extends State<SudokuScreen> {
                           _currentGrid[r][c] = 0;
                           isError = !_logic.isValid(_currentGrid, r, c, val);
                           _currentGrid[r][c] = val;
+                        }
+
+                        Color cellColor;
+                        if (isSelected) {
+                          cellColor = NumbersColors.yellow.withOpacity(0.3);
+                        } else if (isSameBox) {
+                          cellColor = NumbersColors.yellow.withOpacity(0.07);
+                        } else if (isInitial) {
+                          cellColor = Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white.withOpacity(0.05)
+                              : const Color(0xFFFFFBF0);
+                        } else {
+                          cellColor = context.surface;
                         }
 
                         return GestureDetector(
@@ -220,9 +254,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                                   width: (r + 1) % 3 == 0 && r != 8 ? 2 : 0.5,
                                 ),
                               ),
-                              color: isSelected 
-                                  ? NumbersColors.yellow.withOpacity(0.3) 
-                                  : (isInitial ? (Theme.of(context).brightness == Brightness.dark ? context.surface : const Color(0xFFF8FAFC)) : context.surface),
+                              color: cellColor,
                             ),
                             alignment: Alignment.center,
                             child: val != 0 

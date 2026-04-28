@@ -86,6 +86,7 @@ class Logic2048 {
     tiles = tiles.map((t) => t.copyWith(isNew: false, isMerged: false, fromRow: t.row, fromCol: t.col)).toList();
 
     bool moved = false;
+    int mergeScore = 0;
     List<Tile2048> nextTiles = [];
     
     List<int> r_indices = [0, 1, 2, 3];
@@ -103,12 +104,13 @@ class Logic2048 {
     if (dir == MoveDirection.left || dir == MoveDirection.right) {
       for (int r = 0; r < size; r++) {
         List<Tile2048?> row = c_indices.map((c) => grid[Point(r, c)]).toList();
-        var result = _processLine(row);
+        var (result, lineScore) = _processLine(row);
+        mergeScore += lineScore;
         for (int i = 0; i < result.length; i++) {
           var t = result[i];
           if (t != null) {
             int targetCol = c_indices[i];
-            if (t.col != targetCol) moved = true;
+            if (t.col != targetCol || t.isMerged) moved = true;
             nextTiles.add(t.copyWith(row: r, col: targetCol));
           }
         }
@@ -116,12 +118,13 @@ class Logic2048 {
     } else {
       for (int c = 0; c < size; c++) {
         List<Tile2048?> col = r_indices.map((r) => grid[Point(r, c)]).toList();
-        var result = _processLine(col);
+        var (result, lineScore) = _processLine(col);
+        mergeScore += lineScore;
         for (int i = 0; i < result.length; i++) {
           var t = result[i];
           if (t != null) {
             int targetRow = r_indices[i];
-            if (t.row != targetRow) moved = true;
+            if (t.row != targetRow || t.isMerged) moved = true;
             nextTiles.add(t.copyWith(row: targetRow, col: c));
           }
         }
@@ -129,6 +132,7 @@ class Logic2048 {
     }
 
     if (moved) {
+      score += mergeScore;
       tiles = nextTiles;
       addRandomTile();
       _checkGameState();
@@ -137,19 +141,19 @@ class Logic2048 {
     return moved;
   }
 
-  List<Tile2048?> _processLine(List<Tile2048?> line) {
+  (List<Tile2048?>, int) _processLine(List<Tile2048?> line) {
     List<Tile2048> filtered = line.whereType<Tile2048>().toList();
     List<Tile2048?> result = List.filled(size, null);
+    int lineScore = 0;
     
     int target = 0;
     for (int i = 0; i < filtered.length; i++) {
       if (i + 1 < filtered.length && filtered[i].value == filtered[i+1].value) {
         // Merge
         int newVal = filtered[i].value * 2;
-        score += newVal;
+        lineScore += newVal;
         if (newVal == 2048) won = true;
         
-        // We take the ID of the first tile and mark it as merged
         result[target] = filtered[i].copyWith(value: newVal, isMerged: true);
         target++;
         i++;
@@ -158,7 +162,7 @@ class Logic2048 {
         target++;
       }
     }
-    return result;
+    return (result, lineScore);
   }
 
   void _checkGameState() {
