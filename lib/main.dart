@@ -4,6 +4,7 @@ import 'services/storage_service.dart';
 import 'services/ad_service.dart';
 import 'services/notification_service.dart';
 import 'presentation/screens/home_screen.dart';
+import 'presentation/screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,7 @@ class NumbersApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: NumbersTheme.lightTheme,
       themeMode: ThemeMode.light,
-      home: const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }

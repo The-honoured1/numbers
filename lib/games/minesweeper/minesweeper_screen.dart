@@ -97,7 +97,13 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
   void _handleCellTap(int r, int c) {
     setState(() {
       if (_flagMode) {
-        _game.toggleFlag(r, c);
+        final cell = _game.board[r][c];
+        final flagCount = _game.board.expand((r) => r).where((c) => c.state == CellState.flagged).length;
+        
+        // Allow unflagging always, but only allow flagging if flags are remaining
+        if (cell.state == CellState.flagged || flagCount < _levelConfig.mines) {
+          _game.toggleFlag(r, c);
+        }
       } else {
         _game.reveal(r, c);
       }

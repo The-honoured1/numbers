@@ -12,17 +12,17 @@ class AdService {
   bool _isInterstitialAdLoading = false;
   bool _isRewardedAdLoading = false;
 
-  final String _interstitialAdUnitId = Platform.isAndroid
-      ? 'ca-app-pub-8456018770297813/9894298354'
-      : 'ca-app-pub-8456018770297813/9894298354';
+  final String _interstitialAdUnitId = kDebugMode 
+      ? (Platform.isAndroid ? 'ca-app-pub-3940256099942544/1033173712' : 'ca-app-pub-3940256099942544/4411468910')
+      : (Platform.isAndroid ? 'ca-app-pub-8456018770297813/9894298354' : 'ca-app-pub-8456018770297813/9894298354');
 
-  final String _rewardedAdUnitId = Platform.isAndroid
-      ? 'ca-app-pub-8456018770297813/2869725006'
-      : 'ca-app-pub-8456018770297813/2869725006';
+  final String _rewardedAdUnitId = kDebugMode
+      ? (Platform.isAndroid ? 'ca-app-pub-3940256099942544/5224354917' : 'ca-app-pub-3940256099942544/1712485313')
+      : (Platform.isAndroid ? 'ca-app-pub-8456018770297813/2869725006' : 'ca-app-pub-8456018770297813/2869725006');
 
-  static String get bannerAdUnitId => Platform.isAndroid 
-      ? 'ca-app-pub-8456018770297813/5667798259'
-      : 'ca-app-pub-8456018770297813/5667798259';
+  static String get bannerAdUnitId => kDebugMode
+      ? (Platform.isAndroid ? 'ca-app-pub-3940256099942544/6300978111' : 'ca-app-pub-3940256099942544/2934735716')
+      : (Platform.isAndroid ? 'ca-app-pub-8456018770297813/5667798259' : 'ca-app-pub-8456018770297813/5667798259');
 
   Future<void> init() async {
     await MobileAds.instance.initialize();

@@ -8,7 +8,8 @@ class CrosswordLogic {
     late List<int> results;
     late List<String> ops;
 
-    int maxVal = 9 + (level * 2);
+    // Operands must be single digits because the keypad only goes up to 9
+    int maxVal = 9;
 
     while (true) {
       values = List.generate(9, (_) => _rand.nextInt(maxVal) + 1);
