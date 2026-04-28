@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:numbers/presentation/widgets/banner_ad_widget.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
@@ -141,21 +142,34 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
   }
 
   Color _getNumberColor(int n) {
-    switch (n) {
-      case 1: return NumbersColors.blue;
-      case 2: return NumbersColors.green;
-      case 3: return NumbersColors.coral;
-      case 4: return NumbersColors.purple;
-      case 5: return NumbersColors.orange;
-      case 6: return NumbersColors.yellow;
-      default: return context.onSurface;
+    if (Theme.of(context).brightness == Brightness.dark) {
+      switch (n) {
+        case 1: return const Color(0xFF60A5FA); // Vibrant Blue
+        case 2: return const Color(0xFF4ADE80); // Vibrant Green
+        case 3: return const Color(0xFFF87171); // Vibrant Red
+        case 4: return const Color(0xFFC084FC); // Vibrant Purple
+        case 5: return const Color(0xFFFB923C); // Vibrant Orange
+        case 6: return const Color(0xFF2DD4BF); // Vibrant Teal
+        default: return Colors.white;
+      }
+    } else {
+      switch (n) {
+        case 1: return const Color(0xFF2563EB); // Deep Blue
+        case 2: return const Color(0xFF16A34A); // Deep Green
+        case 3: return const Color(0xFFDC2626); // Deep Red
+        case 4: return const Color(0xFF9333EA); // Deep Purple
+        case 5: return const Color(0xFFEA580C); // Deep Orange
+        case 6: return const Color(0xFF0D9488); // Deep Teal
+        default: return Colors.black;
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final flagCount = _game.board.expand((r) => r).where((c) => c.state == CellState.flagged).length;
-    final remaining = _levelConfig.mines - flagCount;
+    int remaining = _levelConfig.mines - flagCount;
+    if (remaining < 0) remaining = 0;
 
     return Scaffold(
       backgroundColor: context.surface,
@@ -175,8 +189,8 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('MINES', style: GoogleFonts.inter(letterSpacing:1, fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.textFaint)),
-                    Text('$remaining', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w900)),
+                    Text('MINES', style: GoogleFonts.inter(letterSpacing:1, fontSize: 10, fontWeight: FontWeight.w800, color: context.onSurface)),
+                    Text('$remaining', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w900, color: context.onSurface)),
                   ],
                 ),
                 GestureDetector(
@@ -242,7 +256,9 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                         if (isRevealed) {
                           tileColor = cell.isMine
                               ? NumbersColors.coral
-                              : (Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.05) : const Color(0xFFF1F5F9));
+                              : (Theme.of(context).brightness == Brightness.dark 
+                                  ? const Color(0xFF27272A)
+                                  : const Color(0xFFE4E4E7));
                         } else {
                           tileColor = NumbersColors.minesweeper;
                         }
@@ -272,7 +288,9 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 16),
+          const BannerAdWidget(),
+          const SizedBox(height: 16),
         ],
       ),
     );
