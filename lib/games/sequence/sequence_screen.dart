@@ -125,7 +125,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 72),
               Container(
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
@@ -145,16 +145,16 @@ class _SequenceScreenState extends State<SequenceScreen> {
                     fontSize: 48,
                     fontWeight: FontWeight.w900,
                     color: context.onSurface,
-                    letterSpacing: 1,
                   ),
                 ),
               ),
+              const SizedBox(height: 72),
               GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
+                mainAxisSpacing: 24,
+                crossAxisSpacing: 24,
                 childAspectRatio: 2,
                 children: _question.options.map((option) {
                   return Container(
@@ -177,7 +177,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 72),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -186,7 +186,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
                   _StatTile(label: 'STREAK', value: '$_streak', color: NumbersColors.yellow),
                 ],
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 72),
               const BannerAdWidget(),
               const SizedBox(height: 24),
             ],
