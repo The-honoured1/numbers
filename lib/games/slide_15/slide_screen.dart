@@ -1,5 +1,6 @@
 import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 import 'package:flutter/material.dart';
+import 'package:numbers/presentation/widgets/banner_ad_widget.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
@@ -201,6 +202,9 @@ class _SlideScreenState extends State<SlideScreen> {
               ),
             ),
           ),
+          const SizedBox(height: 24),
+          const BannerAdWidget(),
+          const SizedBox(height: 16),
         ],
       ),
     ),
