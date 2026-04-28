@@ -19,6 +19,8 @@ class _Screen2048State extends State<Screen2048> {
   final Logic2048 _logic = Logic2048();
   final Stopwatch _sessionTimer = Stopwatch();
   int _revivesUsed = 0;
+  Offset? _panStart;
+  Offset? _panUpdate;
 
   @override
   void initState() {
@@ -115,17 +117,46 @@ class _Screen2048State extends State<Screen2048> {
               child: AspectRatio(
                 aspectRatio: 1,
                 child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onPanStart: (details) {
+                    _panStart = details.localPosition;
+                  },
+                  onPanUpdate: (details) {
+                    _panUpdate = details.localPosition;
+                  },
                   onPanEnd: (details) {
                     final vel = details.velocity.pixelsPerSecond;
-                    if (vel.dx.abs() > vel.dy.abs()) {
-                      // Horizontal
-                      if (vel.dx > 200) _handleSwipe(MoveDirection.right);
-                      else if (vel.dx < -200) _handleSwipe(MoveDirection.left);
-                    } else {
-                      // Vertical
-                      if (vel.dy > 200) _handleSwipe(MoveDirection.down);
-                      else if (vel.dy < -200) _handleSwipe(MoveDirection.up);
+                    
+                    // Try displacement-based detection first
+                    if (_panStart != null && _panUpdate != null) {
+                      final delta = _panUpdate! - _panStart!;
+                      if (delta.distance >= 20) {
+                        if (delta.dx.abs() > delta.dy.abs()) {
+                          if (delta.dx > 0) _handleSwipe(MoveDirection.right);
+                          else _handleSwipe(MoveDirection.left);
+                        } else {
+                          if (delta.dy > 0) _handleSwipe(MoveDirection.down);
+                          else _handleSwipe(MoveDirection.up);
+                        }
+                        _panStart = null;
+                        _panUpdate = null;
+                        return;
+                      }
                     }
+                    
+                    // Fallback: use velocity for fast flicks
+                    if (vel.dx.abs() > 100 || vel.dy.abs() > 100) {
+                      if (vel.dx.abs() > vel.dy.abs()) {
+                        if (vel.dx > 0) _handleSwipe(MoveDirection.right);
+                        else _handleSwipe(MoveDirection.left);
+                      } else {
+                        if (vel.dy > 0) _handleSwipe(MoveDirection.down);
+                        else _handleSwipe(MoveDirection.up);
+                      }
+                    }
+                    
+                    _panStart = null;
+                    _panUpdate = null;
                   },
                   child: Container(
                     padding: const EdgeInsets.all(12),

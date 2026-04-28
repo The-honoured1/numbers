@@ -115,19 +115,42 @@ class _AscendScreenState extends State<AscendScreen> {
     StorageService().saveHighScore('ascend', _score);
     StorageService().markDailyCompleted('ascend');
     
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => FullScreenResult(
-          won: _score > 100, // Consider >100 as a major win
-          gameId: 'zen_ascend',
-          title: _score > 100 ? 'Ascended!' : 'Time Up',
-          score: '$_score',
-          message: _score > 100 
-              ? 'You have reached the peak of the sequence. Your focus is absolute.' 
-              : 'The climb was steep, but your speed is improving. Keep ascending.',
-          actionLabel: 'CLIMB AGAIN',
-          onAction: () {
+    final isHighScorer = _score > 100;
+    
+    if (isHighScorer) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FullScreenResult(
+            won: true,
+            gameId: 'zen_ascend',
+            title: 'Ascended!',
+            score: '$_score',
+            message: 'You have reached the peak of the sequence. Your focus is absolute.',
+            actionLabel: 'CLIMB AGAIN',
+            onAction: () {
+              Navigator.pop(context);
+              setState(() {
+                _score = 0;
+                _round = 1;
+                _revivesUsed = 0;
+              });
+              _startNewRound();
+            },
+          ),
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => GameResultDialog(
+          title: 'Time Up',
+          message: 'The climb was steep, but your speed is improving. Final Score: $_score',
+          buttonText: 'TRY AGAIN',
+          color: NumbersColors.green,
+          icon: Icons.timer_off_rounded,
+          onButtonPressed: () {
             Navigator.pop(context);
             setState(() {
               _score = 0;
@@ -137,8 +160,8 @@ class _AscendScreenState extends State<AscendScreen> {
             _startNewRound();
           },
         ),
-      ),
-    );
+      );
+    }
   }
 
   @override

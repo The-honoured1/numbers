@@ -3,10 +3,48 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:numbers/core/design_system.dart';
 import 'package:numbers/presentation/widgets/dialogs.dart';
+import 'package:numbers/services/storage_service.dart';
+import 'package:numbers/services/ad_service.dart';
 import 'minesweeper_logic.dart';
 
+/// Level config: returns (rows, cols, mines) for a given level 1–500
+class MinesweeperLevel {
+  final int rows;
+  final int cols;
+  final int mines;
+  const MinesweeperLevel(this.rows, this.cols, this.mines);
+
+  static MinesweeperLevel forLevel(int level) {
+    if (level <= 50) {
+      int mines = 3 + ((level - 1) * 5 ~/ 49);
+      return MinesweeperLevel(6, 6, mines.clamp(3, 8));
+    } else if (level <= 150) {
+      int mines = 8 + ((level - 51) * 7 ~/ 99);
+      return MinesweeperLevel(8, 8, mines.clamp(8, 15));
+    } else if (level <= 300) {
+      int mines = 12 + ((level - 151) * 13 ~/ 149);
+      return MinesweeperLevel(10, 8, mines.clamp(12, 25));
+    } else if (level <= 450) {
+      int mines = 20 + ((level - 301) * 20 ~/ 149);
+      return MinesweeperLevel(12, 10, mines.clamp(20, 40));
+    } else {
+      int mines = 35 + ((level - 451) * 20 ~/ 49);
+      return MinesweeperLevel(14, 10, mines.clamp(35, 55));
+    }
+  }
+
+  String get difficulty {
+    if (rows <= 6) return 'BEGINNER';
+    if (rows <= 8) return 'EASY';
+    if (rows <= 10) return 'MEDIUM';
+    if (rows <= 12) return 'HARD';
+    return 'EXPERT';
+  }
+}
+
 class MinesweeperScreen extends StatefulWidget {
-  const MinesweeperScreen({super.key});
+  final int initialLevel;
+  const MinesweeperScreen({super.key, this.initialLevel = 1});
 
   @override
   State<MinesweeperScreen> createState() => _MinesweeperScreenState();
@@ -15,19 +53,36 @@ class MinesweeperScreen extends StatefulWidget {
 class _MinesweeperScreenState extends State<MinesweeperScreen> {
   late MinesweeperGame _game;
   bool _flagMode = false;
-  final int _rows = 10;
-  final int _cols = 8;
-  final int _mines = 10;
+  int _currentLevel = 1;
+  late MinesweeperLevel _levelConfig;
+  final Stopwatch _sessionTimer = Stopwatch();
 
   @override
   void initState() {
     super.initState();
+    _currentLevel = widget.initialLevel;
+    if (_currentLevel < 1) _currentLevel = 1;
+    _sessionTimer.start();
     _startNewGame();
   }
 
+  @override
+  void dispose() {
+    _sessionTimer.stop();
+    StorageService().addPlayTime('minesweeper', _sessionTimer.elapsed.inSeconds);
+    super.dispose();
+  }
+
   void _startNewGame() {
+    StorageService().incrementPlayCount('minesweeper');
+    _levelConfig = MinesweeperLevel.forLevel(_currentLevel);
     setState(() {
-      _game = MinesweeperGame(rows: _rows, cols: _cols, mineCount: _mines);
+      _game = MinesweeperGame(
+        rows: _levelConfig.rows,
+        cols: _levelConfig.cols,
+        mineCount: _levelConfig.mines,
+      );
+      _flagMode = false;
     });
   }
 
@@ -40,24 +95,45 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
       }
     });
 
-    if (_game.gameWon) _showResult(true);
-    if (_game.gameOver) _showResult(false);
+    if (_game.gameWon) {
+      StorageService().markDailyCompleted('minesweeper');
+      StorageService().incrementWins('minesweeper');
+      _showResult(true);
+    }
+    if (_game.gameOver) _showResult(false, r: r, c: c);
   }
 
-  void _showResult(bool won) {
+  void _showResult(bool won, {int? r, int? c}) {
+    if (won && (_currentLevel + 1) % 5 == 0) AdService().showInterstitialAd();
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => GameResultDialog(
-        title: won ? 'Board Cleared!' : 'Kaboom!',
-        message: won 
-            ? 'You avoided all mines with precision. Masterful work!' 
-            : 'You hit a mine. The grid was a little too hot today.',
-        buttonText: won ? 'NEXT PUZZLE' : 'TRY AGAIN',
+        title: won ? 'Level $_currentLevel Cleared!' : 'Kaboom!',
+        message: won
+            ? 'You cleared a ${_levelConfig.difficulty} minefield. Onward to level ${_currentLevel + 1}!'
+            : 'You hit a mine on level $_currentLevel. Try again!',
+        buttonText: won ? 'NEXT LEVEL' : 'RETRY LEVEL',
         color: won ? NumbersColors.crossCorrect : NumbersColors.countdown,
         icon: won ? Icons.shield_outlined : Icons.brightness_7_outlined,
+        onRevive: won ? null : () {
+          AdService().showRewardedAd(() {
+            Navigator.pop(context);
+            if (r != null && c != null) {
+              setState(() {
+                _game.revive(r, c);
+              });
+            }
+          });
+        },
         onButtonPressed: () {
           Navigator.pop(context);
+          if (won) {
+            _currentLevel++;
+            if (_currentLevel > 500) _currentLevel = 500;
+            StorageService().saveHighScore('minesweeper_level', _currentLevel);
+          }
           _startNewGame();
         },
       ),
@@ -77,6 +153,9 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final flagCount = _game.board.expand((r) => r).where((c) => c.state == CellState.flagged).length;
+    final remaining = _levelConfig.mines - flagCount;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -96,7 +175,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('MINES', style: GoogleFonts.inter(letterSpacing:1, fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.textFaint)),
-                    Text('$_mines', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w900)),
+                    Text('$remaining', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w900)),
                   ],
                 ),
                 GestureDetector(
@@ -132,7 +211,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: AspectRatio(
-                  aspectRatio: _cols / _rows,
+                  aspectRatio: _levelConfig.cols / _levelConfig.rows,
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: NumbersColors.border, width: 2),
@@ -140,19 +219,19 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                     child: GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: _cols,
+                        crossAxisCount: _levelConfig.cols,
                       ),
-                      itemCount: _rows * _cols,
+                      itemCount: _levelConfig.rows * _levelConfig.cols,
                       itemBuilder: (context, index) {
-                        int r = index ~/ _cols;
-                        int c = index % _cols;
+                        int r = index ~/ _levelConfig.cols;
+                        int c = index % _levelConfig.cols;
                         final cell = _game.board[r][c];
-                        
+
                         return GestureDetector(
                           onTap: () => _handleCellTap(r, c),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: cell.state == CellState.revealed 
+                              color: cell.state == CellState.revealed
                                   ? (cell.isMine ? Colors.red.withOpacity(0.1) : Colors.grey.shade100)
                                   : Colors.white,
                               border: Border.all(color: NumbersColors.border, width: 0.5),
@@ -179,7 +258,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
       return const Icon(Icons.flag, color: NumbersColors.countdown, size: 16)
           .animate().scale(duration: 200.ms, curve: Curves.easeOutBack);
     }
-    
+
     if (cell.state == CellState.revealed) {
       if (cell.isMine) {
         return const Icon(Icons.brightness_7_outlined, color: Colors.orange, size: 18);
@@ -195,7 +274,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
         );
       }
     }
-    
+
     return const SizedBox.shrink();
   }
 }
