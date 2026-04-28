@@ -7,6 +7,7 @@ import 'package:numbers/presentation/widgets/dialogs.dart';
 import 'package:numbers/services/storage_service.dart';
 import 'package:numbers/services/ad_service.dart';
 import 'ascend_logic.dart';
+import 'package:numbers/presentation/widgets/banner_ad_widget.dart';
 import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 import 'package:numbers/presentation/widgets/full_screen_result.dart';
 

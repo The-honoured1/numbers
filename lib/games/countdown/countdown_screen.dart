@@ -1,3 +1,4 @@
+import 'package:numbers/presentation/widgets/banner_ad_widget.dart';
 import 'package:numbers/presentation/widgets/tutorial_overlay.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -318,7 +319,9 @@ class _CountdownScreenState extends State<CountdownScreen> {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
+              const BannerAdWidget(),
+              const SizedBox(height: 12),
             ],
           ),
         ),
