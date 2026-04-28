@@ -111,9 +111,9 @@ class _Screen2048State extends State<Screen2048> {
                 ],
               ),
             ),
-            const Spacer(),
+            const SizedBox(height: 16),
             Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: AspectRatio(
                 aspectRatio: 1,
                 child: GestureDetector(
@@ -191,7 +191,7 @@ class _Screen2048State extends State<Screen2048> {
                             ..._logic.tiles.map((tile) {
                               return AnimatedPositioned(
                                 key: ValueKey(tile.id),
-                                duration: const Duration(milliseconds: 150),
+                              duration: const Duration(milliseconds: 200),
                                 curve: Curves.easeInOut,
                                 left: tile.col * (cellSize + 12),
                                 top: tile.row * (cellSize + 12),
@@ -206,7 +206,7 @@ class _Screen2048State extends State<Screen2048> {
                 ),
               ),
             ),
-            const Spacer(),
+            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: Text(
@@ -254,7 +254,7 @@ class _TileWidget extends StatelessWidget {
     final color = _getTileColor(tile.value);
     final isDark = tile.value > 8;
 
-    return Container(
+    Widget tileWidget = Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
@@ -266,15 +266,34 @@ class _TileWidget extends StatelessWidget {
         ],
       ),
       alignment: Alignment.center,
-      child: Text(
-        '${tile.value}',
-        style: GoogleFonts.outfit(
-          fontSize: size * 0.4,
-          fontWeight: FontWeight.w900,
-          color: isDark ? Colors.white : Colors.black,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Text(
+            '${tile.value}',
+            style: GoogleFonts.outfit(
+              fontSize: size * 0.38,
+              fontWeight: FontWeight.w900,
+              color: isDark ? Colors.white : Colors.black,
+            ),
+          ),
         ),
       ),
-    ).animate(target: tile.isMerged ? 1 : 0).scale(begin: const Offset(1, 1), end: const Offset(1.15, 1.15), duration: 100.ms, curve: Curves.easeOut).then().scale(begin: const Offset(1.15, 1.15), end: const Offset(1, 1), duration: 100.ms);
+    );
+
+    if (tile.isMerged) {
+      return TweenAnimationBuilder<double>(
+        key: ValueKey('merge_${tile.id}'),
+        tween: Tween(begin: 1.15, end: 1.0),
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
+        builder: (context, scale, child) => Transform.scale(scale: scale, child: child),
+        child: tileWidget,
+      );
+    }
+
+    return tileWidget;
   }
 }
 

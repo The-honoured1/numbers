@@ -209,32 +209,72 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
           Expanded(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: AspectRatio(
                   aspectRatio: _levelConfig.cols / _levelConfig.rows,
                   child: Container(
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      border: Border.all(color: NumbersColors.border, width: 2),
+                      color: const Color(0xFFC0C0B6),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border(
+                        top: BorderSide(color: Colors.black.withOpacity(0.3), width: 3),
+                        left: BorderSide(color: Colors.black.withOpacity(0.3), width: 3),
+                        bottom: const BorderSide(color: Colors.white, width: 2),
+                        right: const BorderSide(color: Colors.white, width: 2),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          offset: const Offset(4, 4),
+                          blurRadius: 4,
+                        )
+                      ],
                     ),
                     child: GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: _levelConfig.cols,
+                        mainAxisSpacing: 4,
+                        crossAxisSpacing: 4,
                       ),
                       itemCount: _levelConfig.rows * _levelConfig.cols,
                       itemBuilder: (context, index) {
                         int r = index ~/ _levelConfig.cols;
                         int c = index % _levelConfig.cols;
                         final cell = _game.board[r][c];
+                        final isRevealed = cell.state == CellState.revealed;
 
                         return GestureDetector(
                           onTap: () => _handleCellTap(r, c),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: cell.state == CellState.revealed
-                                  ? (cell.isMine ? Colors.red.withOpacity(0.1) : Colors.grey.shade100)
-                                  : Colors.white,
-                              border: Border.all(color: NumbersColors.border, width: 0.5),
+                              color: isRevealed
+                                  ? (cell.isMine ? const Color(0xFFF8D7DA) : const Color(0xFFE2E2DF))
+                                  : const Color(0xFFEFEFE6),
+                              borderRadius: BorderRadius.circular(4),
+                              border: isRevealed
+                                  ? Border(
+                                      top: BorderSide(color: Colors.black.withOpacity(0.1), width: 2),
+                                      left: BorderSide(color: Colors.black.withOpacity(0.1), width: 2),
+                                      bottom: const BorderSide(color: Colors.white, width: 1),
+                                      right: const BorderSide(color: Colors.white, width: 1),
+                                    )
+                                  : Border(
+                                      top: const BorderSide(color: Colors.white, width: 2),
+                                      left: const BorderSide(color: Colors.white, width: 2),
+                                      bottom: BorderSide(color: Colors.black.withOpacity(0.2), width: 3),
+                                      right: BorderSide(color: Colors.black.withOpacity(0.2), width: 3),
+                                    ),
+                              boxShadow: isRevealed
+                                  ? []
+                                  : [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        offset: const Offset(1, 2),
+                                        blurRadius: 2,
+                                      )
+                                    ],
                             ),
                             alignment: Alignment.center,
                             child: _buildCellContent(cell),

@@ -110,6 +110,16 @@ class _SlideScreenState extends State<SlideScreen> {
               ],
             ),
           ),
+          const SizedBox(height: 10),
+          Text(
+            'ARRANGE TILES IN NUMERICAL ORDER',
+            style: GoogleFonts.outfit(
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              color: context.textFaint,
+              letterSpacing: 2,
+            ),
+          ),
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(20.0),
@@ -133,13 +143,18 @@ class _SlideScreenState extends State<SlideScreen> {
                     final val = _grid[index];
                     if (val == 0) return const SizedBox.shrink();
                     
+                    final isCorrect = val == index + 1;
+                    
                     return GestureDetector(
                       onTap: () => _moveTile(index),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: context.surface,
+                          color: isCorrect ? NumbersColors.green.withOpacity(0.15) : context.surface,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: context.border, width: 2),
+                          border: Border.all(
+                            color: isCorrect ? NumbersColors.green : context.border, 
+                            width: isCorrect ? 3 : 2
+                          ),
                           boxShadow: [
                             BoxShadow(
                               color: context.shadow,
@@ -151,9 +166,9 @@ class _SlideScreenState extends State<SlideScreen> {
                         child: Text(
                           '$val',
                           style: GoogleFonts.outfit(
-                            fontSize: 24,
+                            fontSize: 26,
                             fontWeight: FontWeight.w900,
-                            color: context.onSurface,
+                            color: isCorrect ? NumbersColors.green : context.onSurface,
                           ),
                         ),
                       ).animate(key: ValueKey('tile_$val')).fadeIn().scale(),
