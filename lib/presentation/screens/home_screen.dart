@@ -399,7 +399,7 @@ class _StatsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
-              Text('The Archives', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1.2, color: NumbersColors.minesweeper, height: 1)),
+              Text('The Archives', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1.2, color: context.onSurface, height: 1)),
               const SizedBox(height: 8),
               Text('YOUR JOURNEY THROUGH THE NUMBERS', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 2, color: context.textFaint)),
               
@@ -408,9 +408,9 @@ class _StatsView extends StatelessWidget {
               // Hero Stats Dashboard
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+                padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
                 decoration: BoxDecoration(
-                  color: context.onSurface.withOpacity(0.03),
+                  color: context.surface,
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(color: context.border, width: 3),
                   boxShadow: [
@@ -421,7 +421,7 @@ class _StatsView extends StatelessWidget {
                   children: [
                     Icon(Icons.emoji_events_rounded, color: context.onSurface, size: 48),
                     const SizedBox(height: 16),
-                    Text('${storage.getTotalWins()}', style: GoogleFonts.playfairDisplay(fontSize: 64, fontWeight: FontWeight.w900, height: 1, color: NumbersColors.minesweeper)),
+                    Text('${storage.getTotalWins()}', style: GoogleFonts.playfairDisplay(fontSize: 64, fontWeight: FontWeight.w900, height: 1, color: context.onSurface)),
                     const SizedBox(height: 4),
                     Text('PUZZLES SOLVED', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.textFaint, letterSpacing: 2)),
                     const SizedBox(height: 32),
@@ -524,7 +524,7 @@ class _StatsView extends StatelessWidget {
   Widget _heroMiniStat(String label, String value, BuildContext context) {
     return Column(
       children: [
-        Text(value, style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: NumbersColors.blue)),
+        Text(value, style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: context.onSurface)),
         const SizedBox(height: 2),
         Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint)),
       ],
@@ -623,7 +623,7 @@ class _SectionHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: GoogleFonts.playfairDisplay(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5, color: NumbersColors.blue)),
+        Text(title, style: GoogleFonts.playfairDisplay(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5, color: context.onSurface)),
         const SizedBox(height: 2),
         Text(subtitle, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1)),
       ],
