@@ -35,7 +35,7 @@ class NumbersColors {
   static const Color countdown = orange; 
   static const Color crossword = green; 
   static const Color linkNumbers = Color(0xFFFF6AC1); 
-  static const Color minesweeper = Color(0xFF6366F1); // Indigo for a premium feel
+  static const Color minesweeper = Color(0xFF8A9A8B); // Calm sage grey
 
   // Status
   static const Color crossCorrect = green;

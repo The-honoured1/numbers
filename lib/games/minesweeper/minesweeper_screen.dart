@@ -210,11 +210,11 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
           Expanded(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: AspectRatio(
                   aspectRatio: _levelConfig.cols / _levelConfig.rows,
                   child: Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: context.surface,
                       borderRadius: BorderRadius.circular(20),
@@ -227,8 +227,8 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: _levelConfig.cols,
-                        mainAxisSpacing: 4,
-                        crossAxisSpacing: 4,
+                        mainAxisSpacing: 2,
+                        crossAxisSpacing: 2,
                       ),
                       itemCount: _levelConfig.rows * _levelConfig.cols,
                       itemBuilder: (context, index) {
@@ -258,7 +258,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                                 width: isRevealed ? 1 : 2
                               ),
                               boxShadow: isRevealed ? [] : [
-                                BoxShadow(color: context.shadow, offset: const Offset(2, 2)),
+                                BoxShadow(color: context.shadow, offset: const Offset(0, 3)),
                               ],
                             ),
                             alignment: Alignment.center,
@@ -280,7 +280,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
 
   Widget _buildCellContent(MineCell cell) {
     if (cell.state == CellState.flagged) {
-      return const Icon(Icons.flag_rounded, color: NumbersColors.yellow, size: 20)
+      return const Icon(Icons.flag_rounded, color: NumbersColors.coral, size: 20)
           .animate().scale(duration: 200.ms, curve: Curves.easeOutBack);
     }
 
