@@ -13,12 +13,16 @@ class AdService {
   bool _isRewardedAdLoading = false;
 
   final String _interstitialAdUnitId = Platform.isAndroid
-      ? 'ca-app-pub-3940256099942544/1033173712'
-      : 'ca-app-pub-3940256099942544/4411468910';
+      ? 'ca-app-pub-8456018770297813/9894298354'
+      : 'ca-app-pub-8456018770297813/9894298354';
 
   final String _rewardedAdUnitId = Platform.isAndroid
-      ? 'ca-app-pub-3940256099942544/5224354917'
-      : 'ca-app-pub-3940256099942544/1712485313';
+      ? 'ca-app-pub-8456018770297813/2869725006'
+      : 'ca-app-pub-8456018770297813/2869725006';
+
+  static String get bannerAdUnitId => Platform.isAndroid 
+      ? 'ca-app-pub-8456018770297813/5667798259'
+      : 'ca-app-pub-8456018770297813/5667798259';
 
   Future<void> init() async {
     await MobileAds.instance.initialize();
