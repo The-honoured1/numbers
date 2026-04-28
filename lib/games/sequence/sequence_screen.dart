@@ -105,7 +105,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
         title: Text('SEQUENCE', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Column(
             children: [
@@ -125,9 +125,10 @@ class _SequenceScreenState extends State<SequenceScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 72),
+              const SizedBox(height: 32),
               Container(
                 padding: const EdgeInsets.all(32),
+                width: double.infinity,
                 decoration: BoxDecoration(
                   color: context.surface,
                   borderRadius: BorderRadius.circular(32),
@@ -139,22 +140,24 @@ class _SequenceScreenState extends State<SequenceScreen> {
                     )
                   ],
                 ),
-                child: Text(
-                  _question.text,
-                  style: GoogleFonts.outfit(
-                    fontSize: 48,
-                    fontWeight: FontWeight.w900,
-                    color: context.onSurface,
+                child: Center(
+                  child: Text(
+                    _question.text,
+                    style: GoogleFonts.outfit(
+                      fontSize: 48,
+                      fontWeight: FontWeight.w900,
+                      color: context.onSurface,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 72),
+              const SizedBox(height: 32),
               GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 crossAxisCount: 2,
-                mainAxisSpacing: 24,
-                crossAxisSpacing: 24,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
                 childAspectRatio: 2,
                 children: _question.options.map((option) {
                   return Container(
@@ -177,7 +180,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 72),
+              const SizedBox(height: 32),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -186,9 +189,9 @@ class _SequenceScreenState extends State<SequenceScreen> {
                   _StatTile(label: 'STREAK', value: '$_streak', color: NumbersColors.yellow),
                 ],
               ),
-              const SizedBox(height: 72),
+              const Spacer(),
               const BannerAdWidget(),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
             ],
           ),
         ),

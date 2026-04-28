@@ -275,6 +275,7 @@ class _TodayView extends StatelessWidget {
                     ).animate().fadeIn(duration: 800.ms).scale(begin: const Offset(0.9, 0.9), curve: Curves.easeOutBack),
                     const SizedBox(height: 32),
                     _buildStreakCard(context),
+                    const SizedBox(height: 100),
                   ],
                 ),
               ),
@@ -446,11 +447,9 @@ class _StatsView extends StatelessWidget {
               
               const SizedBox(height: 48),
 
-              // Game Breakdown
               _SectionHeader(title: 'GAME BREAKDOWN', subtitle: 'TAPPING INTO YOUR DATA'),
               const SizedBox(height: 16),
               _buildDetailedGameList(context),
-              
               const SizedBox(height: 100),
             ],
           ),
