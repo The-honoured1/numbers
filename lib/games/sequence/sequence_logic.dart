@@ -41,7 +41,15 @@ class SequenceLogic {
     List<String> display = seq.map((e) => e.toString()).toList();
     display[missingIdx] = '?';
 
-    return SequenceQuestion(display.join(', '), answer, type.name.toUpperCase());
+    Set<int> optionsSet = {answer};
+    while(optionsSet.length < 4) {
+      int offset = _rand.nextInt(10 * scale) + 1;
+      int wrong = answer + (_rand.nextBool() ? offset : -offset);
+      if (wrong >= 0) optionsSet.add(wrong);
+    }
+    List<int> options = optionsSet.toList()..shuffle(_rand);
+
+    return SequenceQuestion(display.join(', '), answer, type.name.toUpperCase(), options);
   }
 }
 
@@ -49,5 +57,6 @@ class SequenceQuestion {
   final String text;
   final int answer;
   final String typeName;
-  SequenceQuestion(this.text, this.answer, this.typeName);
+  final List<int> options;
+  SequenceQuestion(this.text, this.answer, this.typeName, this.options);
 }

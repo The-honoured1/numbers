@@ -18,7 +18,6 @@ class _SequenceScreenState extends State<SequenceScreen> {
   final SequenceLogic _logic = SequenceLogic();
   final StorageService _storage = StorageService();
   late SequenceQuestion _question;
-  final TextEditingController _controller = TextEditingController();
   int _score = 0;
   int _streak = 0;
   final Stopwatch _sessionTimer = Stopwatch();
@@ -45,12 +44,11 @@ class _SequenceScreenState extends State<SequenceScreen> {
   void dispose() {
     _sessionTimer.stop();
     _storage.addPlayTime('sequence', _sessionTimer.elapsed.inSeconds);
-    _controller.dispose();
     super.dispose();
   }
 
-  void _check() {
-    if (_controller.text == _question.answer.toString()) {
+  void _check(int selectedAnswer) {
+    if (selectedAnswer == _question.answer) {
       _storage.markDailyCompleted('sequence');
       setState(() {
         _score += (20 + _streak * 5);
@@ -62,7 +60,6 @@ class _SequenceScreenState extends State<SequenceScreen> {
         }
 
         _question = _logic.generate(_streak);
-        _controller.clear();
       });
       _storage.saveHighScore('sequence', _score);
     } else {
@@ -81,7 +78,6 @@ class _SequenceScreenState extends State<SequenceScreen> {
               setState(() {
                 // Keep the streak and current score, just generate a new question
                 _question = _logic.generate(_streak);
-                _controller.clear();
               });
             });
           },
@@ -90,7 +86,6 @@ class _SequenceScreenState extends State<SequenceScreen> {
             setState(() {
               _streak = 0;
               _question = _logic.generate(_streak);
-              _controller.clear();
             });
           },
         ),
@@ -150,31 +145,35 @@ class _SequenceScreenState extends State<SequenceScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 48),
-              TextField(
-                controller: _controller,
-                keyboardType: TextInputType.number,
-                textAlign: TextAlign.center,
-                autofocus: true,
-                style: GoogleFonts.outfit(fontSize: 40, fontWeight: FontWeight.w900, color: NumbersColors.purple),
-                decoration: InputDecoration(
-                  hintText: '?',
-                  hintStyle: TextStyle(color: context.border),
-                  filled: true,
-                  fillColor: context.surface,
-                  contentPadding: const EdgeInsets.all(24),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    borderSide: BorderSide(color: context.border, width: 2.5),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(24),
-                    borderSide: BorderSide(color: NumbersColors.purple, width: 3),
-                  ),
-                ),
-                onSubmitted: (_) => _check(),
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                childAspectRatio: 2,
+                children: _question.options.map((option) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(color: context.shadow, offset: const Offset(4, 4)),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () => _check(option),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: context.surface,
+                        foregroundColor: NumbersColors.purple,
+                        side: BorderSide(color: context.onSurface, width: 2.5),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      ),
+                      child: Text('$option', style: GoogleFonts.outfit(fontSize: 28, fontWeight: FontWeight.w900, color: context.onSurface)),
+                    ),
+                  );
+                }).toList(),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 48),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -183,27 +182,9 @@ class _SequenceScreenState extends State<SequenceScreen> {
                   _StatTile(label: 'STREAK', value: '$_streak', color: NumbersColors.yellow),
                 ],
               ),
-              const SizedBox(height: 40),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(color: context.shadow, offset: const Offset(6, 6)),
-                  ],
-                ),
-                child: ElevatedButton(
-                  onPressed: _check,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: NumbersColors.purple,
-                    foregroundColor: Colors.white,
-                    side: BorderSide(color: context.onSurface, width: 2.5),
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  ),
-                  child: Text('CHECK SEQUENCE', style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
-                ),
-              ),
+              const SizedBox(height: 32),
+              const BannerAdWidget(),
+              const SizedBox(height: 24),
             ],
           ),
         ),
