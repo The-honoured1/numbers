@@ -488,7 +488,7 @@ class _StatsView extends StatelessWidget {
                 style: GoogleFonts.outfit(
                   fontSize: 9, 
                   fontWeight: FontWeight.w800, 
-                  color: isToday ? NumbersColors.minesweeper : context.textFaint,
+                  color: isToday ? NumbersColors.blue : context.textFaint,
                   letterSpacing: 0.5,
                 )
               ),
@@ -509,7 +509,7 @@ class _StatsView extends StatelessWidget {
                         style: GoogleFonts.outfit(
                           fontSize: 10, 
                           fontWeight: FontWeight.w900, 
-                          color: isToday ? NumbersColors.minesweeper : context.textFaint.withOpacity(0.5)
+                          color: isToday ? NumbersColors.blue : context.textFaint.withOpacity(0.5)
                         )
                       )
                     ),
@@ -524,7 +524,7 @@ class _StatsView extends StatelessWidget {
   Widget _heroMiniStat(String label, String value, BuildContext context) {
     return Column(
       children: [
-        Text(value, style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: NumbersColors.minesweeper)),
+        Text(value, style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: NumbersColors.blue)),
         const SizedBox(height: 2),
         Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint)),
       ],
@@ -575,10 +575,10 @@ class _StatsView extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: context.onSurface.withOpacity(0.05),
+                            color: game.accentColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text('WINS: $wins', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: game.accentColor)),
+                          child: Text('WINS: $wins', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w900, color: game.accentColor)),
                         ),
                       ],
                     ),
@@ -589,9 +589,9 @@ class _StatsView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _miniStat('BEST SCORE', score == 0 ? '-' : '$score'),
-                  _miniStat('TOTAL PLAYS', '$plays'),
-                  _miniStat('PLAY TIME', StorageService.formatDuration(time)),
+                  _miniStat(context, 'BEST SCORE', score == 0 ? '-' : '$score', game.accentColor),
+                  _miniStat(context, 'TOTAL PLAYS', '$plays', context.onSurface),
+                  _miniStat(context, 'PLAY TIME', StorageService.formatDuration(time), context.onSurface),
                 ],
               ),
             ],
@@ -601,13 +601,13 @@ class _StatsView extends StatelessWidget {
     );
   }
 
-  Widget _miniStat(String label, String value) {
+  Widget _miniStat(BuildContext context, String label, String value, Color color) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.outfit(fontSize: 9, fontWeight: FontWeight.w800, color: Colors.grey.shade500, letterSpacing: 1)),
+        Text(label, style: GoogleFonts.outfit(fontSize: 9, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1)),
         const SizedBox(height: 4),
-        Text(value, style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.w900)),
+        Text(value, style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.w900, color: color)),
       ],
     );
   }
@@ -623,7 +623,7 @@ class _SectionHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: GoogleFonts.playfairDisplay(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5, color: NumbersColors.minesweeper)),
+        Text(title, style: GoogleFonts.playfairDisplay(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5, color: NumbersColors.blue)),
         const SizedBox(height: 2),
         Text(subtitle, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1)),
       ],
