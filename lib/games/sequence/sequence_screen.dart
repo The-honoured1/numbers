@@ -21,6 +21,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
   late SequenceQuestion _question;
   int _score = 0;
   int _streak = 0;
+  int _revivesUsed = 0;
   final Stopwatch _sessionTimer = Stopwatch();
 
   @override
@@ -35,7 +36,7 @@ class _SequenceScreenState extends State<SequenceScreen> {
         context: context,
         gameId: 'sequence',
         title: 'Sequence',
-        description: 'Analyze the pattern and type in the missing number to keep your streak alive!',
+        description: 'Analyze the pattern and pick the missing number to keep your streak alive!',
         icon: Icons.trending_up_rounded,
       );
     });
@@ -73,10 +74,21 @@ class _SequenceScreenState extends State<SequenceScreen> {
           buttonText: 'TRY ANOTHER',
           color: NumbersColors.countdown,
           icon: Icons.close,
+          onRevive: _revivesUsed >= 2 ? null : () {
+            AdService().showRewardedAd(() {
+              Navigator.pop(context);
+              setState(() {
+                _revivesUsed++;
+                _question = _logic.generate(_streak);
+              });
+            });
+          },
           onButtonPressed: () {
             Navigator.pop(context);
             setState(() {
               _streak = 0;
+              _score = 0;
+              _revivesUsed = 0;
               _question = _logic.generate(_streak);
             });
           },

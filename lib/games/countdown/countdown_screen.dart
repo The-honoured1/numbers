@@ -25,6 +25,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
   String _expression = "";
   int _timeLeft = 60;
   int _level = 1;
+  int _revivesUsed = 0;
   Timer? _timer;
   final Stopwatch _sessionTimer = Stopwatch();
   String? _pendingOp;
@@ -35,6 +36,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
     _game = _logic.generate();
     _availableNumbers = List.from(_game.numbers);
     _timeLeft = 60;
+    _revivesUsed = 0;
     _sessionTimer.start();
     _startTimer();
 
@@ -64,6 +66,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
     _currentValue = 0;
     _expression = "";
     _pendingOp = null;
+    _revivesUsed = 0;
     _timeLeft = (60 - (_level * 2)).clamp(20, 60);
     _startTimer();
   }
@@ -100,9 +103,26 @@ class _CountdownScreenState extends State<CountdownScreen> {
 
     if (_currentValue == _game.target) {
       _timer?.cancel();
-      _level++;
+      _storage.incrementWins('countdown');
       _storage.markDailyCompleted('countdown');
-      _showWin();
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => GameResultDialog(
+          title: 'Target Reached!',
+          message: 'Excellent calculation! Level $_level cleared.',
+          buttonText: 'NEXT LEVEL',
+          icon: Icons.check_circle_rounded,
+          color: NumbersColors.green,
+          onButtonPressed: () {
+            Navigator.pop(context);
+            setState(() {
+              _level++;
+              _startNewRound();
+            });
+          },
+        ),
+      );
     }
   }
 
@@ -112,40 +132,35 @@ class _CountdownScreenState extends State<CountdownScreen> {
     }
   }
 
-  void _showWin() {
-    _storage.markDailyCompleted('countdown');
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => GameResultDialog(
-        title: 'Target Reached!',
-        message: 'Expression: $_expression',
-        buttonText: 'COLLECT POINTS',
-        onButtonPressed: () => Navigator.pop(context),
-      ),
-    ).then((_) => Navigator.pop(context));
-  }
-
   void _showGameOver(String msg) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => GameResultDialog(
         title: msg,
-        message: 'Close but no cigar! Target was ${_game.target}. Your value: $_currentValue',
+        message: 'Close but no cigar! Target was ${_game.target}. Your value: ${_currentValue.toInt()}',
         buttonText: 'TRY AGAIN',
         color: NumbersColors.countdown,
         icon: Icons.timer_off_outlined,
+        onRevive: _revivesUsed >= 2 ? null : () {
+          AdService().showRewardedAd(() {
+            Navigator.pop(context);
+            setState(() {
+              _revivesUsed++;
+              _timeLeft = 30; // Give 30 more seconds
+              _startTimer();
+            });
+          });
+        },
         onButtonPressed: () => Navigator.pop(context),
       ),
     ).then((_) {
-      if (mounted && _timeLeft == 0) {
-        Navigator.pop(context);
+      if (mounted && _timeLeft == 0 && _revivesUsed == 0) {
+        // Only pop if user didn't revive and time is zero
+        // Navigator.pop(context); 
       }
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {

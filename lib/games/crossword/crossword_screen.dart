@@ -56,6 +56,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
     _selectedIndex = null;
     _lives = 3;
     _isWrong = false;
+    _revivesUsed = 0;
 
     // Prefill hints (less hints on higher levels)
     int hints = (4 - (_level ~/ 25)).clamp(1, 4);
@@ -108,11 +109,20 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) => GameResultDialog(
-        title: 'Out of Hearts',
-        message: 'You made too many mistakes. Keep practicing!',
+        title: 'Hearts Depleted',
+        message: 'Your mathematical flow was interrupted. Level $_level',
         buttonText: 'RETRY LEVEL',
         color: NumbersColors.countdown,
         icon: Icons.favorite_border_rounded,
+        onRevive: _revivesUsed >= 2 ? null : () {
+          AdService().showRewardedAd(() {
+            Navigator.pop(context);
+            setState(() {
+              _lives = 3;
+              _revivesUsed++;
+            });
+          });
+        },
         onButtonPressed: () {
           Navigator.pop(context);
           setState(() => _startNewLevel());

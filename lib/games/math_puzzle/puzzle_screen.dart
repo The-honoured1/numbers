@@ -118,6 +118,16 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         buttonText: 'RESTART GAME',
         color: NumbersColors.green,
         icon: Icons.error_outline,
+        onRevive: _revivesUsed >= 2 ? null : () {
+          AdService().showRewardedAd(() {
+            Navigator.pop(context);
+            setState(() {
+              _lives = 3;
+              _revivesUsed++;
+            });
+            _nextQuestion();
+          });
+        },
         onButtonPressed: () {
           Navigator.pop(context);
           setState(() {

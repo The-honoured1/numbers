@@ -16,29 +16,34 @@ class MinesweeperLevel {
   const MinesweeperLevel(this.rows, this.cols, this.mines);
 
   static MinesweeperLevel forLevel(int level) {
-    if (level <= 50) {
-      int mines = 3 + ((level - 1) * 5 ~/ 49);
-      return MinesweeperLevel(6, 5, mines.clamp(3, 8));
-    } else if (level <= 150) {
-      int mines = 8 + ((level - 51) * 7 ~/ 99);
-      return MinesweeperLevel(7, 6, mines.clamp(8, 15));
-    } else if (level <= 300) {
-      int mines = 12 + ((level - 151) * 13 ~/ 149);
-      return MinesweeperLevel(8, 6, mines.clamp(12, 25));
-    } else if (level <= 450) {
-      int mines = 20 + ((level - 301) * 20 ~/ 149);
-      return MinesweeperLevel(9, 7, mines.clamp(20, 40));
+    if (level <= 20) {
+      // Tutorial: Very small grids
+      int mines = 2 + (level ~/ 10);
+      return MinesweeperLevel(5, 4, mines.clamp(2, 4));
+    } else if (level <= 100) {
+      // Easy: 6x5
+      int mines = 5 + ((level - 21) * 5 ~/ 79);
+      return MinesweeperLevel(6, 5, mines.clamp(5, 10));
+    } else if (level <= 250) {
+      // Medium: 7x6
+      int mines = 10 + ((level - 101) * 10 ~/ 149);
+      return MinesweeperLevel(7, 6, mines.clamp(10, 20));
+    } else if (level <= 400) {
+      // Hard: 8x6
+      int mines = 20 + ((level - 251) * 15 ~/ 149);
+      return MinesweeperLevel(8, 6, mines.clamp(20, 35));
     } else {
-      int mines = 35 + ((level - 451) * 20 ~/ 49);
+      // Expert: 9x7 or 10x8
+      int mines = 35 + ((level - 401) * 20 ~/ 99);
       return MinesweeperLevel(10, 8, mines.clamp(35, 55));
     }
   }
 
   String get difficulty {
-    if (cols <= 6) return 'BEGINNER';
-    if (cols <= 7) return 'EASY';
-    if (cols <= 8) return 'MEDIUM';
-    if (cols <= 9) return 'HARD';
+    if (mines <= 4) return 'TUTORIAL';
+    if (mines <= 10) return 'EASY';
+    if (mines <= 20) return 'MEDIUM';
+    if (mines <= 35) return 'HARD';
     return 'EXPERT';
   }
 }
@@ -55,6 +60,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
   late MinesweeperGame _game;
   bool _flagMode = false;
   int _currentLevel = 1;
+  int _revivesUsed = 0;
   late MinesweeperLevel _levelConfig;
   final Stopwatch _sessionTimer = Stopwatch();
 
@@ -84,6 +90,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
         mineCount: _levelConfig.mines,
       );
       _flagMode = false;
+      _revivesUsed = 0;
     });
   }
 
@@ -118,6 +125,17 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
         buttonText: won ? 'NEXT LEVEL' : 'RETRY LEVEL',
         color: won ? NumbersColors.crossCorrect : NumbersColors.countdown,
         icon: won ? Icons.shield_outlined : Icons.brightness_7_outlined,
+        onRevive: (won || _revivesUsed >= 2) ? null : () {
+          AdService().showRewardedAd(() {
+            Navigator.pop(context);
+            if (r != null && c != null) {
+              setState(() {
+                _revivesUsed++;
+                _game.revive(r, c);
+              });
+            }
+          });
+        },
         onButtonPressed: () {
           Navigator.pop(context);
           if (won) {
