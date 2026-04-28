@@ -11,8 +11,8 @@ void main() async {
   final storage = StorageService();
   await storage.init();
 
-  // Initialize these in the background to prevent startup delays
-  AdService().init();
+  // Initialize these to ensure they are ready before the first screen loads
+  await AdService().init();
   NotificationService().init();
   
   runApp(const NumbersApp());

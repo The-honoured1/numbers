@@ -17,10 +17,9 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
   @override
   void initState() {
     super.initState();
-    // Delay the heavyweight native ad initialization by 1 second.
-    // This allows the initial screen entrance animations to finish rendering first,
-    // completely eliminating the harsh "initial freeze" when navigating to pages.
-    Future.delayed(const Duration(milliseconds: 1000), () {
+    // Delay the heavyweight native ad initialization by 600ms.
+    // This allows the initial screen entrance animations to finish rendering first.
+    Future.delayed(const Duration(milliseconds: 600), () {
       if (mounted) {
         _loadAd();
       }
