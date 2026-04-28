@@ -26,6 +26,14 @@ class AdService {
 
   Future<void> init() async {
     await MobileAds.instance.initialize();
+    
+    // Force AdMob to fill ad slots on this specific physical device
+    // bypassing the 'No Fill' restriction placed on unpublished apps.
+    RequestConfiguration configuration = RequestConfiguration(
+      testDeviceIds: ["C41844DE379F02D0DA01759E248366D4"],
+    );
+    await MobileAds.instance.updateRequestConfiguration(configuration);
+
     _loadInterstitialAd();
     _loadRewardedAd();
   }

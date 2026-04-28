@@ -47,14 +47,17 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoaded && _bannerAd != null) {
-      return Container(
+    // Standard banner ad size is 320x50. Locking this dimension strictly
+    // prevents heavy layout shifting and frame drops when the ad finally loads.
+    return RepaintBoundary(
+      child: Container(
         alignment: Alignment.center,
-        width: _bannerAd!.size.width.toDouble(),
-        height: _bannerAd!.size.height.toDouble(),
-        child: AdWidget(ad: _bannerAd!),
-      );
-    }
-    return const SizedBox(height: 50); // Fallback standard banner height placeholder
+        width: 320,
+        height: 50,
+        child: (_isLoaded && _bannerAd != null) 
+            ? AdWidget(ad: _bannerAd!)
+            : const SizedBox(width: 320, height: 50),
+      ),
+    );
   }
 }

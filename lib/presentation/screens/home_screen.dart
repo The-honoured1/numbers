@@ -421,7 +421,7 @@ class _StatsView extends StatelessWidget {
                   children: [
                     Icon(Icons.emoji_events_rounded, color: context.onSurface, size: 48),
                     const SizedBox(height: 16),
-                    Text('${storage.getTotalWins()}', style: GoogleFonts.playfairDisplay(fontSize: 64, fontWeight: FontWeight.w900, height: 1)),
+                    Text('${storage.getTotalWins()}', style: GoogleFonts.playfairDisplay(fontSize: 64, fontWeight: FontWeight.w900, height: 1, color: context.onSurface)),
                     const SizedBox(height: 4),
                     Text('PUZZLES SOLVED', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.textFaint, letterSpacing: 2)),
                     const SizedBox(height: 32),
@@ -623,7 +623,7 @@ class _SectionHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: GoogleFonts.playfairDisplay(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5)),
+        Text(title, style: GoogleFonts.playfairDisplay(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5, color: context.onSurface)),
         const SizedBox(height: 2),
         Text(subtitle, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint, letterSpacing: 1)),
       ],
