@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             _TodayView(dailyGame: _dailyGame, storage: _storage, date: _formattedDate),
             _HubView(games: _games, storage: _storage),
-            _StatsView(storage: _storage),
+            _StatsView(games: _games, storage: _storage),
           ],
         ),
       bottomNavigationBar: Container(
@@ -384,8 +384,9 @@ class _HubView extends StatelessWidget {
 }
 
 class _StatsView extends StatelessWidget {
+  final List<GameModel> games;
   final StorageService storage;
-  const _StatsView({required this.storage});
+  const _StatsView({required this.games, required this.storage});
 
   @override
   Widget build(BuildContext context) {
@@ -404,53 +405,36 @@ class _StatsView extends StatelessWidget {
               
               const SizedBox(height: 32),
               
-              // Key Stats Dashboard
-              Row(
-                children: [
-                   Expanded(
-                     child: _StatDashboardCard(
-                       label: 'STREAK', 
-                       value: '${storage.currentStreak}', 
-                       subValue: 'DAYS',
-                       icon: Icons.bolt_rounded,
-                       color: NumbersColors.yellow,
-                     ),
-                   ),
-                   const SizedBox(width: 16),
-                   Expanded(
-                     child: _StatDashboardCard(
-                       label: 'SOLVED', 
-                       value: '${storage.getTotalWins()}', 
-                       subValue: 'PUZZLES',
-                       icon: Icons.check_circle_rounded,
-                       color: NumbersColors.green,
-                     ),
-                   ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                   Expanded(
-                     child: _StatDashboardCard(
-                       label: 'PLAY TIME', 
-                       value: StorageService.formatDuration(storage.getTotalPlayTime()), 
-                       subValue: 'TOTAL',
-                       icon: Icons.timer_rounded,
-                       color: NumbersColors.blue,
-                     ),
-                   ),
-                   const SizedBox(width: 16),
-                   Expanded(
-                     child: _StatDashboardCard(
-                       label: 'MAX STREAK', 
-                       value: '${storage.maxStreak}', 
-                       subValue: 'BEST',
-                       icon: Icons.emoji_events_rounded,
-                       color: NumbersColors.purple,
-                     ),
-                   ),
-                ],
+              // Hero Stats Dashboard
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+                decoration: BoxDecoration(
+                  color: context.onSurface.withOpacity(0.03),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: context.border, width: 3),
+                  boxShadow: [
+                    BoxShadow(color: context.shadow, offset: const Offset(6, 6)),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Icon(Icons.emoji_events_rounded, color: context.onSurface, size: 48),
+                    const SizedBox(height: 16),
+                    Text('${storage.getTotalWins()}', style: GoogleFonts.playfairDisplay(fontSize: 64, fontWeight: FontWeight.w900, height: 1)),
+                    const SizedBox(height: 4),
+                    Text('PUZZLES SOLVED', style: GoogleFonts.outfit(fontSize: 12, fontWeight: FontWeight.w900, color: context.textFaint, letterSpacing: 2)),
+                    const SizedBox(height: 32),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _heroMiniStat('PLAY TIME', StorageService.formatDuration(storage.getTotalPlayTime()), context),
+                        Container(width: 2, height: 30, color: context.border.withOpacity(0.2)),
+                        _heroMiniStat('BEST STREAK', '${storage.maxStreak} DAYS', context),
+                      ],
+                    ),
+                  ],
+                ),
               ),
 
               const SizedBox(height: 48),
@@ -504,7 +488,7 @@ class _StatsView extends StatelessWidget {
                 style: GoogleFonts.outfit(
                   fontSize: 9, 
                   fontWeight: FontWeight.w800, 
-                  color: isToday ? NumbersColors.blue : context.textFaint,
+                  color: isToday ? context.onSurface : context.textFaint,
                   letterSpacing: 0.5,
                 )
               ),
@@ -525,7 +509,7 @@ class _StatsView extends StatelessWidget {
                         style: GoogleFonts.outfit(
                           fontSize: 10, 
                           fontWeight: FontWeight.w900, 
-                          color: isToday ? NumbersColors.blue : context.textFaint.withOpacity(0.5)
+                          color: isToday ? context.onSurface : context.textFaint.withOpacity(0.5)
                         )
                       )
                     ),
@@ -537,22 +521,23 @@ class _StatsView extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailedGameList(BuildContext context) {
-    // Collect all unique games from StorageService or a static list
-    final gameIds = StorageService.allGameIds;
-    const gameNames = {
-      'sudoku': 'Number Grid', '2048': '2048', 'math_puzzle': 'Math Puzzle',
-      'sequence': 'Sequence', 'countdown': 'Countdown', 'crossword': 'Math Cross',
-      'link': 'Number Link', 'minesweeper': 'Minesweeper', 'slide_15': 'Slide 15',
-      'zen_ascend': 'Zen Ascend',
-    };
-
+  Widget _heroMiniStat(String label, String value, BuildContext context) {
     return Column(
-      children: gameIds.map((id) {
-        final score = storage.getHighScore(id);
-        final wins = storage.getWins(id);
-        final time = storage.getPlayTime(id);
-        final plays = storage.getPlayCount(id);
+      children: [
+        Text(value, style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.w900, color: context.onSurface)),
+        const SizedBox(height: 2),
+        Text(label, style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: context.textFaint)),
+      ],
+    );
+  }
+
+  Widget _buildDetailedGameList(BuildContext context) {
+    return Column(
+      children: games.map((game) {
+        final score = storage.getHighScore(game.id);
+        final wins = storage.getWins(game.id);
+        final time = storage.getPlayTime(game.id);
+        final plays = storage.getPlayCount(game.id);
 
         if (plays == 0) return const SizedBox.shrink();
 
@@ -561,7 +546,7 @@ class _StatsView extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: context.surface,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(color: context.border, width: 2.5),
             boxShadow: [
               BoxShadow(color: context.shadow, offset: const Offset(4, 4))
@@ -570,23 +555,43 @@ class _StatsView extends StatelessWidget {
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(gameNames[id]?.toUpperCase() ?? id.toUpperCase(), style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w900, letterSpacing: 1)),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(color: context.onSurface.withOpacity(0.05), borderRadius: BorderRadius.circular(6)),
-                    child: Text('WINS: $wins', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: NumbersColors.green)),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: game.accentColor.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: game.accentColor.withOpacity(0.3), width: 2),
+                    ),
+                    child: Icon(game.icon, color: game.accentColor, size: 28),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(game.title.toUpperCase(), style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1)),
+                        const SizedBox(height: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: context.onSurface.withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text('WINS: $wins', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, color: game.accentColor)),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _miniStat('BEST SCORE', score == 0 ? '-' : '$score'),
-                  _miniStat('PLAYS', '$plays'),
-                  _miniStat('TIME', StorageService.formatDuration(time)),
+                  _miniStat('TOTAL PLAYS', '$plays'),
+                  _miniStat('PLAY TIME', StorageService.formatDuration(time)),
                 ],
               ),
             ],
@@ -600,8 +605,9 @@ class _StatsView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.outfit(fontSize: 9, fontWeight: FontWeight.w800, color: Colors.grey.shade500, letterSpacing: 0.5)),
-        Text(value, style: GoogleFonts.outfit(fontSize: 15, fontWeight: FontWeight.w900)),
+        Text(label, style: GoogleFonts.outfit(fontSize: 9, fontWeight: FontWeight.w800, color: Colors.grey.shade500, letterSpacing: 1)),
+        const SizedBox(height: 4),
+        Text(value, style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.w900)),
       ],
     );
   }

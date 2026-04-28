@@ -16,28 +16,28 @@ class MinesweeperLevel {
 
   static MinesweeperLevel forLevel(int level) {
     if (level <= 50) {
-      int mines = 3 + ((level - 1) * 5 ~/ 49);
-      return MinesweeperLevel(6, 6, mines.clamp(3, 8));
+      int mines = 8 + ((level - 1) * 7 ~/ 49);
+      return MinesweeperLevel(10, 6, mines.clamp(8, 15));
     } else if (level <= 150) {
-      int mines = 8 + ((level - 51) * 7 ~/ 99);
-      return MinesweeperLevel(8, 8, mines.clamp(8, 15));
+      int mines = 12 + ((level - 51) * 10 ~/ 99);
+      return MinesweeperLevel(12, 7, mines.clamp(12, 22));
     } else if (level <= 300) {
-      int mines = 12 + ((level - 151) * 13 ~/ 149);
-      return MinesweeperLevel(10, 8, mines.clamp(12, 25));
+      int mines = 18 + ((level - 151) * 12 ~/ 149);
+      return MinesweeperLevel(14, 8, mines.clamp(18, 30));
     } else if (level <= 450) {
-      int mines = 20 + ((level - 301) * 20 ~/ 149);
-      return MinesweeperLevel(12, 10, mines.clamp(20, 40));
+      int mines = 25 + ((level - 301) * 15 ~/ 149);
+      return MinesweeperLevel(16, 9, mines.clamp(25, 40));
     } else {
       int mines = 35 + ((level - 451) * 20 ~/ 49);
-      return MinesweeperLevel(14, 10, mines.clamp(35, 55));
+      return MinesweeperLevel(18, 10, mines.clamp(35, 55));
     }
   }
 
   String get difficulty {
-    if (rows <= 6) return 'BEGINNER';
-    if (rows <= 8) return 'EASY';
-    if (rows <= 10) return 'MEDIUM';
-    if (rows <= 12) return 'HARD';
+    if (cols <= 6) return 'BEGINNER';
+    if (cols <= 7) return 'EASY';
+    if (cols <= 8) return 'MEDIUM';
+    if (cols <= 9) return 'HARD';
     return 'EXPERT';
   }
 }
@@ -286,7 +286,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
 
     if (cell.state == CellState.revealed) {
       if (cell.isMine) {
-        return const Icon(Icons.close_rounded, color: Colors.white, size: 22);
+        return const Icon(Icons.coronavirus_rounded, color: Colors.white, size: 24);
       }
       if (cell.neighborMines > 0) {
         return Text(
