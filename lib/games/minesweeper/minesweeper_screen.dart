@@ -157,7 +157,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     final remaining = _levelConfig.mines - flagCount;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8F8F5),
       appBar: AppBar(
         title: const Text('MINESWEEPER'),
         actions: [
@@ -209,34 +209,27 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
           Expanded(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: AspectRatio(
                   aspectRatio: _levelConfig.cols / _levelConfig.rows,
                   child: Container(
-                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFC0C0B6),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border(
-                        top: BorderSide(color: Colors.black.withOpacity(0.3), width: 3),
-                        left: BorderSide(color: Colors.black.withOpacity(0.3), width: 3),
-                        bottom: const BorderSide(color: Colors.white, width: 2),
-                        right: const BorderSide(color: Colors.white, width: 2),
-                      ),
-                      boxShadow: [
+                      color: const Color(0xFF1A1A1A),
+                      border: Border.all(color: Colors.black, width: 3),
+                      boxShadow: const [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          offset: const Offset(4, 4),
-                          blurRadius: 4,
-                        )
+                          color: Colors.black,
+                          offset: Offset(6, 6),
+                        ),
                       ],
                     ),
+                    padding: const EdgeInsets.all(3),
                     child: GridView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: _levelConfig.cols,
-                        mainAxisSpacing: 4,
-                        crossAxisSpacing: 4,
+                        mainAxisSpacing: 2,
+                        crossAxisSpacing: 2,
                       ),
                       itemCount: _levelConfig.rows * _levelConfig.cols,
                       itemBuilder: (context, index) {
@@ -244,37 +237,30 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
                         int c = index % _levelConfig.cols;
                         final cell = _game.board[r][c];
                         final isRevealed = cell.state == CellState.revealed;
+                        final isFlagged = cell.state == CellState.flagged;
+
+                        Color tileColor;
+                        if (isRevealed) {
+                          tileColor = cell.isMine
+                              ? const Color(0xFFEB3D54)
+                              : const Color(0xFFF8F8F5);
+                        } else if (isFlagged) {
+                          tileColor = const Color(0xFF2D2D2D);
+                        } else {
+                          tileColor = const Color(0xFF3A3A3A);
+                        }
 
                         return GestureDetector(
                           onTap: () => _handleCellTap(r, c),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: isRevealed
-                                  ? (cell.isMine ? const Color(0xFFF8D7DA) : const Color(0xFFE2E2DF))
-                                  : const Color(0xFFEFEFE6),
-                              borderRadius: BorderRadius.circular(4),
+                              color: tileColor,
                               border: isRevealed
-                                  ? Border(
-                                      top: BorderSide(color: Colors.black.withOpacity(0.1), width: 2),
-                                      left: BorderSide(color: Colors.black.withOpacity(0.1), width: 2),
-                                      bottom: const BorderSide(color: Colors.white, width: 1),
-                                      right: const BorderSide(color: Colors.white, width: 1),
-                                    )
-                                  : Border(
-                                      top: const BorderSide(color: Colors.white, width: 2),
-                                      left: const BorderSide(color: Colors.white, width: 2),
-                                      bottom: BorderSide(color: Colors.black.withOpacity(0.2), width: 3),
-                                      right: BorderSide(color: Colors.black.withOpacity(0.2), width: 3),
+                                  ? null
+                                  : Border.all(
+                                      color: Colors.white.withOpacity(0.06),
+                                      width: 1,
                                     ),
-                              boxShadow: isRevealed
-                                  ? []
-                                  : [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.1),
-                                        offset: const Offset(1, 2),
-                                        blurRadius: 2,
-                                      )
-                                    ],
                             ),
                             alignment: Alignment.center,
                             child: _buildCellContent(cell),
@@ -287,7 +273,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 60),
+          const SizedBox(height: 40),
         ],
       ),
     );

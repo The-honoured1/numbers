@@ -41,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<GameModel> _getGames() {
     final cw = GameModel(id: 'crossword', title: 'Math Cross', description: 'Cross-Equation Solver', icon: Icons.grid_goldenratio_rounded, accentColor: NumbersColors.crossword);
-    final lk = GameModel(id: 'link', title: 'Number Link', description: 'Connect Matching Dots', icon: Icons.link_rounded, accentColor: NumbersColors.linkNumbers);
     final ms = GameModel(id: 'minesweeper', title: 'Minesweeper', description: 'Navigate the Minefield', icon: Icons.brightness_7_rounded, accentColor: NumbersColors.minesweeper);
 
     return [
@@ -56,9 +55,6 @@ class _HomeScreenState extends State<HomeScreen> {
       
       GameModel(id: cw.id, title: cw.title, description: cw.description, icon: cw.icon, accentColor: cw.accentColor, screen: LevelSelectScreen(
         game: cw, screenBuilder: (l) => CrosswordScreen(initialLevel: l), maxUnlockedResolver: (s) => s.getHighScore('crossword_level'), totalLevels: 100)),
-      
-      GameModel(id: lk.id, title: lk.title, description: lk.description, icon: lk.icon, accentColor: lk.accentColor, screen: LevelSelectScreen(
-        game: lk, screenBuilder: (l) => LinkNumbersScreen(initialLevel: l), maxUnlockedResolver: (s) => s.getHighScore('link_level'), totalLevels: 100)),
       
       GameModel(id: ms.id, title: ms.title, description: ms.description, icon: ms.icon, accentColor: ms.accentColor, screen: LevelSelectScreen(
         game: ms, screenBuilder: (l) => MinesweeperScreen(initialLevel: l + 1), maxUnlockedResolver: (s) => s.getHighScore('minesweeper_level') - 1, totalLevels: 500)),

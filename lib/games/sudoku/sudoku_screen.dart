@@ -176,7 +176,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
               ),
               const SizedBox(height: 8),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
                 child: AspectRatio(
                   aspectRatio: 1,
                   child: Container(
