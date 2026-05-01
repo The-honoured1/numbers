@@ -93,7 +93,7 @@ class _SlideScreenState extends State<SlideScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.surface,
+      backgroundColor: NumbersColors.backgroundOffWhite,
       appBar: AppBar(
         title: Text('SLIDE 15', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),

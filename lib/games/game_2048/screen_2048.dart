@@ -73,15 +73,22 @@ class _Screen2048State extends State<Screen2048> {
         color: NumbersColors.blue,
         icon: won ? Icons.emoji_events_rounded : Icons.lock_rounded,
         onRevive: (won || _revivesUsed >= 2) ? null : () {
-          AdService().showRewardedAd(() {
-            Navigator.pop(context);
-            setState(() {
-              _revivesUsed++;
-              _logic.tiles = _logic.tiles.where((t) => t.value > 4).toList();
-              _logic.over = false;
-              _logic.addRandomTile();
-            });
-          });
+          AdService().showRewardedAd(
+            onRewardEarned: () {
+              Navigator.pop(context);
+              setState(() {
+                _revivesUsed++;
+                _logic.tiles = _logic.tiles.where((t) => t.value > 4).toList();
+                _logic.over = false;
+                _logic.addRandomTile();
+              });
+            },
+            onUnavailable: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Ads unavailable')),
+              );
+            },
+          );
         },
         onButtonPressed: () {
           Navigator.pop(context);
@@ -97,7 +104,7 @@ class _Screen2048State extends State<Screen2048> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.surface,
+      backgroundColor: NumbersColors.backgroundOffWhite,
       appBar: AppBar(
         title: Text('2048', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),

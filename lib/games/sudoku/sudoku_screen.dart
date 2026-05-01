@@ -126,6 +126,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
     final hiScore = StorageService().getHighScore('sudoku');
 
     return Scaffold(
+      backgroundColor: NumbersColors.backgroundOffWhite,
       appBar: AppBar(
         title: Text('SUDOKU', 
           style: GoogleFonts.outfit(letterSpacing: 4, fontSize: 18, fontWeight: FontWeight.w900)),

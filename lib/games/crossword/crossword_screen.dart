@@ -186,7 +186,7 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.surface,
+      backgroundColor: NumbersColors.backgroundOffWhite,
       appBar: AppBar(
         title: Text('MATH CROSS', style: GoogleFonts.lora(fontWeight: FontWeight.w800, fontSize: 18, letterSpacing: 1)),
         centerTitle: true,

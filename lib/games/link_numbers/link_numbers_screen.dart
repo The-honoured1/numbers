@@ -218,7 +218,7 @@ class _LinkNumbersScreenState extends State<LinkNumbersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.surface,
+      backgroundColor: NumbersColors.backgroundOffWhite,
       appBar: AppBar(
         title: Text('LEVEL ${_currentLevel + 1}', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 18, letterSpacing: 2)),
         centerTitle: true,

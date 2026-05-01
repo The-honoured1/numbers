@@ -24,7 +24,7 @@ class LevelSelectScreen extends StatelessWidget {
     final maxUnlocked = maxUnlockedResolver(storage).clamp(0, totalLevels - 1);
 
     return Scaffold(
-      backgroundColor: context.surface,
+      backgroundColor: NumbersColors.backgroundOffWhite,
       appBar: AppBar(
         title: Text(game.title.toUpperCase(), style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 18, letterSpacing: 2)),
       ),

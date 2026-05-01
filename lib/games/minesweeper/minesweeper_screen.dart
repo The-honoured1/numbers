@@ -193,7 +193,7 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
     if (remaining < 0) remaining = 0;
 
     return Scaffold(
-      backgroundColor: context.surface,
+      backgroundColor: NumbersColors.backgroundOffWhite,
       appBar: AppBar(
         title: const Text('MINESWEEPER'),
         actions: [

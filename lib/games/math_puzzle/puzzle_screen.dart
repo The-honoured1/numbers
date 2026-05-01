@@ -154,6 +154,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: NumbersColors.backgroundOffWhite,
       appBar: AppBar(
         title: Text('MATH PUZZLE', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 20)),
       ),

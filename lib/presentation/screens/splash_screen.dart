@@ -63,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: NumbersColors.blue,
+      backgroundColor: NumbersColors.backgroundOffWhite,
       body: Stack(
         children: [
           Center(
@@ -74,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   'numbers',
                   style: GoogleFonts.unifrakturMaguntia(
                     fontSize: 64,
-                    color: Colors.white,
+                    color: NumbersColors.textBody,
                   ),
                 ).animate().slideY(begin: 0.1, end: 0, duration: 800.ms),
 
@@ -86,7 +86,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 4,
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: NumbersColors.textBody.withValues(alpha: 0.7),
                   ),
                 ).animate().fadeIn(delay: 400.ms, duration: 600.ms),
 
@@ -99,9 +99,9 @@ class _SplashScreenState extends State<SplashScreen> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(2),
                         child: LinearProgressIndicator(
-                          backgroundColor: Colors.white.withValues(alpha: 0.2),
+                          backgroundColor: NumbersColors.blue.withValues(alpha: 0.2),
                           valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
+                            NumbersColors.blue,
                           ),
                         ),
                       ),

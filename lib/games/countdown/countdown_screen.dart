@@ -174,7 +174,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
     final bool timeWarning = _timeLeft <= 10;
     
     return Scaffold(
-      backgroundColor: context.surface,
+      backgroundColor: NumbersColors.backgroundOffWhite,
       appBar: AppBar(
         title: Text('COUNTDOWN', style: GoogleFonts.outfit(letterSpacing: 4, fontSize: 18, fontWeight: FontWeight.w900)),
         centerTitle: true,

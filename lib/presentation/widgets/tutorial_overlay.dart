@@ -18,7 +18,7 @@ class TutorialScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.surface,
+      backgroundColor: NumbersColors.backgroundOffWhite,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(40.0),

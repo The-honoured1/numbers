@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class NumbersColors {
   // NYT Games Neo-Brutalist Palette
   static const Color background = Color(0xFFF9FAFB);
-  static const Color backgroundOffWhite = Color(0xFFFFFFFF);
+  static const Color backgroundOffWhite = Color(0xFFFFF5EE);
   static const Color textBody = Color(0xFF000000); // Pitch Black
   static const Color textFaint = Color(0xFF555555); // Dark Gray
   static const Color border = Color(0xFF000000); // Hard Black Borders
@@ -152,4 +152,3 @@ class NumbersTheme {
     );
   }
 }
-
