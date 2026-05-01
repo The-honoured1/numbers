@@ -132,15 +132,22 @@ class _MinesweeperScreenState extends State<MinesweeperScreen> {
         color: won ? NumbersColors.crossCorrect : NumbersColors.countdown,
         icon: won ? Icons.shield_outlined : Icons.brightness_7_outlined,
         onRevive: (won || _revivesUsed >= 2) ? null : () {
-          AdService().showRewardedAd(() {
-            Navigator.pop(context);
-            if (r != null && c != null) {
-              setState(() {
-                _revivesUsed++;
-                _game.revive(r, c);
-              });
-            }
-          });
+          AdService().showRewardedAd(
+            onRewardEarned: () {
+              Navigator.pop(context);
+              if (r != null && c != null) {
+                setState(() {
+                  _revivesUsed++;
+                  _game.revive(r, c);
+                });
+              }
+            },
+            onUnavailable: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Ads unavailable')),
+              );
+            },
+          );
         },
         onButtonPressed: () {
           Navigator.pop(context);

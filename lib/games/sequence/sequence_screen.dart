@@ -75,13 +75,20 @@ class _SequenceScreenState extends State<SequenceScreen> {
           color: NumbersColors.countdown,
           icon: Icons.close,
           onRevive: _revivesUsed >= 2 ? null : () {
-            AdService().showRewardedAd(() {
-              Navigator.pop(context);
-              setState(() {
-                _revivesUsed++;
-                _question = _logic.generate(_streak);
-              });
-            });
+            AdService().showRewardedAd(
+              onRewardEarned: () {
+                Navigator.pop(context);
+                setState(() {
+                  _revivesUsed++;
+                  _question = _logic.generate(_streak);
+                });
+              },
+              onUnavailable: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Ads unavailable')),
+                );
+              },
+            );
           },
           onButtonPressed: () {
             Navigator.pop(context);

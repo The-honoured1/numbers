@@ -143,14 +143,21 @@ class _CountdownScreenState extends State<CountdownScreen> {
         color: NumbersColors.countdown,
         icon: Icons.timer_off_outlined,
         onRevive: _revivesUsed >= 2 ? null : () {
-          AdService().showRewardedAd(() {
-            Navigator.pop(context);
-            setState(() {
-              _revivesUsed++;
-              _timeLeft = 30; // Give 30 more seconds
-              _startTimer();
-            });
-          });
+          AdService().showRewardedAd(
+            onRewardEarned: () {
+              Navigator.pop(context);
+              setState(() {
+                _revivesUsed++;
+                _timeLeft = 30; // Give 30 more seconds
+                _startTimer();
+              });
+            },
+            onUnavailable: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Ads unavailable')),
+              );
+            },
+          );
         },
         onButtonPressed: () => Navigator.pop(context),
       ),

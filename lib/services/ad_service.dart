@@ -12,17 +12,17 @@ class AdService {
   bool _isInterstitialAdLoading = false;
   bool _isRewardedAdLoading = false;
 
-  final String _interstitialAdUnitId = kDebugMode 
-      ? (Platform.isAndroid ? 'ca-app-pub-3940256099942544/1033173712' : 'ca-app-pub-3940256099942544/4411468910')
-      : (Platform.isAndroid ? 'ca-app-pub-8456018770297813/9894298354' : 'ca-app-pub-8456018770297813/9894298354');
+  final String _interstitialAdUnitId = Platform.isAndroid
+      ? 'ca-app-pub-8456018770297813/9894298354'
+      : 'ca-app-pub-8456018770297813/9894298354';
 
-  final String _rewardedAdUnitId = kDebugMode
-      ? (Platform.isAndroid ? 'ca-app-pub-3940256099942544/5224354917' : 'ca-app-pub-3940256099942544/1712485313')
-      : (Platform.isAndroid ? 'ca-app-pub-8456018770297813/2869725006' : 'ca-app-pub-8456018770297813/2869725006');
+  final String _rewardedAdUnitId = Platform.isAndroid
+      ? 'ca-app-pub-8456018770297813/2869725006'
+      : 'ca-app-pub-8456018770297813/2869725006';
 
-  static String get bannerAdUnitId => kDebugMode
-      ? (Platform.isAndroid ? 'ca-app-pub-3940256099942544/6300978111' : 'ca-app-pub-3940256099942544/2934735716')
-      : (Platform.isAndroid ? 'ca-app-pub-8456018770297813/5667798259' : 'ca-app-pub-8456018770297813/5667798259');
+  static String get bannerAdUnitId => Platform.isAndroid
+      ? 'ca-app-pub-8456018770297813/5667798259'
+      : 'ca-app-pub-8456018770297813/5667798259';
 
   Future<void> init() async {
     await MobileAds.instance.initialize();
@@ -99,11 +99,13 @@ class AdService {
     _interstitialAd!.show();
   }
 
-  void showRewardedAd(VoidCallback onRewardEarned) {
+  void showRewardedAd({
+    required VoidCallback onRewardEarned,
+    VoidCallback? onUnavailable,
+  }) {
     if (_rewardedAd == null) {
       _loadRewardedAd();
-      // If we don't have an ad ready, we can't show it.
-      // In a real app, you might want to show a loading indicator or a message.
+      onUnavailable?.call();
       return;
     }
 
@@ -117,6 +119,7 @@ class AdService {
         ad.dispose();
         _rewardedAd = null;
         _loadRewardedAd();
+        onUnavailable?.call();
       },
     );
 

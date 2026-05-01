@@ -30,13 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   final StorageService _storage = StorageService();
   late List<GameModel> _games;
-  late GameModel _dailyGame;
 
   @override
   void initState() {
     super.initState();
     _games = _getGames();
-    _dailyGame = _games[DateTime.now().day % _games.length];
   }
 
   List<GameModel> _getGames() {
@@ -61,13 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
   }
 
-  String get _formattedDate {
-    final now = DateTime.now();
-    final months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
-    final days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-    return "${days[now.weekday % 7]}, ${months[now.month - 1]} ${now.day}";
-  }
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -85,46 +76,19 @@ class _HomeScreenState extends State<HomeScreen> {
         body: IndexedStack(
           index: _selectedIndex,
           children: [
-            _TodayView(dailyGame: _dailyGame, storage: _storage, date: _formattedDate),
-            _HubView(games: _games, storage: _storage),
-            _StatsView(games: _games, storage: _storage),
+            _HubView(
+              games: _games,
+              storage: _storage,
+              onViewStats: () => setState(() => _selectedIndex = 1),
+            ),
+            _StatsView(
+              games: _games,
+              storage: _storage,
+              onBackToPlay: () => setState(() => _selectedIndex = 0),
+            ),
           ],
-        ),
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-        decoration: BoxDecoration(
-          color: context.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: context.border, width: 2.5),
-          boxShadow: [
-            BoxShadow(
-              color: context.shadow,
-              blurRadius: 0,
-              offset: Offset(4, 4),
-            )
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            onTap: (index) => setState(() => _selectedIndex = index),
-            backgroundColor: context.surface,
-            elevation: 0,
-            selectedItemColor: NumbersColors.blue,
-            unselectedItemColor: context.textFaint,
-            selectedLabelStyle: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 1),
-            unselectedLabelStyle: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w700, letterSpacing: 1),
-            type: BottomNavigationBarType.fixed,
-            items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.today_rounded, size: 26), label: 'TODAY'),
-              BottomNavigationBarItem(icon: Icon(Icons.grid_view_rounded, size: 26), label: 'PLAY'),
-              BottomNavigationBarItem(icon: Icon(Icons.bar_chart_rounded, size: 26), label: 'STATS'),
-            ],
-          ),
         ),
       ),
-    ),
     );
   }
 
@@ -331,8 +295,9 @@ class _TodayView extends StatelessWidget {
 class _HubView extends StatelessWidget {
   final List<GameModel> games;
   final StorageService storage;
+  final VoidCallback onViewStats;
 
-  const _HubView({required this.games, required this.storage});
+  const _HubView({required this.games, required this.storage, required this.onViewStats});
 
   @override
   Widget build(BuildContext context) {
@@ -344,12 +309,27 @@ class _HubView extends StatelessWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Text('The Hub', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1, color: context.onSurface)),
-                    const SizedBox(height: 4),
-                    Text('CHOOSE YOUR DAILY BRAIN WORKOUT', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.onSurface.withOpacity(0.6))),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('The Hub', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1, color: context.onSurface)),
+                          const SizedBox(height: 4),
+                          Text('CHOOSE YOUR DAILY BRAIN WORKOUT', style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5, color: context.onSurface.withOpacity(0.6))),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: onViewStats,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: NumbersColors.blue,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      ),
+                      child: Text('STATS', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, letterSpacing: 1.5, color: Colors.white)),
+                    ),
                   ],
                 ),
               ),
@@ -387,7 +367,8 @@ class _HubView extends StatelessWidget {
 class _StatsView extends StatelessWidget {
   final List<GameModel> games;
   final StorageService storage;
-  const _StatsView({required this.games, required this.storage});
+  final VoidCallback onBackToPlay;
+  const _StatsView({required this.games, required this.storage, required this.onBackToPlay});
 
   @override
   Widget build(BuildContext context) {
@@ -400,7 +381,24 @@ class _StatsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
-              Text('The Archives', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1.2, color: context.onSurface, height: 1)),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text('The Archives', style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.w900, letterSpacing: -1.2, color: context.onSurface, height: 1)),
+                  ),
+                  ElevatedButton(
+                    onPressed: onBackToPlay,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      side: BorderSide(color: context.border, width: 2),
+                    ),
+                    child: Text('PLAY', style: GoogleFonts.outfit(fontWeight: FontWeight.w900, letterSpacing: 1.5, color: context.onSurface)),
+                  ),
+                ],
+              ),
               const SizedBox(height: 8),
               Text('YOUR JOURNEY THROUGH THE NUMBERS', style: GoogleFonts.outfit(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 2, color: context.textFaint)),
               

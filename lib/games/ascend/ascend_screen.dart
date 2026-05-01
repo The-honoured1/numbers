@@ -126,14 +126,21 @@ class _AscendScreenState extends State<AscendScreen> {
         color: NumbersColors.green,
         icon: _timeLeft == 0 ? Icons.timer_off_rounded : Icons.keyboard_double_arrow_up_rounded,
         onRevive: (_timeLeft > 0 || _revivesUsed >= 2) ? null : () {
-          AdService().showRewardedAd(() {
-            Navigator.pop(context);
-            setState(() {
-              _revivesUsed++;
-              _timeLeft = 10; // extra 10s
-              _startTimer();
-            });
-          });
+          AdService().showRewardedAd(
+            onRewardEarned: () {
+              Navigator.pop(context);
+              setState(() {
+                _revivesUsed++;
+                _timeLeft = 10; // extra 10s
+                _startTimer();
+              });
+            },
+            onUnavailable: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Ads unavailable')),
+              );
+            },
+          );
         },
         onButtonPressed: () {
           Navigator.pop(context);

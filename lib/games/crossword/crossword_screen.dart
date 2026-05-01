@@ -115,13 +115,20 @@ class _CrosswordScreenState extends State<CrosswordScreen> {
         color: NumbersColors.countdown,
         icon: Icons.favorite_border_rounded,
         onRevive: _revivesUsed >= 2 ? null : () {
-          AdService().showRewardedAd(() {
-            Navigator.pop(context);
-            setState(() {
-              _lives = 3;
-              _revivesUsed++;
-            });
-          });
+          AdService().showRewardedAd(
+            onRewardEarned: () {
+              Navigator.pop(context);
+              setState(() {
+                _lives = 3;
+                _revivesUsed++;
+              });
+            },
+            onUnavailable: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Ads unavailable')),
+              );
+            },
+          );
         },
         onButtonPressed: () {
           Navigator.pop(context);

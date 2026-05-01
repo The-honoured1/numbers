@@ -119,14 +119,21 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         color: NumbersColors.green,
         icon: Icons.error_outline,
         onRevive: _revivesUsed >= 2 ? null : () {
-          AdService().showRewardedAd(() {
-            Navigator.pop(context);
-            setState(() {
-              _lives = 3;
-              _revivesUsed++;
-            });
-            _nextQuestion();
-          });
+          AdService().showRewardedAd(
+            onRewardEarned: () {
+              Navigator.pop(context);
+              setState(() {
+                _lives = 3;
+                _revivesUsed++;
+              });
+              _nextQuestion();
+            },
+            onUnavailable: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Ads unavailable')),
+              );
+            },
+          );
         },
         onButtonPressed: () {
           Navigator.pop(context);
