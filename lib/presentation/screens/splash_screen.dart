@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.surface,
+      backgroundColor: NumbersColors.blue,
       body: Stack(
         children: [
           Center(
@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   'numbers',
                   style: GoogleFonts.unifrakturMaguntia(
                     fontSize: 64,
-                    color: context.onSurface,
+                    color: Colors.white,
                   ),
                 )
                 .animate()
@@ -63,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 4,
-                    color: context.textFaint,
+                    color: Colors.white.withOpacity(0.8),
                   ),
                 )
                 .animate()
@@ -78,8 +78,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(2),
                     child: LinearProgressIndicator(
-                      backgroundColor: context.onSurface.withOpacity(0.1),
-                      valueColor: AlwaysStoppedAnimation<Color>(context.onSurface),
+                      backgroundColor: Colors.white.withOpacity(0.2),
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   ),
                 )
@@ -100,7 +100,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 'stay jiggy',
                 style: GoogleFonts.unifrakturMaguntia(
                   fontSize: 24,
-                  color: context.textFaint,
+                  color: Colors.white.withOpacity(0.6),
                 ),
               )
               .animate()
